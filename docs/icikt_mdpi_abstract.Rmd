@@ -1,0 +1,39 @@
+---
+title: 'Information-Content-Informed Kendall-tau Correlation Methodology: Interpreting Missing Values as Useful Information'
+author:
+  - Robert M Flight:
+      institute: [markey, biochem, rcsirm]
+  - Praneeth S Bhatt:
+      institute: compeng
+  - Hunter NB Moseley:
+      institute: [markey, biochem, rcsirm, ibi, tox]
+institute:
+  - markey: Markey Cancer Center, University of Kentucky, Lexington, KY 40536, USA
+  - biochem: Department of Molecular & Cellular Biochemistry, University of Kentucky, Lexington, KY 40536, USA
+  - rcsirm: Resource Center for Stable Isotope Resolved Metabolomics, University of Kentucky, Lexington, KY 40536, USA
+  - compeng: Department of Electrical and Computer Engineering, University of Kentucky, Lexington, KY 40506
+  - ibi: Institute for Biomedical Informatics, University of Kentucky, Lexington, KY 40536, USA
+  - tox: Department of Toxicology and Cancer Biology, University of Kentucky, Lexington, KY 40536, USA
+output: 
+  rmarkdown::word_document:
+    keep_md: true
+    pandoc_args:
+      - '--lua-filter=scholarly-metadata.lua'
+      - '--lua-filter=author-info-blocks.lua'
+editor_options: 
+  chunk_output_type: console
+---
+
+
+**Introduction**: Almost all correlation measures currently available are unable to directly handle missing values.
+Typically, missing values are either ignored completely by removing them or are imputed and used in the calculation of the correlation coefficient.
+In either case, the correlation value will be impacted based on a perspective that the missing data represents no useful information.
+However, missing values occur in real metabolomics data sets for a variety of reasons, but frequently due to specific measurable analytes falling below the limit-of-detection of the analytical instrumentation (left-censored values).
+These missing data are not missing at random, but represent useful information by virtue of their "missingness" at one end of the data distribution.
+
+**Methods**: To include this information due to left-censorship missingness, we propose the information-content-informed Kendall-tau (ICI-Kt) methodology.
+We show how left-censored missing values can be included within the definition of the Kendall-tau correlation coefficient, and how that inclusion leads to an interpretation of information being added to the correlation.
+We also implement calculations for additional measures of theoretical maxima and pairwise completeness that add further layers of information interpretation in the methodology.
+
+**Results**: Using both simulated and real data sets from various metabolomics experiments, we demonstrate that the ICI-Kt methodology allows for the inclusion of left-censored missing data values as interpretable information, enabling both improved determination of outlier samples and improved feature-feature network construction.
+We provide explicitly parallel implementations in both R and Python packages that allow fast calculations of all the variables used when applying the ICI-Kt methodology on large numbers of samples.
