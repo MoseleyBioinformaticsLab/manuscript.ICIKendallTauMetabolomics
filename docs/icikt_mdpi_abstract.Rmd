@@ -35,5 +35,8 @@ These missing data are not missing at random, but represent useful information b
 We show how left-censored missing values can be included within the definition of the Kendall-tau correlation coefficient, and how that inclusion leads to an interpretation of information being added to the correlation.
 We also implement calculations for additional measures of theoretical maxima and pairwise completeness that add further layers of information interpretation in the methodology.
 
-**Results**: Using both simulated and real data sets from various metabolomics experiments, we demonstrate that the ICI-Kt methodology allows for the inclusion of left-censored missing data values as interpretable information, enabling both improved determination of outlier samples and improved feature-feature network construction.
+To test and validate ICI-Kt methodology, we used a variety of simulated datasets with different types and amounts of missingness, and real metabolomics experiments from Metabolomics Workbench measured using a variety of analytical platforms, comparing ICI-Kt to Kendall-tau, Spearman and Pearson correlations.
+
+**Results**: We found that ICI-Kt performs better than either the regular Kendall-tau, Spearman, or Pearson correlation methods when left-censored values are present, both for the detection of outlier samples and the construction of metabolite-metabolite networks.
+
 We provide explicitly parallel implementations in both R and Python packages that allow fast calculations of all the variables used when applying the ICI-Kt methodology on large numbers of samples.
