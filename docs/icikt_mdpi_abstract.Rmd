@@ -26,17 +26,17 @@ editor_options:
 
 
 **Introduction**: Almost all correlation measures currently available are unable to directly handle missing values.
-Typically, missing values are either ignored completely by removing them or are imputed and used in the calculation of the correlation coefficient.
-In either case, the correlation value will be impacted based on a perspective that the missing data represents no useful information.
-However, missing values occur in real metabolomics data sets for a variety of reasons, but frequently due to specific measurable analytes falling below the limit-of-detection of the analytical instrumentation (left-censored values).
-These missing data are not missing at random, but represent useful information by virtue of their "missingness" at one end of the data distribution.
+Either missing values are ignored, or they are imputed and used in the calculation of the correlation coefficient.
+In either case, the correlation values are impacted based on a perspective that the missing data represents no useful information.
+Missing values occur in real metabolomics data sets for a variety of reasons, but frequently due to specific analytes falling below the limit-of-detection of the analytical instrumentation (left-censored values).
+These missing data are not missing at random, but represent potentially useful information by virtue of their "missingness" at one end of the data distribution.
 
-**Methods**: To include this information due to left-censorship missingness, we propose the information-content-informed Kendall-tau (ICI-Kt) methodology.
+**Methods**: To use this left-censorship missingness in correlation, we propose the information-content-informed Kendall-tau (ICI-Kt) methodology.
 We show how left-censored missing values can be included within the definition of the Kendall-tau correlation coefficient, and how that inclusion leads to an interpretation of information being added to the correlation.
 We also implement calculations for additional measures of theoretical maxima and pairwise completeness that provied additional interprative perspectives to the methodology.
 
-To test and validate the ICI-Kt methodology, we used a variety of simulated datasets with different types and amounts of missingness, and real metabolomics experiments from Metabolomics Workbench measured using a variety of analytical platforms, comparing ICI-Kt to Kendall-tau, Spearman and Pearson correlations.
+To test and validate the ICI-Kt methodology, we used a variety of simulated datasets with different types and amounts of missingness, as well as real metabolomics experiments from Metabolomics Workbench (MW). These include (but are not limited to) lipidomics of non-small cell lung carcinomia, and small molecule metabolomics of rat stamina (MW ID PR000016), comparing ICI-Kt to Kendall-tau, Spearman and Pearson correlations in each case.
 
-**Results**: Tests on both simulated and real metabolomics datasets demonstrate that ICI-Kt performs better than either the regular Kendall-tau, Spearman, or Pearson correlation methods when left-censored values are present, both for the detection of outlier samples and the construction of metabolite-metabolite networks.
+**Results**: Tests on both simulated and real metabolomics datasets demonstrate that ICI-Kt performs better than Kendall-tau, Spearman, or Pearson correlation methods when left-censored values are present, both in detecting outlier samples and constructing metabolite-metabolite networks.
 
 We provide explicitly parallel implementations in both R and Python packages that enable fast calculations when applied to large datasets.
