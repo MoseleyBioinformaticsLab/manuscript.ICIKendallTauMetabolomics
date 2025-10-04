@@ -23,6 +23,10 @@ correlation_methods = c(
   "kt"
 )
 
+
+correlation_samples = readRDS("data/smd/mwtab_smd.rds")
+
+
 ## lod mapping as orders of magnitude ---------
 lod_ranges = tibble::tibble(max = c(0.5, 1, 1.5), id = c("low", "med", "high"))
 
@@ -237,4 +241,23 @@ vl_cor_diff_combine_map = tar_combine(
   command = bind_rows(!!!.x)
 )
 
-list(small_realistic_examples, vl_plan, vl_lod_map, vl_cor_diff_combine_map)
+metabolomics_map = tar_map(
+  correlation_samples,
+  names = id,
+  tar_target(
+    metabolomics_cor,
+    run_cor_everyway_new(id, smd_file, type, value_check)
+  ),
+  tar_target(
+    outliers,
+    calculate_outlier_effects(metabolomics_cor)
+  )
+)
+
+list(
+  small_realistic_examples,
+  vl_plan,
+  vl_lod_map,
+  vl_cor_diff_combine_map,
+  metabolomics_map
+)
