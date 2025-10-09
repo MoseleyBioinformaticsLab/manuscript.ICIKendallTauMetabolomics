@@ -1,0 +1,79 @@
+---
+title: "Information-Content-Informed Kendall-tau Correlation Methodology: Interpreting Missing Values as Useful Information"
+format:
+  poster-typst: 
+    size: "38x54"
+    poster-authors: "R.M. Flight, P. Bhatt, H.N.B. Moseley"
+    departments: "University of Kentucky Markey Cancer Center"
+    institution-logo: "./images/ukmarkeylogo.png"
+    footer-text: "IECM 2025"
+    footer-url: "https://moseleybioinformaticslab.github.io/ICIKendallTau"
+    footer-emails: "robert.flight@uky.edu"
+    footer-color: "ebcfb2"
+    keywords: ["Missing Not At Random", "Left-Censored", "Correlation"]
+    keep-typ: true
+---
+
+# Metabolomics Data are Missing Not At Random
+
+Metabolomics data can contain a large amount of missingness, regardless of whether the metabolites are measured using mass-spectrometry (MS) or nuclear magnetic resonance (NMR), with examples from metabolomics workbench ranging from 0.01 - 90% missing values for MS and 1 - 26% missing values for NMR experiments, respectively.
+Using a binomial test for missing not at random (MNAR) due to left-censoring, we find that after adjusting for multiple testing, 235 of 242 experiments have a p-value < 0.05.
+
+Calculating the median rank of metabolites, and the number of missing samples, we can see there is a direct relationship between the number of samples a metabolite is missing from and the minimum value of the median rank.
+
+::: {#fig-ranks layout-ncol=2}
+![% Missing](./images/missingness_percentage.png)
+
+![Correlation Rank to Missing](./images/rank_correlation_distribution.png)
+
+![Median ranks.](./images/median_ranks.png)
+
+![Minimum (median ranks).](./images/min_ranks.png)
+
+
+Number of samples a metabolite is missing in vs the median rank or minimum median rank of the metabolite in the group of samples.
+:::
+
+Correlation of both metabolites and samples is frequently undertaken in metabolomics studies for many different purposes, including the generation of metabolite-metabolite interaction networks, and sample-sample pairwise correlations to highlight biological and batch groups, or determine possible outliers prior to subsequent analysis.
+However, correlation measures are severely impacted by the presence of missing values.
+
+# Missingness as Useful Information
+
+Given that the missingness is MNAR, and that it seems largely due to left-censoring in analytical instrumentation, we believe that the missingness therefore encodes useful information. 
+To make use of this information, we propose the **information-content-informed Kendall-tau** (ICI-Kt) methodology.
+Kendall-tau correlation is the easiest correlation to manipulate due to the way it encodes the ranks through pairwise comparisons of the ranks of data points by concordance and discordance of the data points.
+
+* Concordant:  $x_i > x_j \land y_i > y_j \| x_i < x_j \land y_i < y_j$
+* Discordant:  $x_i > x_j \land y_i < y_j \| x_i < x_j  \land y_i > y_j$
+
+$$\tau_b = \frac{n_{concordant} - n_{discordant}}{\sqrt{(n_{tot} - n_{xtie})(n_{tot} - n_{ytie})}}$$
+
+where $n_{tot}$ is the total number of pairs, $n_{xtie}$ are the number of tied values in X, and $n_{ytie}$ are the number of paired values in Y.
+
+# MNAR vs MAR
+
+![Effect of introducing missing values from a cutoff (**A** & **B**) or randomly (**C**) on different measures of correlation, including ICI-Kt, Kendall with pairwise complete, Kendall replacing missing with 0, Pearson with pairwise complete, and Pearson replacing missing with 0. **A**: Missing values introduced by setting an increasing cutoff. **B**: Missing values introduced by setting an increasing cutoff, and then log-transforming the values before calculating correlation. **C**: Missing values introduced at random. For the random case, each sample of random positions was repeated 100 times. Pay attention to the different y-axis ranges across graphs, with **A** and **B** graphs having much smaller y-axis ranges compared to **C**.](./images/censored_value_plot.png)
+
+
+# Dynamic Range as a Cause of Missingness
+
+![Top: Difference of reference - trimmed ICI-Kt correlation *vs* Pearson imputed using ½ the minimum value in the dataset. Low, med, and high indicate the level of variability in dynamic range, using 0.5, 1, and 1.5, respectively. Red lines indicate slope of -1 and 1. Color indicates the maximum number of missing values between the two samples being correlated. Bottom: Differences in the absolute value of reference - trimmed differences between ICI-Kt and Pearson imputed correlations.](./images/variable_dynamic_range.png)
+
+
+
+# Methods
+
+## Data
+
+**Repaired** Metabolomics Workbench (MW) analysis files were obtained for a large sample of the analyses available from MW.
+For each analysis, we parsed the various data blocks to generate R compatible data.
+For this work, we only kept analyses that had:
+
+1. 200 or more metabolites measured;
+1. Two or more subject sample factors with 4 or more replicates;
+1. Contained missing values (parsing to numeric returned NA or 0);
+1. Abundance data could be directly parsed to a matrix (some were lists ...);
+1. Only one species was measured;
+1. The sample IDs between subject sample factors and the metabolites data matched.
+
+This resulted in 241 analyses, to which we added a previously published direct injection lipidomics dataset, for a total of 242.

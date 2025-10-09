@@ -61,19 +61,21 @@ rbind_outliers = function(outlier_list) {
   all_outliers
 }
 
+calculate_rsd_subset = function(in_matrix) {
+  row_mean = base::rowMeans(in_matrix, na.rm = TRUE)
+  row_sd = apply(in_matrix, 1, sd, na.rm = TRUE)
+  row_rsd = data.frame(
+    rsd = row_sd / row_mean,
+    feature_id = rownames(in_matrix)
+  )
+  row_rsd
+}
 
 calculate_rsd = function(in_counts, in_classes) {
   # in_counts = sample_counts
   # in_classes = sample_info$factors
 
   split_samples = split(colnames(in_counts), in_classes)
-
-  calculate_rsd_subset = function(in_matrix) {
-    row_mean = base::rowMeans(in_matrix, na.rm = TRUE)
-    row_sd = apply(in_matrix, 1, sd, na.rm = TRUE)
-    row_rsd = row_sd / row_mean
-    row_rsd
-  }
 
   rsd_values = purrr::imap(split_samples, \(in_samples, split_id) {
     use_subset = in_counts[, in_samples, drop = FALSE]
@@ -82,26 +84,34 @@ calculate_rsd = function(in_counts, in_classes) {
     }
     rsd_subset = calculate_rsd_subset(use_subset)
 
-    data.frame(
-      feature_id = names(rsd_subset),
-      rsd = rsd_subset,
-      factors = split_id
-    )
+    rsd_subset$factors = split_id
+    rsd_subset
   }) |>
     purrr::list_rbind()
 
   rsd_values
 }
 
-calculate_outlier_effects = function(metabolomics_cor) {
+
+calculate_outlier_effects = function(metabolomics_cor, type = "all") {
   # metabolomics_cor = tar_read(metabolomics_cor_AN000359)
   # metabolomics_cor = tar_read(metabolomics_cor_AN004368)
+  # metabolomics_cor = tar_read(metabolomics_cor_AN001736)
 
   sample_counts = assays(metabolomics_cor$data)$normalized
   sample_info = colData(metabolomics_cor$data) |> as.data.frame()
 
-  raw_rsd = calculate_rsd(sample_counts, sample_info$factors)
-  raw_rsd$correlation = "raw"
+  # instead of doing it this way, why not just do the whole set of
+  # calculations twice in the workflow? Once with subsets,
+  # and once without, using an argument to this function.
+  if (type %in% "all") {
+    raw_rsd = calculate_rsd_subset(sample_counts)
+    raw_rsd$factors = "all"
+    raw_rsd$correlation = "raw"
+  } else if (type %in% "subsets") {
+    raw_rsd = calculate_rsd(sample_counts, sample_info$factors)
+    raw_rsd$correlation = "raw"
+  }
 
   outlier_cor = purrr::imap(metabolomics_cor$cor, \(in_cor, cor_id) {
     # cor_id = "icikt"
@@ -122,9 +132,15 @@ calculate_outlier_effects = function(metabolomics_cor) {
     keep_cor = in_outlier |> dplyr::filter(!outlier)
     keep_info = sample_info |> dplyr::filter(sample_id %in% keep_cor$sample_id)
     keep_counts = sample_counts[, keep_info$sample_id]
-    tmp_rsd = calculate_rsd(keep_counts, keep_info$factors)
-    tmp_rsd$correlation = cor_id
-    tmp_rsd
+
+    if (type %in% "all") {
+      keep_rsd = calculate_rsd_subset(keep_counts)
+      keep_rsd$factors = "all"
+    } else if (type %in% "subsets") {
+      keep_rsd = calculate_rsd(keep_counts, sample_info$factors)
+    }
+    keep_rsd$correlation = cor_id
+    keep_rsd
   }) |>
     purrr::list_rbind()
   outlier_rsd = dplyr::bind_rows(raw_rsd, outlier_rsd)
@@ -137,7 +153,7 @@ calculate_outlier_effects = function(metabolomics_cor) {
 }
 
 calculate_rsd_differences = function(outliers) {
-  # outliers = tar_read(outliers_NSCLC)
+  # outliers = tar_read(outliers_all_NSCLC)
   outlier_rsd = outliers$outliers$rsd
 
   outlier_split = split(outlier_rsd, outlier_rsd$factors)
@@ -155,7 +171,25 @@ calculate_rsd_differences = function(outliers) {
     )
 
     diff_rsd = diff_rsd |>
-      dplyr::mutate(diff = rsd - other, perc_diff = diff / other)
+      dplyr::mutate(diff = other - rsd, perc_diff = diff / other)
     diff_rsd
   })
+  outliers$outliers$rsd_diffs = outlier_diff_raw
+  return(outliers)
+}
+
+calculate_median_rsd_diffs = function(rsd_diffs) {
+  # rsd_diffs = tar_read(rsd_all_AN003382)
+  outlier_diff = rsd_diffs$outliers$rsd_diffs
+
+  outlier_median = purrr::map(outlier_diff, \(in_diff) {
+    in_diff |>
+      dplyr::summarise(
+        diff_median = median(diff, na.rm = TRUE),
+        perc_diff_median = median(perc_diff),
+        .by = correlation
+      )
+  })
+  rsd_diffs$outliers$rsd_diff_median = outlier_median
+  rsd_diffs
 }
