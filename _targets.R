@@ -249,15 +249,113 @@ metabolomics_map = tar_map(
     run_cor_everyway_new(id, smd_file, type, value_check)
   ),
   tar_target(
-    outliers,
-    calculate_outlier_effects(metabolomics_cor)
+    outliers_all,
+    calculate_outlier_effects(metabolomics_cor, "all")
+  ),
+  tar_target(
+    outliers_subsets,
+    calculate_outlier_effects(metabolomics_cor, "subsets")
+  ),
+  tar_target(
+    rsd_subsets,
+    calculate_rsd_differences(outliers_subsets)
+  ),
+  tar_target(
+    rsd_all,
+    calculate_rsd_differences(outliers_all)
+  ),
+  tar_target(
+    rsd_subsets_median,
+    calculate_median_rsd_diffs(rsd_subsets)
+  ),
+  tar_target(
+    rsd_all_median,
+    calculate_median_rsd_diffs(rsd_all)
+  ),
+  tar_target(
+    rsd_all_median_tbl,
+    get_just_medians(rsd_all_median)
+  ),
+  tar_target(
+    rsd_subsets_median_tbl,
+    get_just_medians(rsd_subsets_median)
   )
 )
+
+rsd_diffs_all_comb = tar_combine(
+  rsd_diffs_all,
+  metabolomics_map[[8]],
+  command = bind_rows(!!!.x)
+)
+
+rsd_diffs_subsets_comb = tar_combine(
+  rsd_diffs_subsets,
+  metabolomics_map[[9]],
+  command = bind_rows(!!!.x)
+)
+
+missingness_map = tar_map(
+  correlation_samples,
+  names = id,
+  tar_target(
+    missingness,
+    calculate_missingness(id, smd_file, type, value_check)
+  )
+)
+
+rank_cor_map = tar_map(
+  correlation_samples,
+  names = id,
+  tar_target(
+    rank_cor,
+    calculate_rank_correlation(id, smd_file, type, value_check)
+  )
+)
+
+missingness_comb = tar_combine(
+  missingness_values,
+  missingness_map,
+  command = bind_rows(!!!.x)
+)
+
+rank_cor_comb = tar_combine(
+  rank_correlations,
+  rank_cor_map,
+  command = bind_rows(!!!.x)
+)
+
+other_plan = tar_assign({
+  missingness_summary = missingness_values |>
+    dplyr::mutate(padjust = p.adjust(p.value, method = "BH")) |>
+    tar_target()
+
+  missingness_image = create_percent_missingness(missingness_summary) |>
+    tar_target()
+  rank_images = rank_missingness(metabolomics_cor_AN001074) |>
+    tar_target()
+  rank_correlation_images = create_rank_correlation_image(rank_correlations) |>
+    tar_target()
+  variable_dynamic_range_image = create_variable_dynamic_range_image(
+    vl_diff_graph
+  ) |>
+    tar_target()
+  censored_value_plot_image = create_censored_value_images(
+    censored_value_plots
+  ) |>
+    tar_target()
+})
 
 list(
   small_realistic_examples,
   vl_plan,
   vl_lod_map,
   vl_cor_diff_combine_map,
-  metabolomics_map
+  metabolomics_map,
+  missingness_map,
+  missingness_comb,
+  rank_cor_map,
+  rank_cor_comb,
+  rsd_diffs_all_comb,
+  rsd_diffs_subsets_comb,
+  other_plan
 )
