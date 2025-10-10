@@ -22,6 +22,7 @@ run_cor_everyway_new = function(id, smd_file, type, value_check) {
   sample_smd = readRDS(smd_file)
 
   sample_counts = assays(sample_smd)$counts
+
   sample_info = colData(sample_smd) |> as.data.frame()
 
   rank_data = ICIKendallTau::rank_order_data(

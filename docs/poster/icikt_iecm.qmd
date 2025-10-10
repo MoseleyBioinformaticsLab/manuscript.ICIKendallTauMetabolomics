@@ -59,7 +59,7 @@ where $n_{tot}$ is the total number of pairs, $n_{xtie}$ are the number of tied 
 
 ![Top: Difference of reference - trimmed ICI-Kt correlation *vs* Pearson imputed using ½ the minimum value in the dataset. Low, med, and high indicate the level of variability in dynamic range, using 0.5, 1, and 1.5, respectively. Red lines indicate slope of -1 and 1. Color indicates the maximum number of missing values between the two samples being correlated. Bottom: Differences in the absolute value of reference - trimmed differences between ICI-Kt and Pearson imputed correlations.](./images/variable_dynamic_range.png)
 
-
+# Removing Outlier Samples
 
 # Methods
 
@@ -76,4 +76,6 @@ For this work, we only kept analyses that had:
 1. Only one species was measured;
 1. The sample IDs between subject sample factors and the metabolites data matched.
 
-This resulted in 241 analyses, to which we added a previously published direct injection lipidomics dataset, for a total of 242.
+This resulted in 241 analyses, to which we added a previously published MS direct injection lipidomics dataset, for a total of 242.
+
+Prior to calculations, all metabolite values <= 0 were set to R's missing indicator, `NA`, so that zeros and actually missing indicated values were treated identically.

@@ -113,6 +113,10 @@ calculate_outlier_effects = function(metabolomics_cor, type = "all") {
     raw_rsd$correlation = "raw"
   }
 
+  # these should be wrapped into functions, so they can be shorter calls, because
+  # we want to do them twice.
+  # 1 - figure out what features always have non-missing in 3 samples, regardless of what was removed,
+  # 2 - subset to those features, and then do RSD calculations again.
   outlier_cor = purrr::imap(metabolomics_cor$cor, \(in_cor, cor_id) {
     # cor_id = "icikt"
     # in_cor = metabolomics_cor$cor[[cor_id]]
@@ -180,16 +184,25 @@ calculate_rsd_differences = function(outliers) {
 
 calculate_median_rsd_diffs = function(rsd_diffs) {
   # rsd_diffs = tar_read(rsd_all_AN003382)
+  # rsd_diffs = tar_read(rsd_subsets_NSCLC)
   outlier_diff = rsd_diffs$outliers$rsd_diffs
 
-  outlier_median = purrr::map(outlier_diff, \(in_diff) {
+  outlier_median = purrr::imap(outlier_diff, \(in_diff, id) {
     in_diff |>
       dplyr::summarise(
         diff_median = median(diff, na.rm = TRUE),
-        perc_diff_median = median(perc_diff),
+        perc_diff_median = median(perc_diff, na.rm = TRUE),
         .by = correlation
-      )
-  })
+      ) |>
+      dplyr::mutate(factors = id, id = rsd_diffs$id)
+  }) |>
+    purrr::list_rbind()
   rsd_diffs$outliers$rsd_diff_median = outlier_median
   rsd_diffs
+}
+
+get_just_medians = function(median_diffs) {
+  # median_diffs = tar_read(rsd_all_median_AN003382)
+  # median_diffs = tar_read(rsd_subsets_median_AN003382)
+  median_diffs$outliers$rsd_diff_median
 }

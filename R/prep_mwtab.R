@@ -530,7 +530,7 @@ convert_mwtab_smd = function(rds_file, reps, smd_file, ...) {
   #   dplyr::pull(reps)
   # use_reps = use_reps[[1]]
   # mwtab_data = readRDS("data/processed/AN000023.rds")
-
+  # mwtab_keep = readRDS("data/processed/mwtab_keep.rds")
   # rds_file = mwtab_keep$rds_file[24]
   # reps = mwtab_keep$reps[[24]]
   # smd_file = mwtab_keep$smd_file[24]
@@ -599,6 +599,8 @@ convert_mwtab_smd = function(rds_file, reps, smd_file, ...) {
     sample_DF$sample_id
   ]
 
+  measurement_array[measurement_array <= 0] = NA
+
   out_smd = SummarizedExperiment(
     assays = SimpleList(counts = measurement_array),
     rowData = feature_DF,
@@ -645,6 +647,9 @@ convert_nsclc_smd = function() {
     feature_DF$feature_id,
     sample_DF$sample_id
   ]
+
+  measurements_array[measurements_array == 0] = NA
+
   out_smd = SummarizedExperiment(
     assays = SimpleList(counts = measurements_array),
     rowData = feature_DF,
