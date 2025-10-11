@@ -1,0 +1,3467 @@
+[
+	{
+		"id": "pearson_notes_1920",
+		"type": "article-journal",
+		"container-title": "Biometrika",
+		"DOI": "10.1093/biomet/13.1.25",
+		"ISSN": "0006-3444",
+		"issue": "1",
+		"journalAbbreviation": "Biometrika",
+		"page": "25-45",
+		"source": "Silverchair",
+		"title": "Notes on the History of Correlation",
+		"URL": "https://doi.org/10.1093/biomet/13.1.25",
+		"volume": "13",
+		"author": [
+			{
+				"family": "Pearson",
+				"given": "Karl"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					25
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"1920",
+					10,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "rodgers_13_1988",
+		"type": "article-journal",
+		"abstract": "In 1885, Sir Francis Galton first defined the term “regression” and completed the theory of bivariate correlation. A decade later, Karl Pearson developed the index that we still use to measure correlation, Pearson's r. Our article is written in recognition of the 100th anniversary of Galton's first discussion of regression and correlation. We begin with a brief history. Then we present 13 different formulas, each of which represents a different computational and conceptual definition of r. Each formula suggests a different way of thinking about this index, from algebraic, geometric, and trigonometric settings. We show that Pearson's r (or simple functions of r) may variously be thought of as a special type of mean, a special type of variance, the ratio of two means, the ratio of two variances, the slope of a line, the cosine of an angle, and the tangent to an ellipse, and may be looked at from several other interesting perspectives.",
+		"container-title": "The American Statistician",
+		"DOI": "10.1080/00031305.1988.10475524",
+		"ISSN": "0003-1305",
+		"issue": "1",
+		"note": "publisher: Taylor & Francis\n_eprint: https://doi.org/10.1080/00031305.1988.10475524",
+		"page": "59-66",
+		"source": "Taylor and Francis+NEJM",
+		"title": "Thirteen Ways to Look at the Correlation Coefficient",
+		"URL": "https://doi.org/10.1080/00031305.1988.10475524",
+		"volume": "42",
+		"author": [
+			{
+				"family": "Rodgers",
+				"given": "Joseph Lee"
+			},
+			{
+				"family": "Nicewander",
+				"given": "W. Alan"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					25
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"1988",
+					2,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "gu_complexheatmap_2016",
+		"type": "article-journal",
+		"abstract": "Summary: Parallel heatmaps with carefully designed annotation graphics are powerful for efficient visualization of patterns and relationships among high dimensional genomic data. Here we present the ComplexHeatmap package that provides rich functionalities for customizing heatmaps, arranging multiple parallel heatmaps and including user-defined annotation graphics. We demonstrate the power of ComplexHeatmap to easily reveal patterns and correlations among multiple sources of information with four real-world datasets.Availability and Implementation: The ComplexHeatmap package and documentation are freely available from the Bioconductor project: http://www.bioconductor.org/packages/devel/bioc/html/ComplexHeatmap.html.Contact:m.schlesner@dkfz.deSupplementary information:Supplementary data are available at Bioinformatics online.",
+		"container-title": "Bioinformatics",
+		"DOI": "10.1093/bioinformatics/btw313",
+		"ISSN": "1367-4803",
+		"issue": "18",
+		"journalAbbreviation": "Bioinformatics",
+		"page": "2847-2849",
+		"source": "Silverchair",
+		"title": "Complex heatmaps reveal patterns and correlations in multidimensional genomic data",
+		"URL": "https://doi.org/10.1093/bioinformatics/btw313",
+		"volume": "32",
+		"author": [
+			{
+				"family": "Gu",
+				"given": "Zuguang"
+			},
+			{
+				"family": "Eils",
+				"given": "Roland"
+			},
+			{
+				"family": "Schlesner",
+				"given": "Matthias"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					25
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2016",
+					9,
+					15
+				]
+			]
+		}
+	},
+	{
+		"id": "fukushima_integratedomics_2009",
+		"type": "article-journal",
+		"abstract": "Understanding cellular metabolic systems is vital not only for determining the function of enzymatic genes, but also for elucidating the coordination among various metabolic pathways. In this context, high-throughput experiments can provide us with essential, albeit only partial information. Integration of metabolite profiling with other multiple 'omics' data (e.g. transcript profiling), is required to reconstruct complex networks that characterize the phenotypes in the cell. Here, we review recent approaches to integrate multiple omics data in higher plants. We especially focus on metabolomics data management, normalization, meta-omics data analysis, and an integrative approach with other omics data. Further prospects for using metabolomics and the key points to be addressed are discussed. This could be a valuable strategy for a systems-level understanding of plant systems.",
+		"container-title": "Current Opinion in Chemical Biology",
+		"DOI": "10.1016/j.cbpa.2009.09.022",
+		"ISSN": "1879-0402",
+		"issue": "5-6",
+		"journalAbbreviation": "Curr Opin Chem Biol",
+		"language": "eng",
+		"note": "PMID: 19837627",
+		"page": "532-538",
+		"source": "PubMed",
+		"title": "Integrated omics approaches in plant systems biology",
+		"volume": "13",
+		"author": [
+			{
+				"family": "Fukushima",
+				"given": "Atsushi"
+			},
+			{
+				"family": "Kusano",
+				"given": "Miyako"
+			},
+			{
+				"family": "Redestig",
+				"given": "Henning"
+			},
+			{
+				"family": "Arita",
+				"given": "Masanori"
+			},
+			{
+				"family": "Saito",
+				"given": "Kazuki"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2009",
+					12
+				]
+			]
+		}
+	},
+	{
+		"id": "szklarczyk_string_2017",
+		"type": "article-journal",
+		"abstract": "A system-wide understanding of cellular function requires knowledge of all functional interactions between the expressed proteins. The STRING database aims to collect and integrate this information, by consolidating known and predicted protein-protein association data for a large number of organisms. The associations in STRING include direct (physical) interactions, as well as indirect (functional) interactions, as long as both are specific and biologically meaningful. Apart from collecting and reassessing available experimental data on protein-protein interactions, and importing known pathways and protein complexes from curated databases, interaction predictions are derived from the following sources: (i) systematic co-expression analysis, (ii) detection of shared selective signals across genomes, (iii) automated text-mining of the scientific literature and (iv) computational transfer of interaction knowledge between organisms based on gene orthology. In the latest version 10.5 of STRING, the biggest changes are concerned with data dissemination: the web frontend has been completely redesigned to reduce dependency on outdated browser technologies, and the database can now also be queried from inside the popular Cytoscape software framework. Further improvements include automated background analysis of user inputs for functional enrichments, and streamlined download options. The STRING resource is available online, at http://string-db.org/.",
+		"container-title": "Nucleic Acids Research",
+		"DOI": "10.1093/nar/gkw937",
+		"ISSN": "1362-4962",
+		"issue": "D1",
+		"journalAbbreviation": "Nucleic Acids Res",
+		"language": "eng",
+		"note": "PMID: 27924014\nPMCID: PMC5210637",
+		"page": "D362-D368",
+		"source": "PubMed",
+		"title": "The STRING database in 2017: quality-controlled protein-protein association networks, made broadly accessible",
+		"title-short": "The STRING database in 2017",
+		"volume": "45",
+		"author": [
+			{
+				"family": "Szklarczyk",
+				"given": "Damian"
+			},
+			{
+				"family": "Morris",
+				"given": "John H."
+			},
+			{
+				"family": "Cook",
+				"given": "Helen"
+			},
+			{
+				"family": "Kuhn",
+				"given": "Michael"
+			},
+			{
+				"family": "Wyder",
+				"given": "Stefan"
+			},
+			{
+				"family": "Simonovic",
+				"given": "Milan"
+			},
+			{
+				"family": "Santos",
+				"given": "Alberto"
+			},
+			{
+				"family": "Doncheva",
+				"given": "Nadezhda T."
+			},
+			{
+				"family": "Roth",
+				"given": "Alexander"
+			},
+			{
+				"family": "Bork",
+				"given": "Peer"
+			},
+			{
+				"family": "Jensen",
+				"given": "Lars J."
+			},
+			{
+				"family": "Mering",
+				"given": "Christian",
+				"non-dropping-particle": "von"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2017",
+					1,
+					4
+				]
+			]
+		}
+	},
+	{
+		"id": "franz_genemania_2018",
+		"type": "article-journal",
+		"abstract": "GeneMANIA (http://genemania.org) is a flexible user-friendly web site for generating hypotheses about gene function, analyzing gene lists and prioritizing genes for functional assays. Given a query gene list, GeneMANIA finds functionally similar genes using a wealth of genomics and proteomics data. In this mode, it weights each functional genomic dataset according to its predictive value for the query. Another use of GeneMANIA is gene function prediction. Given a single query gene, GeneMANIA finds genes likely to share function with it based on their interactions with it. Enriched Gene Ontology categories among this set can point to the function of the gene. Nine organisms are currently supported (Arabidopsis thaliana, Caenorhabditis elegans, Danio rerio, Drosophila melanogaster, Escherichia coli, Homo sapiens, Mus musculus, Rattus norvegicus and Saccharomyces cerevisiae). Hundreds of data sets and hundreds of millions of interactions have been collected from GEO, BioGRID, IRefIndex and I2D, as well as organism-specific functional genomics data sets. Users can customize their search by selecting specific data sets to query and by uploading their own data sets to analyze. We have recently updated the user interface to GeneMANIA to make it more intuitive and make more efficient use of visual space. GeneMANIA can now be used effectively on a variety of devices.",
+		"container-title": "Nucleic Acids Research",
+		"DOI": "10.1093/nar/gky311",
+		"ISSN": "1362-4962",
+		"issue": "W1",
+		"journalAbbreviation": "Nucleic Acids Res",
+		"language": "eng",
+		"note": "PMID: 29912392\nPMCID: PMC6030815",
+		"page": "W60-W64",
+		"source": "PubMed",
+		"title": "GeneMANIA update 2018",
+		"volume": "46",
+		"author": [
+			{
+				"family": "Franz",
+				"given": "Max"
+			},
+			{
+				"family": "Rodriguez",
+				"given": "Harold"
+			},
+			{
+				"family": "Lopes",
+				"given": "Christian"
+			},
+			{
+				"family": "Zuberi",
+				"given": "Khalid"
+			},
+			{
+				"family": "Montojo",
+				"given": "Jason"
+			},
+			{
+				"family": "Bader",
+				"given": "Gary D."
+			},
+			{
+				"family": "Morris",
+				"given": "Quaid"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2018",
+					7,
+					2
+				]
+			]
+		}
+	},
+	{
+		"id": "langfelder_wgcna_2008",
+		"type": "article-journal",
+		"abstract": "Correlation networks are increasingly being used in bioinformatics applications. For example, weighted gene co-expression network analysis is a systems biology method for describing the correlation patterns among genes across microarray samples. Weighted correlation network analysis (WGCNA) can be used for finding clusters (modules) of highly correlated genes, for summarizing such clusters using the module eigengene or an intramodular hub gene, for relating modules to one another and to external sample traits (using eigengene network methodology), and for calculating module membership measures. Correlation networks facilitate network based gene screening methods that can be used to identify candidate biomarkers or therapeutic targets. These methods have been successfully applied in various biological contexts, e.g. cancer, mouse genetics, yeast genetics, and analysis of brain imaging data. While parts of the correlation network methodology have been described in separate publications, there is a need to provide a user-friendly, comprehensive, and consistent software implementation and an accompanying tutorial.",
+		"container-title": "BMC Bioinformatics",
+		"DOI": "10.1186/1471-2105-9-559",
+		"ISSN": "1471-2105",
+		"issue": "1",
+		"journalAbbreviation": "BMC Bioinformatics",
+		"page": "559",
+		"source": "BioMed Central",
+		"title": "WGCNA: an R package for weighted correlation network analysis",
+		"title-short": "WGCNA",
+		"URL": "https://doi.org/10.1186/1471-2105-9-559",
+		"volume": "9",
+		"author": [
+			{
+				"family": "Langfelder",
+				"given": "Peter"
+			},
+			{
+				"family": "Horvath",
+				"given": "Steve"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					25
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2008",
+					12,
+					29
+				]
+			]
+		}
+	},
+	{
+		"id": "faquih_missingvalueworkflow_2020",
+		"type": "article-journal",
+		"abstract": "Metabolomics studies have seen a steady growth due to the development and implementation of affordable and high-quality metabolomics platforms. In large metabolite panels, measurement values are frequently missing and, if neglected or sub-optimally imputed, can cause biased study results. We provided a publicly available, user-friendly R script to streamline the imputation of missing endogenous, unannotated, and xenobiotic metabolites. We evaluated the multivariate imputation by chained equations (MICE) and k-nearest neighbors (kNN) analyses implemented in our script by simulations using measured metabolites data from the Netherlands Epidemiology of Obesity (NEO) study (n = 599). We simulated missing values in four unique metabolites from different pathways with different correlation structures in three sample sizes (599, 150, 50) with three missing percentages (15%, 30%, 60%), and using two missing mechanisms (completely at random and not at random). Based on the simulations, we found that for MICE, larger sample size was the primary factor decreasing bias and error. For kNN, the primary factor reducing bias and error was the metabolite correlation with its predictor metabolites. MICE provided consistently higher performance measures particularly for larger datasets (n > 50). In conclusion, we presented an imputation workflow in a publicly available R script to impute untargeted metabolomics data. Our simulations provided insight into the effects of sample size, percentage missing, and correlation structure on the accuracy of the two imputation methods.",
+		"container-title": "Metabolites",
+		"DOI": "10.3390/metabo10120486",
+		"ISSN": "2218-1989",
+		"issue": "12",
+		"journalAbbreviation": "Metabolites",
+		"note": "PMID: 33256233\nPMCID: PMC7761057",
+		"source": "PubMed Central",
+		"title": "A Workflow for Missing Values Imputation of Untargeted Metabolomics Data",
+		"URL": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7761057/",
+		"volume": "10",
+		"author": [
+			{
+				"family": "Faquih",
+				"given": "Tariq"
+			},
+			{
+				"family": "Smeden",
+				"given": "Maarten",
+				"non-dropping-particle": "van"
+			},
+			{
+				"family": "Luo",
+				"given": "Jiao"
+			},
+			{
+				"family": "Cessie",
+				"given": "Saskia",
+				"non-dropping-particle": "le"
+			},
+			{
+				"family": "Kastenmüller",
+				"given": "Gabi"
+			},
+			{
+				"family": "Krumsiek",
+				"given": "Jan"
+			},
+			{
+				"family": "Noordam",
+				"given": "Raymond"
+			},
+			{
+				"family": "Heemst",
+				"given": "Diana",
+				"non-dropping-particle": "van"
+			},
+			{
+				"family": "Rosendaal",
+				"given": "Frits R."
+			},
+			{
+				"family": "Hylckama Vlieg",
+				"given": "Astrid",
+				"non-dropping-particle": "van"
+			},
+			{
+				"family": "Willems van Dijk",
+				"given": "Ko"
+			},
+			{
+				"family": "Mook-Kanamori",
+				"given": "Dennis O."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					25
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2020",
+					11,
+					26
+				]
+			]
+		}
+	},
+	{
+		"id": "flight_timecourseexploration_2010",
+		"type": "article-journal",
+		"abstract": "In the analysis of data from high-throughput experiments, information regarding the underlying data structure provides the researcher with confidence in the appropriateness of various analysis methods. One extremely simple but powerful data visualization method is the correlation heat map, whereby correlations between experiments/conditions are calculated and represented using color. In this work, the use of correlation maps to shed light on transcription patterns from DNA microarray time course data prior to gene-level analysis is described. Using three different time course studies from the literature, it is shown how the patterns observed at the array level provide insights into the dynamics of the system under study and the experimental design.",
+		"container-title": "Omics: A Journal of Integrative Biology",
+		"DOI": "10.1089/omi.2009.0096",
+		"ISSN": "1557-8100",
+		"issue": "1",
+		"journalAbbreviation": "OMICS",
+		"language": "eng",
+		"note": "PMID: 20141332",
+		"page": "99-107",
+		"source": "PubMed",
+		"title": "Preliminary exploration of time course DNA microarray data with correlation maps",
+		"volume": "14",
+		"author": [
+			{
+				"family": "Flight",
+				"given": "Robert M."
+			},
+			{
+				"family": "Wentzell",
+				"given": "Peter D."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2010",
+					2
+				]
+			]
+		}
+	},
+	{
+		"id": "gierlinski_statisticalmodels_2015",
+		"type": "article-journal",
+		"abstract": "Motivation: High-throughput RNA sequencing (RNA-seq) is now the standard method to determine differential gene expression. Identifying differentially expressed genes crucially depends on estimates of read-count variability. These estimates are typically based on statistical models such as the negative binomial distribution, which is employed by the tools edgeR, DESeq and cuffdiff. Until now, the validity of these models has usually been tested on either low-replicate RNA-seq data or simulations.Results: A 48-replicate RNA-seq experiment in yeast was performed and data tested against theoretical models. The observed gene read counts were consistent with both log-normal and negative binomial distributions, while the mean-variance relation followed the line of constant dispersion parameter of ∼0.01. The high-replicate data also allowed for strict quality control and screening of ‘bad’ replicates, which can drastically affect the gene read-count distribution.Availability and implementation: RNA-seq data have been submitted to ENA archive with project ID PRJEB5348.Contact:g.j.barton@dundee.ac.uk",
+		"container-title": "Bioinformatics",
+		"DOI": "10.1093/bioinformatics/btv425",
+		"ISSN": "1367-4803",
+		"issue": "22",
+		"journalAbbreviation": "Bioinformatics",
+		"page": "3625-3630",
+		"source": "Silverchair",
+		"title": "Statistical models for RNA-seq data derived from a two-condition 48-replicate experiment",
+		"URL": "https://doi.org/10.1093/bioinformatics/btv425",
+		"volume": "31",
+		"author": [
+			{
+				"family": "Gierliński",
+				"given": "Marek"
+			},
+			{
+				"family": "Cole",
+				"given": "Christian"
+			},
+			{
+				"family": "Schofield",
+				"given": "Pietà"
+			},
+			{
+				"family": "Schurch",
+				"given": "Nicholas J."
+			},
+			{
+				"family": "Sherstnev",
+				"given": "Alexander"
+			},
+			{
+				"family": "Singh",
+				"given": "Vijender"
+			},
+			{
+				"family": "Wrobel",
+				"given": "Nicola"
+			},
+			{
+				"family": "Gharbi",
+				"given": "Karim"
+			},
+			{
+				"family": "Simpson",
+				"given": "Gordon"
+			},
+			{
+				"family": "Owen-Hughes",
+				"given": "Tom"
+			},
+			{
+				"family": "Blaxter",
+				"given": "Mark"
+			},
+			{
+				"family": "Barton",
+				"given": "Geoffrey J."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					25
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2015",
+					11,
+					15
+				]
+			]
+		}
+	},
+	{
+		"id": "landau_drakepackage_2018",
+		"type": "article-journal",
+		"abstract": "Landau, (2018). The drake R package: a pipeline toolkit for reproducibility and high-performance computing. Journal of Open Source Software, 3(21), 550, https://doi.org/10.21105/joss.00550",
+		"container-title": "Journal of Open Source Software",
+		"DOI": "10.21105/joss.00550",
+		"ISSN": "2475-9066",
+		"issue": "21",
+		"language": "en",
+		"page": "550",
+		"source": "joss.theoj.org",
+		"title": "The drake R package: a pipeline toolkit for reproducibility and high-performance computing",
+		"title-short": "The drake R package",
+		"URL": "https://joss.theoj.org/papers/10.21105/joss.00550",
+		"volume": "3",
+		"author": [
+			{
+				"family": "Landau",
+				"given": "William Michael"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					25
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2018",
+					1,
+					26
+				]
+			]
+		}
+	},
+	{
+		"id": "eddelbuettel_rcppseamless_2011",
+		"type": "article-journal",
+		"container-title": "Journal of Statistical Software",
+		"DOI": "10.18637/jss.v040.i08",
+		"ISSN": "1548-7660",
+		"issue": "1",
+		"language": "en",
+		"license": "Copyright (c) 2010 Dirk Eddelbuettel, Romain Francois",
+		"note": "number: 1",
+		"page": "1-18",
+		"source": "www.jstatsoft.org",
+		"title": "Rcpp: Seamless R and C++ Integration",
+		"title-short": "Rcpp",
+		"URL": "https://www.jstatsoft.org/index.php/jss/article/view/v040i08",
+		"volume": "40",
+		"author": [
+			{
+				"family": "Eddelbuettel",
+				"given": "Dirk"
+			},
+			{
+				"family": "Francois",
+				"given": "Romain"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					25
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2011",
+					4,
+					13
+				]
+			]
+		}
+	},
+	{
+		"id": "eddelbuettel_seamlessbook_2013",
+		"type": "book",
+		"abstract": "Rcpp is the glue that binds the power and versatility of R with the speed and efficiency of C++. With Rcpp, the transfer of data between R and C++ is nearly seamless, and high-performance statistical computing is finally accessible to most R users. Rcpp should be part of every statistician's toolbox. -- Michael Braun, MIT Sloan School of Management \"Seamless R and C++ integration with Rcpp\" is simply a wonderful book. For anyone who uses C/C++ and R, it is an indispensable resource. The writing is outstanding. A huge bonus is the section on applications. This section covers the matrix packages Armadillo and Eigen and the GNU Scientific Library as well as RInside which enables you to use R inside C++. These applications are what most of us need to know to really do scientific programming with R and C++. I love this book. -- Robert McCulloch, University of Chicago Booth School of Business Rcpp is now considered an essential package for anybody doing serious computational research using R. Dirk's book is an excellent companion and takes the reader from a gentle introduction to more advanced applications via numerous examples and efficiency enhancing gems. The book is packed with all you might have ever wanted to know about Rcpp, its cousins (RcppArmadillo, RcppEigen .etc.), modules, package development and sugar. Overall, this book is a must-have on your shelf. -- Sanjog Misra, UCLA Anderson School of ManagementThe Rcpp package represents a major leap forward for scientific computations with R. With very few lines of C++ code, one has R's data structures readily at hand for further computations in C++. Hence, high-level numerical programming can be made in C++ almost as easily as in R, but often with a substantial speed gain. Dirk is a crucial person in these developments, and his book takes the reader from the first fragile steps on to using the full Rcpp machinery. A very recommended book! -- Søren Højsgaard, Department of Mathematical Sciences, Aalborg University, Denmark \"Seamless R and C ++ Integration with Rcpp\" provides the first comprehensive introduction to Rcpp. Rcpp has become the most widely-used language extension for R, and is deployed by over one-hundred different CRAN and BioConductor packages. Rcpp permits users to pass scalars, vectors, matrices, list or entire R objects back and forth between R and C++ with ease. This brings the depth of the R analysis framework together with the power, speed, and efficiency of C++.Dirk Eddelbuettel has been a contributor to CRAN for over a decade and maintains around twenty packages. He is the Debian/Ubuntu maintainer for R and other quantitative software, edits the CRAN Task Views for Finance and High-Performance Computing, is a co-founder of the annual R/Finance conference, and an editor of the Journal of Statistical Software. He holds a Ph.D. in Mathematical Economics from EHESS (Paris), and works in Chicago as a Senior Quantitative Analyst.",
+		"collection-title": "Use R!",
+		"event-place": "New York",
+		"ISBN": "978-1-4614-6867-7",
+		"language": "en",
+		"note": "DOI: 10.1007/978-1-4614-6868-4",
+		"publisher": "Springer-Verlag",
+		"publisher-place": "New York",
+		"source": "www.springer.com",
+		"title": "Seamless R and C++ Integration with Rcpp",
+		"URL": "https://www.springer.com/gp/book/9781461468677",
+		"author": [
+			{
+				"family": "Eddelbuettel",
+				"given": "Dirk"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					25
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2013"
+				]
+			]
+		}
+	},
+	{
+		"id": "eddelbuettel_extendingrcpp_2018",
+		"type": "article-journal",
+		"abstract": "R has always provided an application programming interface (API) for extensions. Based on the C language, it uses a number of macros and other low-level constructs to exchange data structures between the R process and any dynamically loaded component modules authors added to it. With the introduction of the Rcpp package, and its later refinements, this process has become considerably easier yet also more robust. By now, Rcpp has become the most popular extension mechanism for R. This article introduces Rcpp, and illustrates with several examples how the Rcpp Attributes mechanism in particular eases the transition of objects between R and C++ code. Supplementary materials for this article are available online.",
+		"container-title": "The American Statistician",
+		"DOI": "10.1080/00031305.2017.1375990",
+		"ISSN": "0003-1305",
+		"issue": "1",
+		"note": "publisher: Taylor & Francis\n_eprint: https://doi.org/10.1080/00031305.2017.1375990",
+		"page": "28-36",
+		"source": "Taylor and Francis+NEJM",
+		"title": "Extending R with C++: A Brief Introduction to Rcpp",
+		"title-short": "Extending R with C++",
+		"URL": "https://doi.org/10.1080/00031305.2017.1375990",
+		"volume": "72",
+		"author": [
+			{
+				"family": "Eddelbuettel",
+				"given": "Dirk"
+			},
+			{
+				"family": "Balamuta",
+				"given": "James Joseph"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					25
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2018",
+					1,
+					2
+				]
+			]
+		}
+	},
+	{
+		"id": "virtanen_scipy_2020",
+		"type": "article-journal",
+		"abstract": "SciPy is an open-source scientific computing library for the Python programming language. Since its initial release in 2001, SciPy has become a de facto standard for leveraging scientific algorithms in Python, with over 600 unique code contributors, thousands of dependent packages, over 100,000 dependent repositories and millions of downloads per year. In this work, we provide an overview of the capabilities and development practices of SciPy 1.0 and highlight some recent technical developments.",
+		"container-title": "Nature Methods",
+		"DOI": "10.1038/s41592-019-0686-2",
+		"ISSN": "1548-7105",
+		"issue": "3",
+		"language": "en",
+		"license": "2020 The Author(s)",
+		"note": "number: 3\npublisher: Nature Publishing Group",
+		"page": "261-272",
+		"source": "www.nature.com",
+		"title": "SciPy 1.0: fundamental algorithms for scientific computing in Python",
+		"title-short": "SciPy 1.0",
+		"URL": "https://www.nature.com/articles/s41592-019-0686-2",
+		"volume": "17",
+		"author": [
+			{
+				"family": "Virtanen",
+				"given": "Pauli"
+			},
+			{
+				"family": "Gommers",
+				"given": "Ralf"
+			},
+			{
+				"family": "Oliphant",
+				"given": "Travis E."
+			},
+			{
+				"family": "Haberland",
+				"given": "Matt"
+			},
+			{
+				"family": "Reddy",
+				"given": "Tyler"
+			},
+			{
+				"family": "Cournapeau",
+				"given": "David"
+			},
+			{
+				"family": "Burovski",
+				"given": "Evgeni"
+			},
+			{
+				"family": "Peterson",
+				"given": "Pearu"
+			},
+			{
+				"family": "Weckesser",
+				"given": "Warren"
+			},
+			{
+				"family": "Bright",
+				"given": "Jonathan"
+			},
+			{
+				"family": "Walt",
+				"given": "Stéfan J.",
+				"non-dropping-particle": "van der"
+			},
+			{
+				"family": "Brett",
+				"given": "Matthew"
+			},
+			{
+				"family": "Wilson",
+				"given": "Joshua"
+			},
+			{
+				"family": "Millman",
+				"given": "K. Jarrod"
+			},
+			{
+				"family": "Mayorov",
+				"given": "Nikolay"
+			},
+			{
+				"family": "Nelson",
+				"given": "Andrew R. J."
+			},
+			{
+				"family": "Jones",
+				"given": "Eric"
+			},
+			{
+				"family": "Kern",
+				"given": "Robert"
+			},
+			{
+				"family": "Larson",
+				"given": "Eric"
+			},
+			{
+				"family": "Carey",
+				"given": "C. J."
+			},
+			{
+				"family": "Polat",
+				"given": "İlhan"
+			},
+			{
+				"family": "Feng",
+				"given": "Yu"
+			},
+			{
+				"family": "Moore",
+				"given": "Eric W."
+			},
+			{
+				"family": "VanderPlas",
+				"given": "Jake"
+			},
+			{
+				"family": "Laxalde",
+				"given": "Denis"
+			},
+			{
+				"family": "Perktold",
+				"given": "Josef"
+			},
+			{
+				"family": "Cimrman",
+				"given": "Robert"
+			},
+			{
+				"family": "Henriksen",
+				"given": "Ian"
+			},
+			{
+				"family": "Quintero",
+				"given": "E. A."
+			},
+			{
+				"family": "Harris",
+				"given": "Charles R."
+			},
+			{
+				"family": "Archibald",
+				"given": "Anne M."
+			},
+			{
+				"family": "Ribeiro",
+				"given": "Antônio H."
+			},
+			{
+				"family": "Pedregosa",
+				"given": "Fabian"
+			},
+			{
+				"family": "Mulbregt",
+				"given": "Paul",
+				"non-dropping-particle": "van"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					25
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2020",
+					3
+				]
+			]
+		}
+	},
+	{
+		"id": "kendall_newmeasure_1938",
+		"type": "article-journal",
+		"container-title": "Biometrika",
+		"DOI": "10.2307/2332226",
+		"ISSN": "0006-3444",
+		"issue": "1/2",
+		"note": "publisher: [Oxford University Press, Biometrika Trust]",
+		"page": "81-93",
+		"source": "JSTOR",
+		"title": "A New Measure of Rank Correlation",
+		"URL": "https://www.jstor.org/stable/2332226",
+		"volume": "30",
+		"author": [
+			{
+				"family": "Kendall",
+				"given": "M. G."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					25
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"1938"
+				]
+			]
+		}
+	},
+	{
+		"id": "kendall_treatment_ties_1945",
+		"type": "article-journal",
+		"container-title": "Biometrika",
+		"DOI": "10.1093/biomet/33.3.239",
+		"ISSN": "0006-3444",
+		"journalAbbreviation": "Biometrika",
+		"language": "eng",
+		"note": "PMID: 21006841",
+		"page": "239-251",
+		"source": "PubMed",
+		"title": "The treatment of ties in ranking problems",
+		"volume": "33",
+		"author": [
+			{
+				"family": "Kendall",
+				"given": "M. G."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"1945",
+					11
+				]
+			]
+		}
+	},
+	{
+		"id": "kendall_rankcorrelationbook_1948",
+		"type": "book",
+		"edition": "First Edition",
+		"language": "English",
+		"number-of-pages": "160",
+		"publisher": "C. Griffin",
+		"source": "Amazon",
+		"title": "Rank correlation methods",
+		"author": [
+			{
+				"family": "Kendall",
+				"given": "Maurice G."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"1948",
+					1,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "rcoreteam_rlanguage_2020",
+		"type": "software",
+		"event-place": "Vienna, Austria",
+		"publisher": "R Foundation for Statistical Computing",
+		"publisher-place": "Vienna, Austria",
+		"title": "R: A language and environment for statistical computing",
+		"version": "4.0",
+		"author": [
+			{
+				"literal": "R Core Team"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2020"
+				]
+			]
+		}
+	},
+	{
+		"id": "knight_mergesortkendall_1966",
+		"type": "article-journal",
+		"abstract": "Adapting the usual manual methods of computing Kendall's tau to automatic computation result in a running time of order N<sup>2</sup>. A method is described with running time of order N log N.",
+		"container-title": "Journal of the American Statistical Association",
+		"DOI": "10.2307/2282833",
+		"ISSN": "0162-1459",
+		"issue": "314",
+		"note": "publisher: [American Statistical Association, Taylor & Francis, Ltd.]",
+		"page": "436-439",
+		"source": "JSTOR",
+		"title": "A Computer Method for Calculating Kendall's Tau with Ungrouped Data",
+		"URL": "https://www.jstor.org/stable/2282833",
+		"volume": "61",
+		"author": [
+			{
+				"family": "Knight",
+				"given": "William R."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					25
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"1966"
+				]
+			]
+		}
+	},
+	{
+		"id": "lemoine_gwenacoexpression_2021",
+		"type": "article-journal",
+		"abstract": "Background\nNetwork-based analysis of gene expression through co-expression networks can be used to investigate modular relationships occurring between genes performing different biological functions. An extended description of each of the network modules is therefore a critical step to understand the underlying processes contributing to a disease or a phenotype. Biological integration, topology study and conditions comparison (e.g. wild vs mutant) are the main methods to do so, but to date no tool combines them all into a single pipeline.\n\nResults\nHere we present GWENA, a new R package that integrates gene co-expression network construction and whole characterization of the detected modules through gene set enrichment, phenotypic association, hub genes detection, topological metric computation, and differential co-expression. To demonstrate its performance, we applied GWENA on two skeletal muscle datasets from young and old patients of GTEx study. Remarkably, we prioritized a gene whose involvement was unknown in the muscle development and growth. Moreover, new insights on the variations in patterns of co-expression were identified. The known phenomena of connectivity loss associated with aging was found coupled to a global reorganization of the relationships leading to expression of known aging related functions.\n\nConclusion\nGWENA is an R package available through Bioconductor (https://bioconductor.org/packages/release/bioc/html/GWENA.html) that has been developed to perform extended analysis of gene co-expression networks. Thanks to biological and topological information as well as differential co-expression, the package helps to dissect the role of genes relationships in diseases conditions or targeted phenotypes. GWENA goes beyond existing packages that perform co-expression analysis by including new tools to fully characterize modules, such as differential co-expression, additional enrichment databases, and network visualization.\n\nSupplementary Information\nThe online version contains supplementary material available at 10.1186/s12859-021-04179-4.",
+		"container-title": "BMC Bioinformatics",
+		"DOI": "10.1186/s12859-021-04179-4",
+		"ISSN": "1471-2105",
+		"journalAbbreviation": "BMC Bioinformatics",
+		"note": "PMID: null\nPMCID: PMC8152313",
+		"source": "PubMed Central",
+		"title": "GWENA: gene co-expression networks analysis and extended modules characterization in a single Bioconductor package",
+		"title-short": "GWENA",
+		"URL": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8152313/",
+		"volume": "22",
+		"author": [
+			{
+				"family": "Lemoine",
+				"given": "Gwenaëlle G."
+			},
+			{
+				"family": "Scott-Boyer",
+				"given": "Marie-Pier"
+			},
+			{
+				"family": "Ambroise",
+				"given": "Bathilde"
+			},
+			{
+				"family": "Périn",
+				"given": "Olivier"
+			},
+			{
+				"family": "Droit",
+				"given": "Arnaud"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					28
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2021",
+					5,
+					25
+				]
+			]
+		}
+	},
+	{
+		"id": "collado-torres_recount2_2017",
+		"type": "article-journal",
+		"container-title": "Nature Biotechnology",
+		"DOI": "10.1038/nbt.3838",
+		"ISSN": "1546-1696",
+		"issue": "4",
+		"journalAbbreviation": "Nat Biotechnol",
+		"language": "en",
+		"license": "2017 Nature Publishing Group, a division of Macmillan Publishers Limited. All Rights Reserved.",
+		"note": "number: 4\npublisher: Nature Publishing Group",
+		"page": "319-321",
+		"source": "www.nature.com",
+		"title": "Reproducible RNA-seq analysis using recount2",
+		"URL": "https://www.nature.com/articles/nbt.3838",
+		"volume": "35",
+		"author": [
+			{
+				"family": "Collado-Torres",
+				"given": "Leonardo"
+			},
+			{
+				"family": "Nellore",
+				"given": "Abhinav"
+			},
+			{
+				"family": "Kammers",
+				"given": "Kai"
+			},
+			{
+				"family": "Ellis",
+				"given": "Shannon E."
+			},
+			{
+				"family": "Taub",
+				"given": "Margaret A."
+			},
+			{
+				"family": "Hansen",
+				"given": "Kasper D."
+			},
+			{
+				"family": "Jaffe",
+				"given": "Andrew E."
+			},
+			{
+				"family": "Langmead",
+				"given": "Ben"
+			},
+			{
+				"family": "Leek",
+				"given": "Jeffrey T."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					6,
+					2
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2017",
+					4
+				]
+			]
+		}
+	},
+	{
+		"id": "raykovEvaluationLatentConstruct2012",
+		"type": "article-journal",
+		"container-title": "British Journal of Mathematical and Statistical Psychology",
+		"DOI": "10.1348/000711010X498162",
+		"ISSN": "00071102",
+		"issue": "1",
+		"language": "en",
+		"page": "19-31",
+		"source": "DOI.org (Crossref)",
+		"title": "Evaluation of latent construct correlations in the presence of missing data: A note on a latent variable modelling approach: Latent correlations with missing data",
+		"title-short": "Evaluation of latent construct correlations in the presence of missing data",
+		"URL": "http://doi.wiley.com/10.1348/000711010X498162",
+		"volume": "65",
+		"author": [
+			{
+				"family": "Raykov",
+				"given": "Tenko"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					6,
+					18
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2012",
+					2
+				]
+			]
+		}
+	},
+	{
+		"id": "alvoRankCorrelationMethods1995",
+		"type": "article-journal",
+		"container-title": "Canadian Journal of Statistics",
+		"DOI": "10.2307/3315379",
+		"ISSN": "03195724, 1708945X",
+		"issue": "4",
+		"journalAbbreviation": "Can. J. Statistics",
+		"language": "en",
+		"page": "345-358",
+		"source": "DOI.org (Crossref)",
+		"title": "Rank correlation methods for missing data",
+		"URL": "http://doi.wiley.com/10.2307/3315379",
+		"volume": "23",
+		"author": [
+			{
+				"family": "Alvo",
+				"given": "Mayer"
+			},
+			{
+				"family": "Cabilio",
+				"given": "Paul"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					6,
+					18
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"1995",
+					12
+				]
+			]
+		}
+	},
+	{
+		"id": "gleasonProposalHandlingMissing1975",
+		"type": "article-journal",
+		"container-title": "Psychometrika",
+		"DOI": "10.1007/BF02291569",
+		"ISSN": "0033-3123, 1860-0980",
+		"issue": "2",
+		"journalAbbreviation": "Psychometrika",
+		"language": "en",
+		"page": "229-252",
+		"source": "DOI.org (Crossref)",
+		"title": "A proposal for handling missing data",
+		"URL": "http://link.springer.com/10.1007/BF02291569",
+		"volume": "40",
+		"author": [
+			{
+				"family": "Gleason",
+				"given": "Terry C."
+			},
+			{
+				"family": "Staelin",
+				"given": "Richard"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					6,
+					18
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"1975",
+					6
+				]
+			]
+		}
+	},
+	{
+		"id": "kimTopHat2AccurateAlignment2013",
+		"type": "article-journal",
+		"abstract": "TopHat is a popular spliced aligner for RNA-sequence (RNA-seq) experiments. In this paper, we describe TopHat2, which incorporates many significant enhancements to TopHat. TopHat2 can align reads of various lengths produced by the latest sequencing technologies, while allowing for variable-length indels with respect to the reference genome. In addition to de novo spliced alignment, TopHat2 can align reads across fusion breaks, which can occur after genomic translocations. TopHat2 combines the ability to identify novel splice sites with direct mapping to known transcripts, producing sensitive and accurate alignments, even for highly repetitive genomes or in the presence of pseudogenes. TopHat2 is available at http://ccb.jhu.edu/software/tophat.",
+		"container-title": "Genome Biology",
+		"DOI": "10.1186/gb-2013-14-4-r36",
+		"ISSN": "1474-760X",
+		"issue": "4",
+		"journalAbbreviation": "Genome Biology",
+		"page": "R36",
+		"source": "BioMed Central",
+		"title": "TopHat2: accurate alignment of transcriptomes in the presence of insertions, deletions and gene fusions",
+		"title-short": "TopHat2",
+		"URL": "https://doi.org/10.1186/gb-2013-14-4-r36",
+		"volume": "14",
+		"author": [
+			{
+				"family": "Kim",
+				"given": "Daehwan"
+			},
+			{
+				"family": "Pertea",
+				"given": "Geo"
+			},
+			{
+				"family": "Trapnell",
+				"given": "Cole"
+			},
+			{
+				"family": "Pimentel",
+				"given": "Harold"
+			},
+			{
+				"family": "Kelley",
+				"given": "Ryan"
+			},
+			{
+				"family": "Salzberg",
+				"given": "Steven L."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					7,
+					7
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2013",
+					4,
+					25
+				]
+			]
+		}
+	},
+	{
+		"id": "lawrenceSoftwareComputingAnnotating2013",
+		"type": "article-journal",
+		"abstract": "We describe Bioconductor infrastructure for representing and computing on annotated genomic ranges and integrating genomic data with the statistical computing features of R and its extensions. At the core of the infrastructure are three packages: IRanges, GenomicRanges, and GenomicFeatures. These packages provide scalable data structures for representing annotated ranges on the genome, with special support for transcript structures, read alignments and coverage vectors. Computational facilities include efficient algorithms for overlap and nearest neighbor detection, coverage calculation and other range operations. This infrastructure directly supports more than 80 other Bioconductor packages, including those for sequence analysis, differential expression analysis and visualization.",
+		"container-title": "PLoS computational biology",
+		"DOI": "10.1371/journal.pcbi.1003118",
+		"ISSN": "1553-7358",
+		"issue": "8",
+		"journalAbbreviation": "PLoS Comput Biol",
+		"language": "eng",
+		"note": "PMID: 23950696\nPMCID: PMC3738458",
+		"page": "e1003118",
+		"source": "PubMed",
+		"title": "Software for computing and annotating genomic ranges",
+		"volume": "9",
+		"author": [
+			{
+				"family": "Lawrence",
+				"given": "Michael"
+			},
+			{
+				"family": "Huber",
+				"given": "Wolfgang"
+			},
+			{
+				"family": "Pagès",
+				"given": "Hervé"
+			},
+			{
+				"family": "Aboyoun",
+				"given": "Patrick"
+			},
+			{
+				"family": "Carlson",
+				"given": "Marc"
+			},
+			{
+				"family": "Gentleman",
+				"given": "Robert"
+			},
+			{
+				"family": "Morgan",
+				"given": "Martin T."
+			},
+			{
+				"family": "Carey",
+				"given": "Vincent J."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2013"
+				]
+			]
+		}
+	},
+	{
+		"id": "TxDbScerevisiaeUCSC",
+		"type": "webpage",
+		"abstract": "Exposes an annotation databases generated from UCSC by exposing these as TxDb objects",
+		"container-title": "Bioconductor",
+		"language": "en-US",
+		"title": "TxDb.Scerevisiae.UCSC.sacCer3.sgdGene",
+		"URL": "http://bioconductor.org/packages/TxDb.Scerevisiae.UCSC.sacCer3.sgdGene/",
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					7,
+					7
+				]
+			]
+		}
+	},
+	{
+		"id": "sefidianEstimatingMissingData2020",
+		"type": "article-journal",
+		"abstract": "The accurate estimation of missing data plays a vital role in ensuring a high level of data quality. The missing values should be imputed before performing data mining, machine learning, and other data processing tasks. Ten correlation-based imputation methods are proposed in this paper. All of these methods try to maximize the correlation between a missing feature and other features. The maximization is achieved by selecting segments of data that have strong correlations. The proposed approach involves the following main steps to impute each missing instance. First, a base set is selected from complete instances. Second, data segments with strong correlations are generated using the base set and the rest of the complete instances. Finally, each missing value is imputed by applying linear models to the discovered segments of data. This study considers seven real datasets from different fields with different missing rates. The imputation quality of the proposed methods is compared to those of seven other imputation approaches in terms of three well-known evaluation criteria. The experimental results reveal that the proposed approach has better imputation performance than competing imputation techniques in most cases.",
+		"container-title": "Applied Soft Computing",
+		"DOI": "10.1016/j.asoc.2020.106249",
+		"ISSN": "1568-4946",
+		"journalAbbreviation": "Applied Soft Computing",
+		"language": "en",
+		"page": "106249",
+		"source": "ScienceDirect",
+		"title": "Estimating missing data using novel correlation maximization based methods",
+		"URL": "https://www.sciencedirect.com/science/article/pii/S1568494620301897",
+		"volume": "91",
+		"author": [
+			{
+				"family": "Sefidian",
+				"given": "Amir Masoud"
+			},
+			{
+				"family": "Daneshpour",
+				"given": "Negin"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					7,
+					9
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2020",
+					6,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "moseleyErrorAnalysisPropagation2013",
+		"type": "article-journal",
+		"abstract": "Error analysis plays a fundamental role in describing the uncertainty in experimental results. It has several fundamental uses in metabolomics including experimental design, quality control of experiments, the selection of appropriate statistical methods, and the determination of uncertainty in results. Furthermore, the importance of error analysis has grown with the increasing number, complexity, and heterogeneity of measurements characteristic of ‘omics research. The increase in data complexity is particularly problematic for metabolomics, which has more heterogeneity than other omics technologies due to the much wider range of molecular entities detected and measured. This review introduces the fundamental concepts of error analysis as they apply to a wide range of metabolomics experimental designs and it discusses current methodologies for determining the propagation of uncertainty in appropriate metabolomics data analysis. These methodologies include analytical derivation and approximation techniques, Monte Carlo error analysis, and error analysis in metabolic inverse problems. Current limitations of each methodology with respect to metabolomics data analysis are also discussed.",
+		"container-title": "Computational and Structural Biotechnology Journal",
+		"DOI": "10.5936/csbj.201301006",
+		"ISSN": "2001-0370",
+		"issue": "5",
+		"journalAbbreviation": "Computational and Structural Biotechnology Journal",
+		"language": "en",
+		"page": "e201301006",
+		"source": "ScienceDirect",
+		"title": "Error Analysis and Propagation in Metabolomics Data Analysis",
+		"URL": "https://www.sciencedirect.com/science/article/pii/S2001037014600490",
+		"volume": "4",
+		"author": [
+			{
+				"family": "Moseley",
+				"given": "Hunter N. B."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					7,
+					15
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2013",
+					1,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "schurchEvaluationToolsDifferential2016",
+		"type": "article-journal",
+		"abstract": "An RNA-seq experiment with 48 biological replicates in each of 2 conditions was performed to determine the number of biological replicates ($n_r$) required, and to identify the most effective statistical analysis tools for identifying differential gene expression (DGE). When $n_r=3$, seven of the nine tools evaluated give true positive rates (TPR) of only 20 to 40 percent. For high fold-change genes ($|log_{2}(FC)|\\gt2$) the TPR is $\\gt85$ percent. Two tools performed poorly; over- or under-predicting the number of differentially expressed genes. Increasing replication gives a large increase in TPR when considering all DE genes but only a small increase for high fold-change genes. Achieving a TPR $\\gt85$% across all fold-changes requires $n_r\\gt20$. For future RNA-seq experiments these results suggest $n_r\\gt6$, rising to $n_r\\gt12$ when identifying DGE irrespective of fold-change is important. For $6 \\lt n_r \\lt 12$, superior TPR makes edgeR the leading tool tested. For $n_r \\ge12$, minimizing false positives is more important and DESeq outperforms the other tools.",
+		"container-title": "RNA",
+		"DOI": "10.1261/rna.053959.115",
+		"ISSN": "1355-8382, 1469-9001",
+		"issue": "6",
+		"journalAbbreviation": "RNA",
+		"note": "arXiv: 1505.02017",
+		"page": "839-851",
+		"source": "arXiv.org",
+		"title": "Evaluation of tools for differential gene expression analysis by RNA-seq on a 48 biological replicate experiment",
+		"URL": "http://arxiv.org/abs/1505.02017",
+		"volume": "22",
+		"author": [
+			{
+				"family": "Schurch",
+				"given": "Nicholas J."
+			},
+			{
+				"family": "Schofield",
+				"given": "Pieta"
+			},
+			{
+				"family": "Gierliński",
+				"given": "Marek"
+			},
+			{
+				"family": "Cole",
+				"given": "Christian"
+			},
+			{
+				"family": "Sherstnev",
+				"given": "Alexander"
+			},
+			{
+				"family": "Singh",
+				"given": "Vijender"
+			},
+			{
+				"family": "Wrobel",
+				"given": "Nicola"
+			},
+			{
+				"family": "Gharbi",
+				"given": "Karim"
+			},
+			{
+				"family": "Simpson",
+				"given": "Gordon G."
+			},
+			{
+				"family": "Owen-Hughes",
+				"given": "Tom"
+			},
+			{
+				"family": "Blaxter",
+				"given": "Mark"
+			},
+			{
+				"family": "Barton",
+				"given": "Geoffrey J."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					10,
+					21
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2016",
+					6
+				]
+			]
+		}
+	},
+	{
+		"id": "kanehisaKEGGKyotoEncyclopedia2000",
+		"type": "article-journal",
+		"abstract": "KEGG (Kyoto Encyclopedia of Genes and Genomes) is a knowledge base for systematic analysis of gene functions, linking genomic information with higher order functional information. The genomic information is stored in the GENES database, which is a collection of gene catalogs for all the completely sequenced genomes and some partial genomes with up-to-date annotation of gene functions. The higher order functional information is stored in the PATHWAY database, which contains graphical representations of cellular processes, such as metabolism, membrane transport, signal transduction and cell cycle. The PATHWAY database is supplemented by a set of ortholog group tables for the information about conserved subpathways (pathway motifs), which are often encoded by positionally coupled genes on the chromosome and which are especially useful in predicting gene functions. A third database in KEGG is LIGAND for the information about chemical compounds, enzyme molecules and enzymatic reactions. KEGG provides Java graphics tools for browsing genome maps, comparing two genome maps and manipulating expression maps, as well as computational tools for sequence comparison, graph comparison and path computation. The KEGG databases are daily updated and made freely available (http://www. genome.ad.jp/kegg/).",
+		"container-title": "Nucleic Acids Research",
+		"DOI": "10.1093/nar/28.1.27",
+		"ISSN": "0305-1048",
+		"issue": "1",
+		"journalAbbreviation": "Nucleic Acids Res",
+		"language": "eng",
+		"note": "PMID: 10592173\nPMCID: PMC102409",
+		"page": "27-30",
+		"source": "PubMed",
+		"title": "KEGG: kyoto encyclopedia of genes and genomes",
+		"title-short": "KEGG",
+		"volume": "28",
+		"author": [
+			{
+				"family": "Kanehisa",
+				"given": "M."
+			},
+			{
+				"family": "Goto",
+				"given": "S."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2000",
+					1,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "schurchHowManyBiological2016",
+		"type": "article-journal",
+		"abstract": "RNA-seq is now the technology of choice for genome-wide differential gene expression experiments, but it is not clear how many biological replicates are needed to ensure valid biological interpretation of the results or which statistical tools are best for analyzing the data. An RNA-seq experiment with 48 biological replicates in each of two conditions was performed to answer these questions and provide guidelines for experimental design. With three biological replicates, nine of the 11 tools evaluated found only 20%–40% of the significantly differentially expressed (SDE) genes identified with the full set of 42 clean replicates. This rises to >85% for the subset of SDE genes changing in expression by more than fourfold. To achieve >85% for all SDE genes regardless of fold change requires more than 20 biological replicates. The same nine tools successfully control their false discovery rate at ≲5% for all numbers of replicates, while the remaining two tools fail to control their FDR adequately, particularly for low numbers of replicates. For future RNA-seq experiments, these results suggest that at least six biological replicates should be used, rising to at least 12 when it is important to identify SDE genes for all fold changes. If fewer than 12 replicates are used, a superior combination of true positive and false positive performances makes edgeR and DESeq2 the leading tools. For higher replicate numbers, minimizing false positives is more important and DESeq marginally outperforms the other tools.",
+		"container-title": "RNA",
+		"DOI": "10.1261/rna.053959.115",
+		"ISSN": "1355-8382",
+		"issue": "6",
+		"journalAbbreviation": "RNA",
+		"note": "PMID: 27022035\nPMCID: PMC4878611",
+		"page": "839-851",
+		"source": "PubMed Central",
+		"title": "How many biological replicates are needed in an RNA-seq experiment and which differential expression tool should you use?",
+		"URL": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4878611/",
+		"volume": "22",
+		"author": [
+			{
+				"family": "Schurch",
+				"given": "Nicholas J."
+			},
+			{
+				"family": "Schofield",
+				"given": "Pietá"
+			},
+			{
+				"family": "Gierliński",
+				"given": "Marek"
+			},
+			{
+				"family": "Cole",
+				"given": "Christian"
+			},
+			{
+				"family": "Sherstnev",
+				"given": "Alexander"
+			},
+			{
+				"family": "Singh",
+				"given": "Vijender"
+			},
+			{
+				"family": "Wrobel",
+				"given": "Nicola"
+			},
+			{
+				"family": "Gharbi",
+				"given": "Karim"
+			},
+			{
+				"family": "Simpson",
+				"given": "Gordon G."
+			},
+			{
+				"family": "Owen-Hughes",
+				"given": "Tom"
+			},
+			{
+				"family": "Blaxter",
+				"given": "Mark"
+			},
+			{
+				"family": "Barton",
+				"given": "Geoffrey J."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					11,
+					25
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2016",
+					6
+				]
+			]
+		}
+	},
+	{
+		"id": "coleProfilingDifferentialGene2021",
+		"type": "software",
+		"abstract": "Code base for profiling highly replicated differential gene expression RNA-seq.",
+		"genre": "Perl",
+		"license": "MIT",
+		"note": "original-date: 2016-03-16T17:01:43Z",
+		"publisher": "Geoff Barton's Computational Biology Group",
+		"source": "GitHub",
+		"title": "Profiling Differential Gene Expression with a 48 replicate experiment",
+		"URL": "https://github.com/bartongroup/profDGE48",
+		"author": [
+			{
+				"family": "Cole",
+				"given": "Christian"
+			},
+			{
+				"family": "Gierlinski",
+				"given": "Marek"
+			},
+			{
+				"family": "Schofield",
+				"given": "Pieta"
+			},
+			{
+				"family": "Schurch",
+				"given": "Nicholas"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					12,
+					7
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2021",
+					1,
+					6
+				]
+			]
+		}
+	},
+	{
+		"id": "bartonSNF2KnockoutYeast2015",
+		"type": "dataset",
+		"abstract": "These data are RNA-seq read counts for 48 biological replicates of SNF2 yeast knock-out. The reads were aligned to the Saccharomyces cerevisiae genome with Tophat and gene counts determined with htseq-count. Reference genome and gene annotations were taken from Ensembl. See the linked papers for more details and the source of the raw data.",
+		"DOI": "10.6084/M9.FIGSHARE.1425502.V1",
+		"license": "Creative Commons Attribution 4.0 International",
+		"note": "dimensions: 0 Bytes\npage: 0 Bytes",
+		"publisher": "figshare",
+		"source": "DOI.org (Datacite)",
+		"title": "SNF2 knock-out yeast gene read counts from a 48 replicate experiment",
+		"URL": "https://figshare.com/articles/dataset/SNF2_knock_out_yeast_gene_read_counts_from_a_48_replicate_experiment/1425502/1",
+		"author": [
+			{
+				"family": "Barton",
+				"given": "Geoffrey"
+			},
+			{
+				"family": "Blaxter",
+				"given": "Mark"
+			},
+			{
+				"family": "Cole",
+				"given": "Christian"
+			},
+			{
+				"family": "Gharbi",
+				"given": "Karim"
+			},
+			{
+				"family": "Gierliński",
+				"given": "Marek"
+			},
+			{
+				"family": "Schofield",
+				"given": "Pieta"
+			},
+			{
+				"family": "Schurch",
+				"given": "Nick"
+			},
+			{
+				"family": "Vijender Singh",
+				"given": ""
+			},
+			{
+				"family": "Wrobel",
+				"given": "Nicola"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					12,
+					18
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2015"
+				]
+			]
+		}
+	},
+	{
+		"id": "bartonWildtypeYeastGene2015",
+		"type": "dataset",
+		"abstract": "These data are RNA-seq read counts for 48 biological replicates of wild-type yeast. The reads were aligned to the Saccharomyces cerevisiae genome with Tophat and gene counts determined with htseq-count. Reference genome and gene annotations were taken from Ensembl. See the linked papers for more details and the source for the raw data.",
+		"DOI": "10.6084/M9.FIGSHARE.1425503.V1",
+		"license": "Creative Commons Attribution 4.0 International",
+		"note": "dimensions: 0 Bytes\npage: 0 Bytes",
+		"publisher": "figshare",
+		"source": "DOI.org (Datacite)",
+		"title": "Wild-type yeast gene read counts from 48 replicate experiment",
+		"URL": "https://figshare.com/articles/dataset/Wild_type_yeast_gene_read_counts_from_48_replicate_experiment/1425503/1",
+		"author": [
+			{
+				"family": "Barton",
+				"given": "Geoffrey"
+			},
+			{
+				"family": "Blaxter",
+				"given": "Mark"
+			},
+			{
+				"family": "Cole",
+				"given": "Christian"
+			},
+			{
+				"family": "Gharbi",
+				"given": "Karim"
+			},
+			{
+				"family": "Gierliński",
+				"given": "Marek"
+			},
+			{
+				"family": "Schofield",
+				"given": "Pieta"
+			},
+			{
+				"family": "Schurch",
+				"given": "Nick"
+			},
+			{
+				"family": "Vijender Singh",
+				"given": ""
+			},
+			{
+				"family": "Wrobel",
+				"given": "Nicola"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2021",
+					12,
+					18
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2015"
+				]
+			]
+		}
+	},
+	{
+		"id": "mitchellUntargetedLipidomicsNonSmall2021",
+		"type": "article-journal",
+		"abstract": "Lung cancer remains the leading cause of cancer death worldwide and non-small cell lung carcinoma (NSCLC) represents 85% of newly diagnosed lung cancers. In this study, we utilized our untargeted assignment tool Small Molecule Isotope Resolved Formula Enumerator (SMIRFE) and ultra-high-resolution Fourier transform mass spectrometry to examine lipid profile differences between paired cancerous and non-cancerous lung tissue samples from 86 patients with suspected stage I or IIA primary NSCLC. Correlation and co-occurrence analysis revealed significant lipid profile differences between cancer and non-cancer samples. Further analysis of machine-learned lipid categories for the differentially abundant molecular formulas identified a high abundance sterol, high abundance and high m/z sphingolipid, and low abundance glycerophospholipid metabolic phenotype across the NSCLC samples. At the class level, higher abundances of sterol esters and lower abundances of cardiolipins were observed suggesting altered stearoyl-CoA desaturase 1 (SCD1) or acetyl-CoA acetyltransferase (ACAT1) activity and altered human cardiolipin synthase 1 or lysocardiolipin acyltransferase activity respectively, the latter of which is known to confer apoptotic resistance. The presence of a shared metabolic phenotype across a variety of genetically distinct NSCLC subtypes suggests that this phenotype is necessary for NSCLC development and may result from multiple distinct genetic lesions. Thus, targeting the shared affected pathways may be beneficial for a variety of genetically distinct NSCLC subtypes.",
+		"container-title": "Metabolites",
+		"DOI": "10.3390/metabo11110740",
+		"issue": "11",
+		"language": "en",
+		"license": "http://creativecommons.org/licenses/by/3.0/",
+		"note": "number: 11\npublisher: Multidisciplinary Digital Publishing Institute",
+		"page": "740",
+		"source": "www.mdpi.com",
+		"title": "Untargeted Lipidomics of Non-Small Cell Lung Carcinoma Demonstrates Differentially Abundant Lipid Classes in Cancer vs. Non-Cancer Tissue",
+		"URL": "https://www.mdpi.com/2218-1989/11/11/740",
+		"volume": "11",
+		"author": [
+			{
+				"family": "Mitchell",
+				"given": "Joshua M."
+			},
+			{
+				"family": "Flight",
+				"given": "Robert M."
+			},
+			{
+				"family": "Moseley",
+				"given": "Hunter N. B."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					1,
+					6
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2021",
+					11
+				]
+			]
+		}
+	},
+	{
+		"id": "vaughanFurrrApplyMapping2021",
+		"type": "report",
+		"genre": "manual",
+		"title": "furrr: Apply mapping functions in parallel using futures",
+		"URL": "https://CRAN.R-project.org/package=furrr",
+		"author": [
+			{
+				"family": "Vaughan",
+				"given": "Davis"
+			},
+			{
+				"family": "Dancho",
+				"given": "Matt"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2021"
+				]
+			]
+		}
+	},
+	{
+		"id": "chenCellularOriginsEGFRDriven2021",
+		"type": "article-journal",
+		"abstract": "Targeting the epidermal growth factor receptor (EGFR) with tyrosine kinase inhibitors (TKIs) is one of the major precision medicine treatment options for lung adenocarcinoma. Due to common development of drug resistance to first- and second-generation TKIs, third-generation inhibitors, including osimertinib and rociletinib, have been developed. A model of EGFR-driven lung cancer and a method to develop tumors of distinct epigenetic states through 3D organotypic cultures are described here. It is discovered that activation of the EGFR T790M/L858R mutation in lung epithelial cells can drive lung cancers with alveolar or bronchiolar features, which can originate from alveolar type 2 (AT2) cells or bronchioalveolar stem cells, but not basal cells or club cells of the trachea. It is also demonstrated that these clones are able to retain their epigenetic differences through passaging orthotopically in mice and crucially that they have distinct drug vulnerabilities. This work serves as a blueprint for exploring how epigenetics can be used to stratify patients for precision medicine decisions.",
+		"container-title": "Advanced Science",
+		"DOI": "10.1002/advs.202101999",
+		"ISSN": "2198-3844",
+		"issue": "22",
+		"language": "en",
+		"note": "_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1002/advs.202101999",
+		"page": "2101999",
+		"source": "Wiley Online Library",
+		"title": "Cellular Origins of EGFR-Driven Lung Cancer Cells Determine Sensitivity to Therapy",
+		"URL": "https://onlinelibrary.wiley.com/doi/abs/10.1002/advs.202101999",
+		"volume": "8",
+		"author": [
+			{
+				"family": "Chen",
+				"given": "Fan"
+			},
+			{
+				"family": "Liu",
+				"given": "Jinpeng"
+			},
+			{
+				"family": "Flight",
+				"given": "Robert M."
+			},
+			{
+				"family": "Naughton",
+				"given": "Kassandra J."
+			},
+			{
+				"family": "Lukyanchuk",
+				"given": "Alexsandr"
+			},
+			{
+				"family": "Edgin",
+				"given": "Abigail R."
+			},
+			{
+				"family": "Song",
+				"given": "Xiulong"
+			},
+			{
+				"family": "Zhang",
+				"given": "Haikuo"
+			},
+			{
+				"family": "Wong",
+				"given": "Kwok-Kin"
+			},
+			{
+				"family": "Moseley",
+				"given": "Hunter N. B."
+			},
+			{
+				"family": "Wang",
+				"given": "Chi"
+			},
+			{
+				"family": "Brainson",
+				"given": "Christine F."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					1,
+					14
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2021"
+				]
+			]
+		}
+	},
+	{
+		"id": "flightICIKendallTau2023",
+		"type": "document",
+		"abstract": "ICIKendallTau version used in the manuscript Information-Content-Informed Kendall-tau Correlation: Utilizing Missing Values Robert M Flight, Praneeth S Bhatt, Hunter NB Moseley",
+		"title": "ICIKendallTau",
+		"URL": "https://doi.org/10.5281/zenodo.6311002",
+		"author": [
+			{
+				"family": "Flight",
+				"given": "Robert M."
+			},
+			{
+				"family": "Moseley",
+				"given": "Hunter N. B."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2023",
+					12
+				]
+			]
+		}
+	},
+	{
+		"id": "flightManuscriptICIKendallTau2024",
+		"type": "document",
+		"title": "manuscript.ICIKendallTau",
+		"URL": "https://dx.doi.org/10.5281/zenodo.6309187",
+		"author": [
+			{
+				"family": "Flight",
+				"given": "Robert M."
+			},
+			{
+				"family": "Moseley",
+				"given": "Hunter N. B."
+			},
+			{
+				"family": "Bhatt",
+				"given": "Praneeth S."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2024",
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "mitchellDerivingLipidClassification2020",
+		"type": "article-journal",
+		"abstract": "Despite instrument and algorithmic improvements, the untargeted and accurate assignment of metabolites remains an unsolved problem in metabolomics. New assignment methods such as our SMIRFE algorithm can assign elemental molecular formulas to observed spectral features in a highly untargeted manner without orthogonal information from tandem MS or chromatography. However, for many lipidomics applications, it is necessary to know at least the lipid category or class that is associated with a detected spectral feature to derive a biochemical interpretation. Our goal is to develop a method for robustly classifying elemental molecular formula assignments into lipid categories for an application to SMIRFE-generated assignments. Using a Random Forest machine learning approach, we developed a method that can predict lipid category and class from SMIRFE non-adducted molecular formula assignments. Our methods achieve high average predictive accuracy (>90%) and precision (>83%) across all eight of the lipid categories in the LIPIDMAPS database. Classification performance was evaluated using sets of theoretical, data-derived, and artifactual molecular formulas. Our methods enable the lipid classification of non-adducted molecular formula assignments generated by SMIRFE without orthogonal information, facilitating the biochemical interpretation of untargeted lipidomics experiments. This lipid classification appears insufficient for validating single-spectrum assignments, but could be useful in cross-spectrum assignment validation.",
+		"container-title": "Metabolites",
+		"DOI": "10.3390/metabo10030122",
+		"ISSN": "2218-1989",
+		"issue": "3",
+		"journalAbbreviation": "Metabolites",
+		"language": "eng",
+		"note": "PMID: 32214009\nPMCID: PMC7143220",
+		"page": "E122",
+		"source": "PubMed",
+		"title": "Deriving Lipid Classification Based on Molecular Formulas",
+		"volume": "10",
+		"author": [
+			{
+				"family": "Mitchell",
+				"given": "Joshua M."
+			},
+			{
+				"family": "Flight",
+				"given": "Robert M."
+			},
+			{
+				"family": "Moseley",
+				"given": "Hunter N. B."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2020",
+					3,
+					24
+				]
+			]
+		}
+	},
+	{
+		"id": "flightVisualizationQualityControlDevelopmentVisualization2021",
+		"type": "report",
+		"genre": "manual",
+		"title": "visualizationQualityControl: Development of visualization methods for quality control",
+		"URL": "https://moseleybioinformaticslab.github.io/visualizationQualityControl https://github.com/moseleybioinformaticslab/visualizationQualityControl",
+		"author": [
+			{
+				"family": "Flight",
+				"given": "Robert M"
+			},
+			{
+				"family": "Moseley",
+				"given": "Hunter NB"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2021"
+				]
+			]
+		}
+	},
+	{
+		"id": "leekTacklingWidespreadCritical2010",
+		"type": "article-journal",
+		"abstract": "High-throughput technologies are widely used, for example to assay genetic variants, gene and protein expression, and epigenetic modifications. One often overlooked complication with such studies is batch effects, which occur because measurements are affected by laboratory conditions, reagent lots and personnel differences. This becomes a major problem when batch effects are correlated with an outcome of interest and lead to incorrect conclusions. Using both published studies and our own analyses, we argue that batch effects (as well as other technical and biological artefacts) are widespread and critical to address. We review experimental and computational approaches for doing so.",
+		"container-title": "Nature reviews. Genetics",
+		"DOI": "10.1038/nrg2825",
+		"ISSN": "1471-0056",
+		"issue": "10",
+		"journalAbbreviation": "Nat Rev Genet",
+		"note": "PMID: 20838408\nPMCID: PMC3880143",
+		"page": "10.1038/nrg2825",
+		"source": "PubMed Central",
+		"title": "Tackling the widespread and critical impact of batch effects in high-throughput data",
+		"URL": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3880143/",
+		"volume": "11",
+		"author": [
+			{
+				"family": "Leek",
+				"given": "Jeffrey T."
+			},
+			{
+				"family": "Scharpf",
+				"given": "Robert B."
+			},
+			{
+				"family": "Bravo",
+				"given": "Héctor Corrada"
+			},
+			{
+				"family": "Simcha",
+				"given": "David"
+			},
+			{
+				"family": "Langmead",
+				"given": "Benjamin"
+			},
+			{
+				"family": "Johnson",
+				"given": "W. Evan"
+			},
+			{
+				"family": "Geman",
+				"given": "Donald"
+			},
+			{
+				"family": "Baggerly",
+				"given": "Keith"
+			},
+			{
+				"family": "Irizarry",
+				"given": "Rafael A."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					10,
+					5
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2010",
+					10
+				]
+			]
+		}
+	},
+	{
+		"id": "leeNSkNNModifiedKnearest2018",
+		"type": "article-journal",
+		"container-title": "Metabolomics",
+		"DOI": "10.1007/s11306-018-1451-8",
+		"ISSN": "1573-3882, 1573-3890",
+		"issue": "12",
+		"journalAbbreviation": "Metabolomics",
+		"language": "en",
+		"page": "153",
+		"source": "DOI.org (Crossref)",
+		"title": "NS-kNN: a modified k-nearest neighbors approach for imputing metabolomics data",
+		"title-short": "NS-kNN",
+		"URL": "http://link.springer.com/10.1007/s11306-018-1451-8",
+		"volume": "14",
+		"author": [
+			{
+				"family": "Lee",
+				"given": "Justin Y."
+			},
+			{
+				"family": "Styczynski",
+				"given": "Mark P."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					11,
+					2
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2018",
+					12
+				]
+			]
+		}
+	},
+	{
+		"id": "hrydziuszkoMissingValuesMass2012",
+		"type": "article-journal",
+		"container-title": "Metabolomics",
+		"DOI": "10.1007/s11306-011-0366-4",
+		"ISSN": "1573-3882, 1573-3890",
+		"issue": "S1",
+		"journalAbbreviation": "Metabolomics",
+		"language": "en",
+		"page": "161-174",
+		"source": "DOI.org (Crossref)",
+		"title": "Missing values in mass spectrometry based metabolomics: an undervalued step in the data processing pipeline",
+		"title-short": "Missing values in mass spectrometry based metabolomics",
+		"URL": "http://link.springer.com/10.1007/s11306-011-0366-4",
+		"volume": "8",
+		"author": [
+			{
+				"family": "Hrydziuszko",
+				"given": "Olga"
+			},
+			{
+				"family": "Viant",
+				"given": "Mark R."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2022",
+					11,
+					2
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2012",
+					6
+				]
+			]
+		}
+	},
+	{
+		"id": "buyukozkanRoxStatisticalModel2023",
+		"type": "article-journal",
+		"abstract": "High-dimensional omics datasets frequently contain missing data points, which typically occur due to concentrations below the limit of detection (LOD) of the profiling platform. The presence of such missing values significantly limits downstream statistical analysis and result interpretation. Two common techniques to deal with this issue include the removal of samples with missing values and imputation approaches that substitute the missing measurements with reasonable estimates. Both approaches, however, suffer from various shortcomings and pitfalls. In this paper, we present “rox”, a novel statistical model for the analysis of omics data with missing values without the need for imputation. The model directly incorporates missing values as “low” concentrations into the calculation. We show the superiority of rox over common approaches on simulated data and on six metabolomics datasets. Fully leveraging the information contained in LOD-based missing values, rox provides a powerful tool for the statistical analysis of omics data.",
+		"container-title": "Metabolites",
+		"DOI": "10.3390/metabo13010127",
+		"ISSN": "2218-1989",
+		"issue": "1",
+		"language": "en",
+		"license": "http://creativecommons.org/licenses/by/3.0/",
+		"note": "number: 1\npublisher: Multidisciplinary Digital Publishing Institute",
+		"page": "127",
+		"source": "www.mdpi.com",
+		"title": "rox: A Statistical Model for Regression with Missing Values",
+		"title-short": "rox",
+		"URL": "https://www.mdpi.com/2218-1989/13/1/127",
+		"volume": "13",
+		"author": [
+			{
+				"family": "Buyukozkan",
+				"given": "Mustafa"
+			},
+			{
+				"family": "Benedetti",
+				"given": "Elisa"
+			},
+			{
+				"family": "Krumsiek",
+				"given": "Jan"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					6,
+					8
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2023",
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "doCharacterizationMissingValues2018",
+		"type": "article-journal",
+		"abstract": "Untargeted mass spectrometry (MS)-based metabolomics data often contain missing values that reduce statistical power and can introduce bias in biomedical studies. However, a systematic assessment of the various sources of missing values and strategies to handle these data has received little attention. Missing data can occur systematically, e.g. from run day-dependent effects due to limits of detection (LOD); or it can be random as, for instance, a consequence of sample preparation.",
+		"container-title": "Metabolomics",
+		"DOI": "10.1007/s11306-018-1420-2",
+		"ISSN": "1573-3890",
+		"issue": "10",
+		"journalAbbreviation": "Metabolomics",
+		"language": "en",
+		"page": "128",
+		"source": "Springer Link",
+		"title": "Characterization of missing values in untargeted MS-based metabolomics data and evaluation of missing data handling strategies",
+		"URL": "https://doi.org/10.1007/s11306-018-1420-2",
+		"volume": "14",
+		"author": [
+			{
+				"family": "Do",
+				"given": "Kieu Trinh"
+			},
+			{
+				"family": "Wahl",
+				"given": "Simone"
+			},
+			{
+				"family": "Raffler",
+				"given": "Johannes"
+			},
+			{
+				"family": "Molnos",
+				"given": "Sophie"
+			},
+			{
+				"family": "Laimighofer",
+				"given": "Michael"
+			},
+			{
+				"family": "Adamski",
+				"given": "Jerzy"
+			},
+			{
+				"family": "Suhre",
+				"given": "Karsten"
+			},
+			{
+				"family": "Strauch",
+				"given": "Konstantin"
+			},
+			{
+				"family": "Peters",
+				"given": "Annette"
+			},
+			{
+				"family": "Gieger",
+				"given": "Christian"
+			},
+			{
+				"family": "Langenberg",
+				"given": "Claudia"
+			},
+			{
+				"family": "Stewart",
+				"given": "Isobel D."
+			},
+			{
+				"family": "Theis",
+				"given": "Fabian J."
+			},
+			{
+				"family": "Grallert",
+				"given": "Harald"
+			},
+			{
+				"family": "Kastenmüller",
+				"given": "Gabi"
+			},
+			{
+				"family": "Krumsiek",
+				"given": "Jan"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					6,
+					8
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2018",
+					9,
+					20
+				]
+			]
+		}
+	},
+	{
+		"id": "saccentiCorruptionPearsonCorrelation2020",
+		"type": "article-journal",
+		"abstract": "Correlation coefficients are abundantly used in the life sciences. Their use can be limited to simple exploratory analysis or to construct association networks for visualization but they are also basic ingredients for sophisticated multivariate data analysis methods. It is therefore important to have reliable estimates for correlation coefficients. In modern life sciences, comprehensive measurement techniques are used to measure metabolites, proteins, gene-expressions and other types of data. All these measurement techniques have errors. Whereas in the old days, with simple measurements, the errors were also simple, that is not the case anymore. Errors are heterogeneous, non-constant and not independent. This hampers the quality of the estimated correlation coefficients seriously. We will discuss the different types of errors as present in modern comprehensive life science data and show with theory, simulations and real-life data how these affect the correlation coefficients. We will briefly discuss ways to improve the estimation of such coefficients.",
+		"container-title": "Scientific Reports",
+		"DOI": "10.1038/s41598-019-57247-4",
+		"ISSN": "2045-2322",
+		"issue": "1",
+		"journalAbbreviation": "Sci Rep",
+		"language": "en",
+		"license": "2020 The Author(s)",
+		"note": "number: 1\npublisher: Nature Publishing Group",
+		"page": "438",
+		"source": "www.nature.com",
+		"title": "Corruption of the Pearson correlation coefficient by measurement error and its estimation, bias, and correction under different error models",
+		"URL": "https://www.nature.com/articles/s41598-019-57247-4",
+		"volume": "10",
+		"author": [
+			{
+				"family": "Saccenti",
+				"given": "Edoardo"
+			},
+			{
+				"family": "Hendriks",
+				"given": "Margriet H. W. B."
+			},
+			{
+				"family": "Smilde",
+				"given": "Age K."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					6,
+					8
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2020",
+					1,
+					16
+				]
+			]
+		}
+	},
+	{
+		"id": "lazarAccountingMultipleNatures2016",
+		"type": "article-journal",
+		"abstract": "Missing values are a genuine issue in label-free quantitative proteomics. Recent works have surveyed the different statistical methods to conduct imputation and have compared them on real or simulated data sets and recommended a list of missing value imputation methods for proteomics application. Although insightful, these comparisons do not account for two important facts: (i) depending on the proteomics data set, the missingness mechanism may be of different natures and (ii) each imputation method is devoted to a specific type of missingness mechanism. As a result, we believe that the question at stake is not to find the most accurate imputation method in general but instead the most appropriate one. We describe a series of comparisons that support our views: For instance, we show that a supposedly “under-performing” method (i.e., giving baseline average results), if applied at the “appropriate” time in the data-processing pipeline (before or after peptide aggregation) on a data set with the “appropriate” nature of missing values, can outperform a blindly applied, supposedly “better-performing” method (i.e., the reference method from the state-of-the-art). This leads us to formulate few practical guidelines regarding the choice and the application of an imputation method in a proteomics context.",
+		"container-title": "Journal of Proteome Research",
+		"DOI": "10.1021/acs.jproteome.5b00981",
+		"ISSN": "1535-3893",
+		"issue": "4",
+		"journalAbbreviation": "J. Proteome Res.",
+		"note": "publisher: American Chemical Society",
+		"page": "1116-1125",
+		"source": "ACS Publications",
+		"title": "Accounting for the Multiple Natures of Missing Values in Label-Free Quantitative Proteomics Data Sets to Compare Imputation Strategies",
+		"URL": "https://doi.org/10.1021/acs.jproteome.5b00981",
+		"volume": "15",
+		"author": [
+			{
+				"family": "Lazar",
+				"given": "Cosmin"
+			},
+			{
+				"family": "Gatto",
+				"given": "Laurent"
+			},
+			{
+				"family": "Ferro",
+				"given": "Myriam"
+			},
+			{
+				"family": "Bruley",
+				"given": "Christophe"
+			},
+			{
+				"family": "Burger",
+				"given": "Thomas"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					7,
+					11
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2016",
+					4,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "liNeitherRandomCensored2023",
+		"type": "article-journal",
+		"abstract": "Mass spectrometry proteomics is a powerful tool in biomedical research but its usefulness is limited by the frequent occurrence of missing values in peptides that cannot be reliably quantified (detected) for particular samples. Many analysis strategies have been proposed for missing values where the discussion often focuses on distinguishing whether values are missing completely at random (MCAR), missing at random (MAR) or missing not at random (MNAR).Statistical models and algorithms are proposed for estimating the detection probabilities and for evaluating how much statistical information can or cannot be recovered from the missing value pattern. The probability that an intensity is detected is shown to be accurately modeled as a logit-linear function of the underlying intensity, showing that missing value process is intermediate between MAR and censoring. The detection probability asymptotes to 100% for high intensities, showing that missing values unrelated to intensity are rare. The rule applies globally to each dataset and is appropriate for both high and lowly expressed peptides. A probability model is developed that allows the distribution of unobserved intensities to be inferred from the observed values. The detection probability model is incorporated into a likelihood-based approach for assessing differential expression and successfully recovers statistical power compared to omitting the missing values from the analysis. In contrast, imputation methods are shown to perform poorly, either reducing statistical power or increasing the false discovery rate to unacceptable levels.Data and code to reproduce the results shown in this article are available from https://mengbo-li.github.io/protDP/.",
+		"container-title": "Bioinformatics",
+		"DOI": "10.1093/bioinformatics/btad200",
+		"ISSN": "1367-4811",
+		"issue": "5",
+		"journalAbbreviation": "Bioinformatics",
+		"page": "btad200",
+		"source": "Silverchair",
+		"title": "Neither random nor censored: estimating intensity-dependent probabilities for missing values in label-free proteomics",
+		"title-short": "Neither random nor censored",
+		"URL": "https://doi.org/10.1093/bioinformatics/btad200",
+		"volume": "39",
+		"author": [
+			{
+				"family": "Li",
+				"given": "Mengbo"
+			},
+			{
+				"family": "Smyth",
+				"given": "Gordon K"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					7,
+					11
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2023",
+					5,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "ahlmann-eltzeProDAProbabilisticDropout2020",
+		"type": "article",
+		"abstract": "Protein mass spectrometry with label-free quantification (LFQ) is widely used for quantitative proteomics studies. Nevertheless, well-principled statistical inference procedures are still lacking, and most practitioners adopt methods from transcriptomics. These, however, cannot properly treat the principal complication of label-free proteomics, namely many non-randomly missing values.\nWe present proDA, a method to perform statistical tests for differential abundance of proteins. It models missing values in an intensity-dependent probabilistic manner. proDA is based on linear models and thus suitable for complex experimental designs, and boosts statistical power for small sample sizes by using variance moderation. We show that the currently widely used methods based on ad hoc imputation schemes can report excessive false positives, and that proDA not only overcomes this serious issue but also offers high sensitivity. Thus, proDA fills a crucial gap in the toolbox of quantitative proteomics.",
+		"DOI": "10.1101/661496",
+		"language": "en",
+		"license": "© 2020, Posted by Cold Spring Harbor Laboratory. This pre-print is available under a Creative Commons License (Attribution-NoDerivs 4.0 International), CC BY-ND 4.0, as described at http://creativecommons.org/licenses/by-nd/4.0/",
+		"note": "page: 661496\nsection: New Results",
+		"publisher": "bioRxiv",
+		"source": "bioRxiv",
+		"title": "proDA: Probabilistic Dropout Analysis for Identifying Differentially Abundant Proteins in Label-Free Mass Spectrometry",
+		"title-short": "proDA",
+		"URL": "https://www.biorxiv.org/content/10.1101/661496v2",
+		"author": [
+			{
+				"family": "Ahlmann-Eltze",
+				"given": "Constantin"
+			},
+			{
+				"family": "Anders",
+				"given": "Simon"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					7,
+					11
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2020",
+					5,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "vanderaaRevisitingThornyIssue2023",
+		"type": "article",
+		"abstract": "Missing values are a notable challenge when analysing mass spectrometry-based proteomics data. While the field is still actively debating on the best practices, the challenge increased with the emergence of mass spectrometry-based single-cell proteomics and the dramatic increase in missing values. A popular approach to deal with missing values is to perform imputation. Imputation has several drawbacks for which alternatives exist, but currently imputation is still a practical solution widely adopted in single-cell proteomics data analysis. This perspective discusses the advantages and drawbacks of imputation. We also highlight 5 main challenges linked to missing value management in single-cell proteomics. Future developments should aim to solve these challenges, whether it is through imputation or data modelling. The perspective concludes with recommendations for reporting missing values, for reporting methods that deal with missing values and for proper encoding of missing values.",
+		"DOI": "10.48550/arXiv.2304.06654",
+		"note": "arXiv:2304.06654 [q-bio]",
+		"number": "arXiv:2304.06654",
+		"publisher": "arXiv",
+		"source": "arXiv.org",
+		"title": "Revisiting the thorny issue of missing values in single-cell proteomics",
+		"URL": "http://arxiv.org/abs/2304.06654",
+		"author": [
+			{
+				"family": "Vanderaa",
+				"given": "Christophe"
+			},
+			{
+				"family": "Gatto",
+				"given": "Laurent"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					7,
+					11
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2023",
+					5,
+					31
+				]
+			]
+		}
+	},
+	{
+		"id": "loveRNASeqWorkflowGenelevel2016",
+		"type": "report",
+		"abstract": "Here we walk through an end-to-end gene-level RNA-Seq differential expression workflow using Bioconductor packages. We will start from the FASTQ files, show how these were aligned to the reference genome, and prepare a count matrix which tallies the number of RNA-seq reads/fragments within each gene for each sample.We will perform exploratory data analysis (EDA) for quality assessment and to explore the relationship between samples, perform differential gene expression analysis, and visually explore the results.",
+		"language": "en",
+		"license": "http://creativecommons.org/licenses/by/4.0/",
+		"note": "DOI: 10.12688/f1000research.7035.2\ntype: article",
+		"number": "4:1070",
+		"publisher": "F1000Research",
+		"source": "f1000research.com",
+		"title": "RNA-Seq workflow: gene-level exploratory analysis and differential expression",
+		"title-short": "RNA-Seq workflow",
+		"URL": "https://f1000research.com/articles/4-1070",
+		"author": [
+			{
+				"family": "Love",
+				"given": "Michael I."
+			},
+			{
+				"family": "Anders",
+				"given": "Simon"
+			},
+			{
+				"family": "Kim",
+				"given": "Vladislav"
+			},
+			{
+				"family": "Huber",
+				"given": "Wolfgang"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					7,
+					11
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2016",
+					11,
+					17
+				]
+			]
+		}
+	},
+	{
+		"id": "lawRNAseqAnalysisEasy2018",
+		"type": "report",
+		"abstract": "The ability to easily and efficiently analyse RNA-sequencing data is a key strength of the Bioconductor project. Starting with counts summarised at the gene-level, a typical analysis involves pre-processing, exploratory data analysis, differential expression testing and pathway analysis with the results obtained informing future experiments and validation studies. In this workflow article, we analyse RNA-sequencing data from the mouse mammary gland, demonstrating use of the popular edgeR package to import, organise, filter and normalise the data, followed by the limma package with its voom method, linear modelling and empirical Bayes moderation to assess differential expression and perform gene set testing. This pipeline is further enhanced by the Glimma package which enables interactive exploration of the results so that individual samples and genes can be examined by the user. The complete analysis offered by these three packages highlights the ease with which researchers can turn the raw counts from an RNA-sequencing experiment into biological insights using Bioconductor.",
+		"language": "en",
+		"license": "http://creativecommons.org/licenses/by/4.0/",
+		"note": "DOI: 10.12688/f1000research.9005.3\ntype: article",
+		"number": "5:1408",
+		"publisher": "F1000Research",
+		"source": "f1000research.com",
+		"title": "RNA-seq analysis is easy as 1-2-3 with limma, Glimma and edgeR",
+		"URL": "https://f1000research.com/articles/5-1408",
+		"author": [
+			{
+				"family": "Law",
+				"given": "Charity W."
+			},
+			{
+				"family": "Alhamdoosh",
+				"given": "Monther"
+			},
+			{
+				"family": "Su",
+				"given": "Shian"
+			},
+			{
+				"family": "Dong",
+				"given": "Xueyi"
+			},
+			{
+				"family": "Tian",
+				"given": "Luyi"
+			},
+			{
+				"family": "Smyth",
+				"given": "Gordon K."
+			},
+			{
+				"family": "Ritchie",
+				"given": "Matthew E."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					7,
+					11
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2018",
+					12,
+					28
+				]
+			]
+		}
+	},
+	{
+		"id": "chenReadsGenesPathways2016",
+		"type": "report",
+		"abstract": "In recent years, RNA sequencing (RNA-seq) has become a very widely used technology for profiling gene expression. One of the most common aims of RNA-seq profiling is to identify genes or molecular pathways that are differentially expressed (DE) between two or more biological conditions. This article demonstrates a computational workflow for the detection of DE genes and pathways from RNA-seq data by providing a complete analysis of an RNA-seq experiment profiling epithelial cell subsets in the mouse mammary gland. The workflow uses R software packages from the open-source Bioconductor project and covers all steps of the analysis pipeline, including alignment of read sequences, data exploration, differential expression analysis, visualization and pathway analysis. Read alignment and count quantification is conducted using the Rsubread package and the statistical analyses are performed using the edgeR package. The differential expression analysis uses the quasi-likelihood functionality of edgeR.",
+		"language": "en",
+		"license": "http://creativecommons.org/licenses/by/4.0/",
+		"note": "DOI: 10.12688/f1000research.8987.2\ntype: article",
+		"number": "5:1438",
+		"publisher": "F1000Research",
+		"source": "f1000research.com",
+		"title": "From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline",
+		"title-short": "From reads to genes to pathways",
+		"URL": "https://f1000research.com/articles/5-1438",
+		"author": [
+			{
+				"family": "Chen",
+				"given": "Yunshun"
+			},
+			{
+				"family": "Lun",
+				"given": "Aaron T. L."
+			},
+			{
+				"family": "Smyth",
+				"given": "Gordon K."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					7,
+					11
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2016",
+					8,
+					2
+				]
+			]
+		}
+	},
+	{
+		"id": "metabolomicsworkbenchPR0000162016",
+		"type": "dataset",
+		"DOI": "10.21228/M86P45",
+		"note": "publisher: Metabolomics Workbench",
+		"source": "DOI.org (Datacite)",
+		"title": "PR000016",
+		"URL": "http://www.metabolomicsworkbench.org/data/DRCCMetadata.php?Mode=Project&ProjectID=PR000016",
+		"author": [
+			{
+				"literal": "Metabolomics Workbench"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					7,
+					11
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2016"
+				]
+			]
+		}
+	},
+	{
+		"id": "overmyerMaximalOxidativeCapacity2015",
+		"type": "article-journal",
+		"abstract": "Maximal exercise-associated oxidative capacity is strongly correlated with health and longevity in humans. Rats selectively bred for high running capacity (HCR) have improved metabolic health and are longer-lived than their low-capacity counterparts (LCR). Using metabolomic and proteomic profiling, we show that HCR efficiently oxidize fatty acids (FAs) and branched-chain amino acids (BCAAs), sparing glycogen and reducing accumulation of short- and medium-chain acylcarnitines. HCR mitochondria have reduced acetylation of mitochondrial proteins within oxidative pathways at rest, and there is rapid protein deacetylation with exercise, which is greater in HCR than LCR. Fluxomic analysis of valine degradation with exercise demonstrates a functional role of differential protein acetylation in HCR and LCR. Our data suggest that efficient FA and BCAA utilization contribute to high intrinsic exercise capacity and the health and longevity benefits associated with enhanced fitness.",
+		"container-title": "Cell Metabolism",
+		"DOI": "10.1016/j.cmet.2015.02.007",
+		"ISSN": "1550-4131",
+		"issue": "3",
+		"journalAbbreviation": "Cell Metabolism",
+		"language": "en",
+		"page": "468-478",
+		"source": "ScienceDirect",
+		"title": "Maximal Oxidative Capacity during Exercise Is Associated with Skeletal Muscle Fuel Selection and Dynamic Changes in Mitochondrial Protein Acetylation",
+		"URL": "https://www.sciencedirect.com/science/article/pii/S1550413115000595",
+		"volume": "21",
+		"author": [
+			{
+				"family": "Overmyer",
+				"given": "Katherine A."
+			},
+			{
+				"family": "Evans",
+				"given": "Charles R."
+			},
+			{
+				"family": "Qi",
+				"given": "Nathan R."
+			},
+			{
+				"family": "Minogue",
+				"given": "Catherine E."
+			},
+			{
+				"family": "Carson",
+				"given": "Joshua J."
+			},
+			{
+				"family": "Chermside-Scabbo",
+				"given": "Christopher J."
+			},
+			{
+				"family": "Koch",
+				"given": "Lauren G."
+			},
+			{
+				"family": "Britton",
+				"given": "Steven L."
+			},
+			{
+				"family": "Pagliarini",
+				"given": "David J."
+			},
+			{
+				"family": "Coon",
+				"given": "Joshua J."
+			},
+			{
+				"family": "Burant",
+				"given": "Charles F."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					7,
+					11
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2015",
+					3,
+					3
+				]
+			]
+		}
+	},
+	{
+		"id": "flightUntargetedLipidomicsNonsmall2021",
+		"type": "dataset",
+		"abstract": "Peak lists (unassigned and assigned), as well as code files for the analysis, including two unpublished R packages to enable analysis of the included data files.",
+		"DOI": "10.6084/m9.figshare.14199521.v3",
+		"language": "en",
+		"publisher": "figshare",
+		"source": "figshare.com",
+		"title": "Untargeted lipidomics of non-small cell lung carcinoma data and code",
+		"URL": "https://figshare.com/articles/dataset/Untargeted_lipidomics_of_non-small_cell_lung_carcinoma_data_and_code/14199521/3",
+		"author": [
+			{
+				"family": "Flight",
+				"given": "Robert M."
+			},
+			{
+				"family": "Moseley",
+				"given": "Hunter N. B."
+			},
+			{
+				"family": "Mitchell",
+				"given": "Joshua M."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					7,
+					11
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2021",
+					3,
+					16
+				]
+			]
+		}
+	},
+	{
+		"id": "landauTargetsPackageDynamic2021b",
+		"type": "article-journal",
+		"abstract": "Landau, W. M., (2021). The targets R package: a dynamic Make-like function-oriented pipeline toolkit for reproducibility and high-performance computing. Journal of Open Source Software, 6(57), 2959, https://doi.org/10.21105/joss.02959",
+		"container-title": "Journal of Open Source Software",
+		"DOI": "10.21105/joss.02959",
+		"ISSN": "2475-9066",
+		"issue": "57",
+		"language": "en",
+		"page": "2959",
+		"source": "joss.theoj.org",
+		"title": "The targets R package: a dynamic Make-like function-oriented pipeline toolkit for reproducibility and high-performance computing",
+		"title-short": "The targets R package",
+		"URL": "https://joss.theoj.org/papers/10.21105/joss.02959",
+		"volume": "6",
+		"author": [
+			{
+				"family": "Landau",
+				"given": "William Michael"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					7,
+					12
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2021",
+					1,
+					15
+				]
+			]
+		}
+	},
+	{
+		"id": "krumsiekGaussianGraphicalModeling2011",
+		"type": "article-journal",
+		"abstract": "With the advent of high-throughput targeted metabolic profiling techniques, the question of how to interpret and analyze the resulting vast amount of data becomes more and more important. In this work we address the reconstruction of metabolic reactions from cross-sectional metabolomics data, that is without the requirement for time-resolved measurements or specific system perturbations. Previous studies in this area mainly focused on Pearson correlation coefficients, which however are generally incapable of distinguishing between direct and indirect metabolic interactions.",
+		"container-title": "BMC Systems Biology",
+		"DOI": "10.1186/1752-0509-5-21",
+		"ISSN": "1752-0509",
+		"issue": "1",
+		"journalAbbreviation": "BMC Systems Biology",
+		"page": "21",
+		"source": "BioMed Central",
+		"title": "Gaussian graphical modeling reconstructs pathway reactions from high-throughput metabolomics data",
+		"URL": "https://doi.org/10.1186/1752-0509-5-21",
+		"volume": "5",
+		"author": [
+			{
+				"family": "Krumsiek",
+				"given": "Jan"
+			},
+			{
+				"family": "Suhre",
+				"given": "Karsten"
+			},
+			{
+				"family": "Illig",
+				"given": "Thomas"
+			},
+			{
+				"family": "Adamski",
+				"given": "Jerzy"
+			},
+			{
+				"family": "Theis",
+				"given": "Fabian J."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					7,
+					13
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2011",
+					1,
+					31
+				]
+			]
+		}
+	},
+	{
+		"id": "whiteSpectralClusteringApproach2005",
+		"type": "paper-conference",
+		"abstract": "Clustering nodes in a graph is a useful general technique in data mining of large network data sets. In this context, Newman and Girvan [9] recently proposed an objective function for graph clustering called the Q function which allows automatic selection of the number of clusters. Empirically, higher values of the Q function have been shown to correlate well with good graph clusterings. In this paper we show how optimizing the Q function can be reformulated as a spectral relaxation problem and propose two new spectral clustering algorithms that seek to maximize Q. Experimental results indicate that the new algorithms are eﬃcient and eﬀective at ﬁnding both good clusterings and the appropriate number of clusters across a variety of real-world graph data sets. In addition, the spectral algorithms are much faster for large sparse graphs, scaling roughly linearly with the number of nodes n in the graph, compared to O(n2) for previous clustering algorithms using the Q function.",
+		"container-title": "Proceedings of the 2005 SIAM International Conference on Data Mining",
+		"DOI": "10.1137/1.9781611972757.25",
+		"event-title": "Proceedings of the 2005 SIAM International Conference on Data Mining",
+		"ISBN": "978-0-89871-593-4",
+		"language": "en",
+		"page": "274-285",
+		"publisher": "Society for Industrial and Applied Mathematics",
+		"source": "DOI.org (Crossref)",
+		"title": "A Spectral Clustering Approach To Finding Communities in Graphs",
+		"URL": "https://epubs.siam.org/doi/10.1137/1.9781611972757.25",
+		"author": [
+			{
+				"family": "White",
+				"given": "Scott"
+			},
+			{
+				"family": "Smyth",
+				"given": "Padhraic"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					7,
+					13
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2005",
+					4,
+					21
+				]
+			]
+		}
+	},
+	{
+		"id": "schaferReverseEngineeringGenetic2006",
+		"type": "article-journal",
+		"language": "en",
+		"source": "Zotero",
+		"title": "Reverse Engineering Genetic Networks using the GeneNet Package",
+		"volume": "6",
+		"author": [
+			{
+				"family": "Schäfer",
+				"given": "Juliane"
+			},
+			{
+				"family": "Opgen-Rhein",
+				"given": "Rainer"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2006"
+				]
+			]
+		}
+	},
+	{
+		"id": "huckvaleKegg_pullSoftwarePackage2023",
+		"type": "article-journal",
+		"abstract": "The Kyoto Encyclopedia of Genes and Genomes (KEGG) provides organized genomic, biomolecular, and metabolic information and knowledge that is reasonably current and highly useful for a wide range of analyses and modeling. KEGG follows the principles of data stewardship to be findable, accessible, interoperable, and reusable (FAIR) by providing RESTful access to their database entries via their web-accessible KEGG API. However, the overall FAIRness of KEGG is often limited by the library and software package support available in a given programming language. While R library support for KEGG is fairly strong, Python library support has been lacking. Moreover, there is no software that provides extensive command line level support for KEGG access and utilization.",
+		"container-title": "BMC Bioinformatics",
+		"DOI": "10.1186/s12859-023-05208-0",
+		"ISSN": "1471-2105",
+		"issue": "1",
+		"journalAbbreviation": "BMC Bioinformatics",
+		"page": "78",
+		"source": "BioMed Central",
+		"title": "kegg_pull: a software package for the RESTful access and pulling from the Kyoto Encyclopedia of Gene and Genomes",
+		"title-short": "kegg_pull",
+		"URL": "https://doi.org/10.1186/s12859-023-05208-0",
+		"volume": "24",
+		"author": [
+			{
+				"family": "Huckvale",
+				"given": "Erik"
+			},
+			{
+				"family": "Moseley",
+				"given": "Hunter N. B."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2023",
+					11,
+					7
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2023",
+					3,
+					4
+				]
+			]
+		}
+	},
+	{
+		"id": "ligtenbergReactomeDbSet2023",
+		"type": "report",
+		"genre": "manual",
+		"title": "reactome.db: A set of annotation maps for reactome",
+		"author": [
+			{
+				"family": "Ligtenberg",
+				"given": "Willem"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2023"
+				]
+			]
+		}
+	},
+	{
+		"id": "joshi-topeReactomeKnowledgebaseBiological2005",
+		"type": "article-journal",
+		"abstract": "Reactome, located at http://www.reactome.org is a curated, peer-reviewed resource of human biological processes. Given the genetic makeup of an organism, the complete set of possible reactions constitutes its reactome. The basic unit of the Reactome database is a reaction; reactions are then grouped into causal chains to form pathways. The Reactome data model allows us to represent many diverse processes in the human system, including the pathways of intermediary metabolism, regulatory pathways, and signal transduction, and high-level processes, such as the cell cycle. Reactome provides a qualitative framework, on which quantitative data can be superimposed. Tools have been developed to facilitate custom data entry and annotation by expert biologists, and to allow visualization and exploration of the finished dataset as an interactive process map. Although our primary curational domain is pathways from Homo sapiens, we regularly create electronic projections of human pathways onto other organisms via putative orthologs, thus making Reactome relevant to model organism research communities. The database is publicly available under open source terms, which allows both its content and its software infrastructure to be freely used and redistributed.",
+		"container-title": "Nucleic Acids Research",
+		"DOI": "10.1093/nar/gki072",
+		"ISSN": "1362-4962",
+		"issue": "Database issue",
+		"journalAbbreviation": "Nucleic Acids Res",
+		"language": "eng",
+		"note": "PMID: 15608231\nPMCID: PMC540026",
+		"page": "D428-432",
+		"source": "PubMed",
+		"title": "Reactome: a knowledgebase of biological pathways",
+		"title-short": "Reactome",
+		"volume": "33",
+		"author": [
+			{
+				"family": "Joshi-Tope",
+				"given": "G."
+			},
+			{
+				"family": "Gillespie",
+				"given": "M."
+			},
+			{
+				"family": "Vastrik",
+				"given": "I."
+			},
+			{
+				"family": "D'Eustachio",
+				"given": "P."
+			},
+			{
+				"family": "Schmidt",
+				"given": "E."
+			},
+			{
+				"family": "Bono",
+				"given": "B.",
+				"non-dropping-particle": "de"
+			},
+			{
+				"family": "Jassal",
+				"given": "B."
+			},
+			{
+				"family": "Gopinath",
+				"given": "G. R."
+			},
+			{
+				"family": "Wu",
+				"given": "G. R."
+			},
+			{
+				"family": "Matthews",
+				"given": "L."
+			},
+			{
+				"family": "Lewis",
+				"given": "S."
+			},
+			{
+				"family": "Birney",
+				"given": "E."
+			},
+			{
+				"family": "Stein",
+				"given": "L."
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2005",
+					1,
+					1
+				]
+			]
+		}
+	},
+	{
+		"id": "behnelCythonBestBoth2011",
+		"type": "article-journal",
+		"abstract": "Cython is a Python language extension that allows explicit type declarations and is compiled directly to C. As such, it addresses Python's large overhead for numerical loops and the difficulty of efficiently using existing C and Fortran code, which Cython can interact with natively.",
+		"container-title": "Computing in Science & Engineering",
+		"DOI": "10.1109/MCSE.2010.118",
+		"ISSN": "1558-366X",
+		"issue": "2",
+		"note": "event-title: Computing in Science & Engineering",
+		"page": "31-39",
+		"source": "IEEE Xplore",
+		"title": "Cython: The Best of Both Worlds",
+		"title-short": "Cython",
+		"URL": "https://ieeexplore.ieee.org/document/5582062",
+		"volume": "13",
+		"author": [
+			{
+				"family": "Behnel",
+				"given": "Stefan"
+			},
+			{
+				"family": "Bradshaw",
+				"given": "Robert"
+			},
+			{
+				"family": "Citro",
+				"given": "Craig"
+			},
+			{
+				"family": "Dalcin",
+				"given": "Lisandro"
+			},
+			{
+				"family": "Seljebotn",
+				"given": "Dag Sverre"
+			},
+			{
+				"family": "Smith",
+				"given": "Kurt"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2024",
+					1,
+					16
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2011",
+					3
+				]
+			]
+		}
+	},
+	{
+		"id": "loveModeratedEstimationFold2014",
+		"type": "article-journal",
+		"abstract": "In comparative high-throughput sequencing assays, a fundamental task is the analysis of count data, such as read counts per gene in RNA-seq, for evidence of systematic changes across experimental conditions. Small replicate numbers, discreteness, large dynamic range and the presence of outliers require a suitable statistical approach. We present DESeq2, a method for differential analysis of count data, using shrinkage estimation for dispersions and fold changes to improve stability and interpretability of estimates. This enables a more quantitative analysis focused on the strength rather than the mere presence of differential expression. The DESeq2 package is available at http://www.bioconductor.org/packages/release/bioc/html/DESeq2.html.",
+		"container-title": "Genome Biology",
+		"DOI": "10.1186/s13059-014-0550-8",
+		"ISSN": "1474-760X",
+		"issue": "12",
+		"journalAbbreviation": "Genome Biology",
+		"page": "550",
+		"source": "BioMed Central",
+		"title": "Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2",
+		"URL": "https://doi.org/10.1186/s13059-014-0550-8",
+		"volume": "15",
+		"author": [
+			{
+				"family": "Love",
+				"given": "Michael I."
+			},
+			{
+				"family": "Huber",
+				"given": "Wolfgang"
+			},
+			{
+				"family": "Anders",
+				"given": "Simon"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2024",
+					1,
+					16
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2014",
+					12,
+					5
+				]
+			]
+		}
+	},
+	{
+		"id": "newmanFindingEvaluatingCommunity2004",
+		"type": "article-journal",
+		"abstract": "We propose and study a set of algorithms for discovering community structure in networks -- natural divisions of network nodes into densely connected subgroups. Our algorithms all share two definitive features: first, they involve iterative removal of edges from the network to split it into communities, the edges removed being identified using one of a number of possible \"betweenness\" measures, and second, these measures are, crucially, recalculated after each removal. We also propose a measure for the strength of the community structure found by our algorithms, which gives us an objective metric for choosing the number of communities into which a network should be divided. We demonstrate that our algorithms are highly effective at discovering community structure in both computer-generated and real-world network data, and show how they can be used to shed light on the sometimes dauntingly complex structure of networked systems.",
+		"container-title": "Physical Review E",
+		"DOI": "10.1103/PhysRevE.69.026113",
+		"ISSN": "1539-3755, 1550-2376",
+		"issue": "2",
+		"journalAbbreviation": "Phys. Rev. E",
+		"note": "arXiv:cond-mat/0308217",
+		"page": "026113",
+		"source": "arXiv.org",
+		"title": "Finding and evaluating community structure in networks",
+		"URL": "http://arxiv.org/abs/cond-mat/0308217",
+		"volume": "69",
+		"author": [
+			{
+				"family": "Newman",
+				"given": "M. E. J."
+			},
+			{
+				"family": "Girvan",
+				"given": "M."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2024",
+					1,
+					18
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2004",
+					2,
+					26
+				]
+			]
+		}
+	}
+]

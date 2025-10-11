@@ -245,16 +245,25 @@ metabolomics_map = tar_map(
   correlation_samples,
   names = id,
   tar_target(
+    smd_data,
+    read_smd(id, smd_file, type, value_check)
+  ),
+  tar_target(missingness_tests, run_missingness_tests(smd_data)),
+  tar_target(
+    metabolomics_keep,
+    keep_in_samples(smd_data)
+  ),
+  tar_target(
     metabolomics_cor,
-    run_cor_everyway_new(id, smd_file, type, value_check)
+    run_cor_everyway_new(metabolomics_keep)
   ),
   tar_target(
     outliers_all,
-    calculate_outlier_effects(metabolomics_cor, "all")
+    calculate_outlier_effects(metabolomics_cor, metabolomics_keep, "all")
   ),
   tar_target(
     outliers_subsets,
-    calculate_outlier_effects(metabolomics_cor, "subsets")
+    calculate_outlier_effects(metabolomics_cor, metabolomics_keep, "subsets")
   ),
   tar_target(
     rsd_subsets,
@@ -272,19 +281,16 @@ metabolomics_map = tar_map(
     rsd_all_median,
     calculate_median_rsd_diffs(rsd_all)
   ),
+
   tar_target(
-    rsd_all_median_tbl,
-    get_just_medians(rsd_all_median)
-  ),
-  tar_target(
-    rsd_subsets_median_tbl,
-    get_just_medians(rsd_subsets_median)
+    pca_outliers,
+    filter_outlier_dopca(metabolomics_cor, metabolomics_keep)
   )
 )
 
 rsd_diffs_all_comb = tar_combine(
   rsd_diffs_all,
-  metabolomics_map[[8]],
+  metabolomics_map[[10]],
   command = bind_rows(!!!.x)
 )
 

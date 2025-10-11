@@ -12,18 +12,28 @@ median_normalize = function(in_counts) {
   return(norm_counts)
 }
 
-run_cor_everyway_new = function(id, smd_file, type, value_check) {
-  # id = samples_methods$id[1]
-  # smd_file = samples_methods$smd_file[1]
-
+read_smd = function(id, smd_file, type, value_check) {
   # id = correlation_samples$id[1]
   # smd_file = correlation_samples$smd_file[1]
-
+  # type = correlation_samples$type[1]
+  # value_check = correlation_samples$value_check[1]
   sample_smd = readRDS(smd_file)
 
-  sample_counts = assays(sample_smd)$counts
+  other_metadata = tibble::tibble(
+    id = id,
+    type = type,
+    value_check = value_check
+  )
 
-  sample_info = colData(sample_smd) |> as.data.frame()
+  metadata(sample_smd)$other = other_metadata
+
+  sample_smd
+}
+
+run_missingness_tests = function(in_smd) {
+  # in_smd = tar_read(smd_data_AN005022)
+  sample_counts = assays(in_smd)$counts
+  sample_info = colData(in_smd) |> tibble::as_tibble()
 
   rank_data = ICIKendallTau::rank_order_data(
     sample_counts,
@@ -41,6 +51,18 @@ run_cor_everyway_new = function(id, smd_file, type, value_check) {
     sample_classes = sample_info$factors
   )
 
+  return(list(
+    rank_data = rank_data,
+    rank_info = rank_info,
+    censorship_test = censorship_test,
+    metadata = metadata(in_smd)$other
+  ))
+}
+
+keep_in_samples = function(sample_smd) {
+  sample_counts = assays(sample_smd)$counts
+  sample_info = colData(sample_smd) |> tibble::as_tibble()
+
   keep_counts = keep_non_missing_percentage(
     sample_counts,
     sample_classes = sample_info$factors,
@@ -48,45 +70,59 @@ run_cor_everyway_new = function(id, smd_file, type, value_check) {
     missing_value = c(0, NA)
   )
 
-  sample_smd = sample_smd[keep_counts, ]
-  sample_counts = sample_counts[keep_counts, ]
+  out_smd = sample_smd[keep_counts, ]
 
+  tmp_counts = sample_counts[keep_counts, ]
+
+  id = metadata(sample_smd)$other$id[1]
   if (id %in% "NSCLC") {
-    sample_norm = sample_counts
+    sample_norm = tmp_counts
   } else {
-    sample_norm = median_normalize(sample_counts)
+    sample_norm = median_normalize(tmp_counts)
   }
 
-  assays(sample_smd)$normalized = sample_norm
+  assays(out_smd)$normalized = sample_norm
+
+  return(out_smd)
+}
+
+run_cor_everyway_new = function(keep_smd) {
+  # keep_smd = tar_read(metabolomics_keep_AN000364)
+  # keep_smd = tar_read(metabolomics_cor_AN001156)
+
+  sample_counts = assays(keep_smd)$normalized
+  sample_info = colData(keep_smd) |> as.data.frame()
+
+  other_metadata = metadata(keep_smd)$other
 
   sample_completeness = pairwise_completeness(sample_counts)
-  ici_cor = ici_kendalltau(sample_norm, global_na = c(NA, 0))$cor
+  ici_cor = ici_kendalltau(sample_counts, global_na = c(NA, 0))$cor
 
-  sample_counts_na = sample_counts
-  sample_counts_na[sample_counts_na == 0] = NA
+  sample_counts_0 = sample_counts
+  sample_counts_0[is.na(sample_counts)] = 0
 
   kt = kt_fast(
-    sample_counts_na,
+    sample_counts,
     use = "pairwise.complete.obs",
     return_matrix = TRUE
   )$tau
   # this one should match the Gierlinski paper values for median correlations
   pearson_base_nozero = cor(
-    sample_counts_na,
-    method = "pearson",
-    use = "pairwise.complete.obs"
-  )
-  pearson_base = cor(
     sample_counts,
     method = "pearson",
     use = "pairwise.complete.obs"
   )
-  pearson_log1p = cor(
-    log1p(sample_counts),
+  pearson_base = cor(
+    sample_counts_0,
     method = "pearson",
     use = "pairwise.complete.obs"
   )
-  log_counts = log(sample_counts)
+  pearson_log1p = cor(
+    log1p(sample_counts_0),
+    method = "pearson",
+    use = "pairwise.complete.obs"
+  )
+  log_counts = log(sample_counts_0)
   log_counts[is.infinite(log_counts)] = NA
   pearson_log = cor(
     log_counts,
@@ -104,12 +140,9 @@ run_cor_everyway_new = function(id, smd_file, type, value_check) {
     kt_base = kt
   )
   out_data = list(
-    id = id,
-    data = sample_smd,
-    ranks = rank_info,
-    censorship = censorship_test,
-    value_check = value_check,
-    cor_vals = cor_vals
+    metadata = other_metadata,
+    cor_vals = cor_vals,
+    sample_info = sample_info
   )
   return(out_data)
 }

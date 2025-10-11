@@ -1,5 +1,8 @@
 ---
 title: "Information-Content-Informed Kendall-tau Correlation Methodology: Interpreting Missing Values as Useful Information"
+citeproc: true
+bibliography: icikt_references.json
+csl: plos-computational-biology.csl
 format:
   poster-typst: 
     size: "38x54"
@@ -16,10 +19,11 @@ format:
 
 # Metabolomics Data are Missing Not At Random
 
-Metabolomics data can contain a large amount of missingness, regardless of whether the metabolites are measured using mass-spectrometry (MS) or nuclear magnetic resonance (NMR), with examples from metabolomics workbench ranging from 0.01 - 90% missing values for MS and 1 - 26% missing values for NMR experiments, respectively.
+Metabolomics data can contain a large amount of missingness, regardless of whether the metabolites are measured using mass-spectrometry (MS) or nuclear magnetic resonance (NMR), with examples from metabolomics workbench ranging from 0.01 - 90% missing values for MS and 1 - 26% missing values for NMR experiments, respectively (@fig-ranks (A)).
 Using a binomial test for missing not at random (MNAR) due to left-censoring, we find that after adjusting for multiple testing, 235 of 242 experiments have a p-value < 0.05.
 
-Calculating the median rank of metabolites, and the number of missing samples, we can see there is a direct relationship between the number of samples a metabolite is missing from and the minimum value of the median rank.
+Calculating the median rank of metabolites, and the number of missing samples, we can see there is a direct relationship between the number of samples a metabolite is missing from and the minimum value of the median rank (@fig-ranks C & D).
+Over all the datasets, the correlation of rank to number of missing is overwhelmingly negative, with a few datasets with positive correlations that we suspect have incorrectly or insufficiently defined subject sample factors (@fig-ranks B).
 
 ::: {#fig-ranks layout-ncol=2}
 ![% Missing](./images/missingness_percentage.png)
@@ -43,12 +47,16 @@ Given that the missingness is MNAR, and that it seems largely due to left-censor
 To make use of this information, we propose the **information-content-informed Kendall-tau** (ICI-Kt) methodology.
 Kendall-tau correlation is the easiest correlation to manipulate due to the way it encodes the ranks through pairwise comparisons of the ranks of data points by concordance and discordance of the data points.
 
-* Concordant:  $x_i > x_j \land y_i > y_j \| x_i < x_j \land y_i < y_j$
-* Discordant:  $x_i > x_j \land y_i < y_j \| x_i < x_j  \land y_i > y_j$
+* Concordant:  $x_i > x_j \text{and} y_i > y_j \| x_i < x_j \text{and} y_i < y_j$
+* Discordant:  $x_i > x_j \text{and} y_i < y_j \| x_i < x_j  \text{and} y_i > y_j$
 
 $$\tau_b = \frac{n_{concordant} - n_{discordant}}{\sqrt{(n_{tot} - n_{xtie})(n_{tot} - n_{ytie})}}$$
 
-where $n_{tot}$ is the total number of pairs, $n_{xtie}$ are the number of tied values in X, and $n_{ytie}$ are the number of paired values in Y.
+where $n_{tot}$ is the total number of pairs, $n_{xtie}$ are the number of tied values in X, and $n_{ytie}$ are the number of paired values in Y. 
+When we consider that most missingness is due to left-censorship, we can add to the definitions of concordant and discordant pairs that incorporate missingness, treating it as a *low* value.
+
+* Concordant: $x_i > x_j \text{and} y_i \text{&} !y_j \| x_i < x_j \text{and} !y_i \text{&} y_j \| x_i \text{&} !x_j \text{and} y_i > y_j \| !x_i \text{&} x_j \text{and} y_i < y_j \| x_i \text{&} !x_j \text{and} y_i \text{&} !y_j \| !x_i \text{&} x_j \text{and} !y_i \text{&} y_j$ 
+* Discordant: $x_i > x_j \text{and} y_i < y_j \| x_i < x_j \text{and} y_i > y_j \| x_i > x_j \text{and} !y_i \text{&} y_j \| x_i < x_j \text{and} y_i \text{&} !y_j \| x_i \text{&} !x_j \text{and} y_i < y_j \| !x_i \text{&} x_j \text{and} y_i > y_j \| x_i \text{&} !x_j \text{and} !y_i \text{&} y_j || !x_i \text{&} x_j \text{and} y_i \text{&} !y_j$
 
 # MNAR vs MAR
 
@@ -78,4 +86,23 @@ For this work, we only kept analyses that had:
 
 This resulted in 241 analyses, to which we added a previously published MS direct injection lipidomics dataset, for a total of 242.
 
-Prior to calculations, all metabolite values <= 0 were set to R's missing indicator, `NA`, so that zeros and actually missing indicated values were treated identically.
+Prior to calculations, all metabolite values <= 0 were set to R's missing indicator, `NA`, so that zeros and actually missing indicated values were treated identically, and missingness could be replaced with zero for some correlation calculations.
+
+## Correlation Methods
+
+For each dataset, we calculated correlations using a variety of methods. In each dataset, there were either zero values or `NA` values to represent missingness.
+To start, we replaced all zero values with `NA`, and then either left them as `NA` or changed them to zero as appropriate.
+
+* ICI-Kendall-tau using `NA` (icikt); 
+* and then scaled (multiplied) by a completeness metric (icikt_completeness);
+* Kendall-tau using `NA`, and then using pairwise-complete-observations (kt);
+* Pearson, with zeros replacing `NA`, using pairwise-complete-observations (pearson_base);
+* Pearson, using `NA` and pairwise-complete-observations (pearson_no_zero).
+* Pearson, with zeros replacing `NA`, and then a $log(x + 1)$ transform applied, using pairwise-complete-observations (pearson_log1p).
+* Pearson, with zeros replacing `NA`, and then a $log(x)$ transform, and setting infinite values to `NA` values, using pairwise-complete-observations (PL).
+
+## Detecting and Removing Possible Outliers
+
+For outlier detection, median sample-sample correlations within the sample treatment (genotype, condition, etc) is calculated, and $log(1 - cor_{median})$ calculated to transform it into a score. Then outliers are determined using *grDevices::boxplot.stats*, which by default are at 1.5X the whiskers in a box-and-whisker plot.
+As we are interested in only those correlations at the *low* end of correlation (becoming the high end after the subtraction and log-transform), we restrict to only those entries at the *high* end of the score distribution (using *visualizationQualityControl::determine_outliers* [@flightVisualizationQualityControlDevelopmentVisualization2021]).
+This is equivalent to using the correlation component of the score described by Gierliński et al [-@gierlinski_statisticalmodels_2015] and setting the other component weights to zero.
