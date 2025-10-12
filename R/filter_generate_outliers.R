@@ -289,28 +289,20 @@ filter_outlier_dopca = function(metabolomics_cor, metabolomics_keep) {
   }) |>
     purrr::list_rbind()
 
+  consider_pcs = c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6")
   pca_anova = purrr::imap(keep_samples, \(in_samples, cor_id) {
-    dopca_test(in_samples, sample_log, sample_info, cor_id)
+    dopca_test(in_samples, sample_log, sample_info, cor_id, consider_pcs)
   }) |>
     purrr::list_rbind()
-  consider_pcs = c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6")
-  find_pc = pca_anova |>
-    dplyr::filter(PC %in% consider_pcs) |>
-    dplyr::group_by(correlation) |>
-    dplyr::arrange(p.value, .by_group = TRUE) |>
-    dplyr::slice_head(n = 1)
 
-  pc_rle = rle(sort(find_pc$PC))
-  pc_likely = pc_rle$values[1]
+  pc_likely = pca_anova |>
+    dplyr::filter(correlation %in% "original", PC %in% consider_pcs) |>
+    dplyr::arrange(p.value) |>
+    dplyr::slice_head(n = 1) |>
+    dplyr::pull(PC)
 
   pc_anova_imp = pca_anova |>
     dplyr::filter(PC %in% pc_likely)
-
-  rank_p_value = tibble::tibble(p.value = sort(unique(pc_anova_imp$p.value)))
-  rank_p_value$rank = seq_len(nrow(rank_p_value))
-  pc_anova_imp = dplyr::left_join(pc_anova_imp, rank_p_value, by = "p.value")
-  pc_anova_imp = dplyr::left_join(pc_anova_imp, n_remove, by = "correlation")
-  pc_anova_imp = cbind(pc_anova_imp, metadata(metabolomics_keep)$other)
 
   return(pc_anova_imp)
 }
@@ -335,18 +327,83 @@ find_remove_outliers = function(in_cor, sample_info) {
 }
 
 
-dopca_test = function(keep_samples, sample_log, sample_info, correlation) {
+dopca_test = function(
+  keep_samples,
+  sample_log,
+  sample_info,
+  correlation,
+  consider_pcs
+) {
   sample_info = sample_info |>
     dplyr::filter(sample_id %in% keep_samples)
   sample_log = sample_log[, sample_info$sample_id]
 
   sample_pca = prcomp(t(sample_log), center = TRUE, scale. = FALSE)
-  sample_scores = sample_pca$x
+  sample_scores = sample_pca$x[, consider_pcs]
 
-  anova_res = visualizationQualityControl::visqc_test_pca_scores(
+  anova_res = custom_test_pca_scores(
     sample_scores,
     sample_info[, c("factors"), drop = FALSE]
   )
   anova_res$correlation = correlation
   anova_res
+}
+
+
+custom_test_pca_scores = function(pca_scores, sample_info) {
+  pc_test = colnames(pca_scores)
+  pc_2_variable = purrr::imap_dfr(sample_info, function(var_col, var_name) {
+    pc_test = purrr::map_df(pc_test, function(in_pc) {
+      #message(paste0(var_name, " : ", in_pc))
+      tmp_col = var_col
+      tmp_col = tmp_col[
+        !is.na(var_col) & !is.infinite(var_col) & !is.nan(var_col)
+      ]
+      n_var = length(unique(tmp_col))
+      is_1_all = FALSE
+      if (n_var == 1) {
+        is_1_all = TRUE
+      }
+      if ((n_var == nrow(sample_info)) && (is.character(var_col))) {
+        is_1_all = TRUE
+      }
+
+      if (!is_1_all) {
+        tmp_frame = data.frame(y = pca_scores[, in_pc], x = var_col)
+        na_x = is.na(tmp_frame$x) |
+          is.infinite(tmp_frame$x) |
+          is.nan(tmp_frame$x)
+        tmp_frame = tmp_frame[!na_x, ]
+        aov_res = stats::aov(y ~ x, data = tmp_frame)
+        tidy_res = broom::tidy(aov_res)[1, ]
+        eta_val = effectsize::eta_squared(aov_res, partial = FALSE)
+        tidy_res$eta2 = eta_val$Eta2
+        tidy_res$PC = in_pc
+        tidy_res$variable = var_name
+        return(tidy_res)
+      } else {
+        return(NULL)
+      }
+    })
+  })
+  pc_2_variable
+}
+
+
+pca_compare_original = function(pca_outliers_all) {
+  out_org = pca_outliers_all |>
+    dplyr::filter(correlation %in% "original") |>
+    dplyr::select(id, correlation, eta2) |>
+    dplyr::mutate(et2_org = eta2) |>
+    dplyr::select(-eta2, -correlation)
+
+  pca_eta2 = dplyr::left_join(
+    pca_outliers_all |>
+      dplyr::select(id, eta2, correlation, n_removed),
+    out_org,
+    by = "id"
+  )
+
+  pca_eta2 = pca_eta2 |>
+    dplyr::mutate(eta2_diff = eta2 - et2_org)
 }
