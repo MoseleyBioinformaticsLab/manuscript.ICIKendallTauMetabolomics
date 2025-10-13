@@ -304,6 +304,8 @@ filter_outlier_dopca = function(metabolomics_cor, metabolomics_keep) {
   pc_anova_imp = pca_anova |>
     dplyr::filter(PC %in% pc_likely)
 
+  pc_anova_imp = cbind(pc_anova_imp, metadata(metabolomics_keep)$other)
+
   return(pc_anova_imp)
 }
 
@@ -391,19 +393,56 @@ custom_test_pca_scores = function(pca_scores, sample_info) {
 
 
 pca_compare_original = function(pca_outliers_all) {
+  # tar_load(pca_outliers_all)
+  keep_eta2 = pca_outliers_all |>
+    dplyr::summarize(n_eta2 = length(unique(eta2)), .by = id) |>
+    dplyr::filter(n_eta2 > 1)
   out_org = pca_outliers_all |>
+    dplyr::filter(id %in% keep_eta2$id) |>
     dplyr::filter(correlation %in% "original") |>
     dplyr::select(id, correlation, eta2) |>
     dplyr::mutate(et2_org = eta2) |>
     dplyr::select(-eta2, -correlation)
 
-  pca_eta2 = dplyr::left_join(
+  pca_eta2 = dplyr::inner_join(
     pca_outliers_all |>
-      dplyr::select(id, eta2, correlation, n_removed),
+      dplyr::select(id, eta2, correlation),
     out_org,
     by = "id"
   )
 
   pca_eta2 = pca_eta2 |>
     dplyr::mutate(eta2_diff = eta2 - et2_org)
+
+  split_eta2 = split(pca_eta2, pca_eta2$id)
+
+  pca_eta_rank = purrr::map(split_eta2, \(in_eta) {
+    #in_eta = split_eta2[[1]]
+    rank_vals = tibble::tibble(
+      eta2 = sort(unique(in_eta$eta2), decreasing = TRUE)
+    )
+    rank_vals$rank = seq_len(nrow(rank_vals))
+    out_eta = dplyr::left_join(in_eta, rank_vals, by = "eta2")
+    out_eta
+  }) |>
+    purrr::list_rbind()
+
+  rank_figure = pca_eta_rank |>
+    ggplot(aes(x = rank, fill = correlation)) +
+    geom_histogram(position = position_dodge(width = 0.5)) +
+    theme(legend.position = "inside", legend.position.inside = c(0.7, 0.7)) +
+    labs(x = TeX("$rank(\\eta^2)$"))
+
+  full_histogram = pca_eta_rank |>
+    dplyr::filter(!(correlation %in% "original")) |>
+    ggplot(aes(y = eta2_diff, fill = correlation)) +
+    geom_histogram(bins = 100) +
+    facet_wrap(~correlation, nrow = 1) +
+    theme(legend.position = "none") +
+    labs(y = TeX("$\\eta^2 - \\eta{^2}_{org}$"))
+
+  zoom_histogram = full_histogram +
+    coord_cartesian(xlim = c(0, 20))
+
+  list(rank = rank_figure, full = full_histogram, zoom = zoom_histogram)
 }
