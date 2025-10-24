@@ -261,18 +261,103 @@ get_just_medians = function(median_diffs) {
   median_diffs$outliers$rsd_diff_median
 }
 
-filter_outlier_dopca = function(metabolomics_cor, metabolomics_keep) {
+filter_outliers_do_limma = function(metabolomics_cor, metabolomics_keep) {
   # metabolomics_cor = tar_read(metabolomics_cor_AN001156)
   # metabolomics_keep = tar_read(metabolomics_keep_AN001156)
+  # tar_source("R")
 
   sample_counts = assays(metabolomics_keep)$normalized
   sample_info = colData(metabolomics_keep) |> as.data.frame()
 
-  min_counts = min(sample_counts, na.rm = TRUE) / 2
-  sample_imputed = sample_counts
-  sample_imputed[is.na(sample_counts)] = min_counts
+  n_ssf = sample_info |>
+    dplyr::summarise(n = dplyr::n(), .by = factors)
+  if (all(n_ssf$n < 5)) {
+    return(NULL)
+  }
 
-  sample_log = log2(sample_imputed)
+  keep_samples = purrr::map(
+    metabolomics_cor$cor_vals,
+    find_remove_outliers,
+    sample_info
+  )
+
+  # don't forget to include original
+  keep_samples$original = sample_info$sample_id
+
+  n_kept = purrr::map_int(keep_samples, length) |>
+    tibble::enframe("correlation", "n_kept") |>
+    dplyr::mutate(n_samples = nrow(sample_info), n_removed = n_samples - n_kept)
+
+  limma_results = purrr::imap(keep_samples, \(in_samples, in_id) {
+    # in_id = "icikt"
+    # in_samples = keep_samples[[in_id]]
+    do_limma(in_samples, sample_counts, sample_info, in_id)
+  }) |>
+    purrr::list_rbind()
+
+  list(
+    n_feature = nrow(sample_counts),
+    limma = limma_results,
+    n_samples = n_kept,
+    metadata = metadata(metabolomics_keep)$other
+  )
+}
+
+do_limma = function(in_samples, sample_counts, sample_info, in_id) {
+  in_info = sample_info |>
+    dplyr::filter(sample_id %in% in_samples)
+  in_counts = sample_counts[, in_info$sample_id]
+
+  impute_counts = impute_missing(in_counts)
+  log_counts = log2(impute_counts)
+
+  clean_f = data.frame(factors = unique(in_info$factors)) |>
+    dplyr::mutate(clean_factors = janitor::make_clean_names(factors))
+  in_info = dplyr::left_join(in_info, clean_f, by = "factors")
+
+  grp_factors = factor(in_info$clean_factors)
+  grp_design = model.matrix(~ 0 + grp_factors)
+  colnames(grp_design) = gsub("^grp\\_factors", "", colnames(grp_design))
+
+  factor_combs = utils::combn(unique(in_info$clean_factors), 2)
+  factor_contr = apply(factor_combs, 2, \(x) {
+    paste0(x[1], " - ", x[2])
+  })
+  contr_matrix = makeContrasts(
+    contrasts = factor_contr,
+    levels = unique(in_info$clean_factors)
+  )
+
+  fit = lmFit(log_counts, design = grp_design)
+  fit2 = contrasts.fit(fit, contr_matrix)
+  fit2 = eBayes(fit2)
+  out_res = topTable(fit2, number = Inf)
+  out_res$feature_id = rownames(out_res)
+  out_res$correlation = in_id
+  out_res
+}
+
+impute_missing = function(data_in, fraction = 0.5) {
+  row_mins = apply(data_in, 1, min, na.rm = TRUE)
+  all_min = min(row_mins, na.rm = TRUE)
+  row_mins[is.na(row_mins) | is.infinite(row_mins)] = all_min
+  row_imputed = row_mins * fraction
+
+  data_imputed = data_in
+  for (irow in seq_len(nrow(data_imputed))) {
+    data_imputed[irow, is.na(data_imputed[irow, ])] = row_imputed[irow]
+  }
+  data_imputed
+}
+
+
+filter_outlier_dopca = function(metabolomics_cor, metabolomics_keep) {
+  # metabolomics_cor = tar_read(metabolomics_cor_AN001156)
+  # metabolomics_keep = tar_read(metabolomics_keep_AN001156)
+  # tar_source("R")
+
+  sample_counts = assays(metabolomics_keep)$normalized
+  sample_info = colData(metabolomics_keep) |> as.data.frame()
 
   keep_samples = purrr::map(
     metabolomics_cor$cor_vals,
@@ -291,7 +376,9 @@ filter_outlier_dopca = function(metabolomics_cor, metabolomics_keep) {
 
   consider_pcs = c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6")
   pca_anova = purrr::imap(keep_samples, \(in_samples, cor_id) {
-    dopca_test(in_samples, sample_log, sample_info, cor_id, consider_pcs)
+    # cor_id = "icikt_complete"
+    # in_samples = keep_samples[[cor_id]]
+    dopca_test(in_samples, sample_counts, sample_info, cor_id, consider_pcs)
   }) |>
     purrr::list_rbind()
 
@@ -331,14 +418,16 @@ find_remove_outliers = function(in_cor, sample_info) {
 
 dopca_test = function(
   keep_samples,
-  sample_log,
+  sample_counts,
   sample_info,
   correlation,
   consider_pcs
 ) {
   sample_info = sample_info |>
     dplyr::filter(sample_id %in% keep_samples)
-  sample_log = sample_log[, sample_info$sample_id]
+  sample_counts = sample_counts[, sample_info$sample_id]
+  sample_imputed = impute_missing(sample_counts)
+  sample_log = log2(sample_imputed)
 
   sample_pca = prcomp(t(sample_log), center = TRUE, scale. = FALSE)
   sample_scores = sample_pca$x[, consider_pcs]
@@ -395,14 +484,21 @@ custom_test_pca_scores = function(pca_scores, sample_info) {
 pca_compare_original = function(pca_outliers_all) {
   # tar_load(pca_outliers_all)
   keep_eta2 = pca_outliers_all |>
+    dplyr::filter(value_check %in% "good") |>
     dplyr::summarize(n_eta2 = length(unique(eta2)), .by = id) |>
     dplyr::filter(n_eta2 > 1)
   out_org = pca_outliers_all |>
     dplyr::filter(id %in% keep_eta2$id) |>
     dplyr::filter(correlation %in% "original") |>
     dplyr::select(id, correlation, eta2) |>
-    dplyr::mutate(et2_org = eta2) |>
-    dplyr::select(-eta2, -correlation)
+    dplyr::mutate(eta2_original = eta2) |>
+    dplyr::select(-eta2, -correlation) |>
+    dplyr::mutate(
+      size_eta = dplyr::case_when(
+        eta2_original <= 0.75 ~ "low",
+        TRUE ~ "high"
+      )
+    )
 
   pca_eta2 = dplyr::inner_join(
     pca_outliers_all |>
@@ -412,7 +508,7 @@ pca_compare_original = function(pca_outliers_all) {
   )
 
   pca_eta2 = pca_eta2 |>
-    dplyr::mutate(eta2_diff = eta2 - et2_org)
+    dplyr::mutate(eta2_diff = eta2 - eta2_original)
 
   split_eta2 = split(pca_eta2, pca_eta2$id)
 
@@ -445,4 +541,66 @@ pca_compare_original = function(pca_outliers_all) {
     coord_cartesian(xlim = c(0, 20))
 
   list(rank = rank_figure, full = full_histogram, zoom = zoom_histogram)
+}
+
+limma_compare_significant = function(limma_outliers) {
+  # limma_outliers = tar_read(limma_outliers_AN001156)
+  # limma_outliers = tar_read(limma_outliers_AN004368)
+  if (is.null(limma_outliers)) {
+    return(NULL)
+  }
+  n_each = limma_outliers$limma |>
+    dplyr::summarise(n_sig = sum(adj.P.Val <= 0.05), .by = correlation)
+
+  if (length(unique(n_each)) == 1) {
+    return(NULL)
+  }
+
+  n_org = n_each |>
+    dplyr::filter(correlation %in% "original") |>
+    dplyr::pull(n_sig)
+  n_each$total = limma_outliers$n_feature
+  n_each = n_each |>
+    dplyr::mutate(
+      frac_total = n_sig / total,
+      frac_original = n_sig / n_org
+    )
+  n_out = cbind(n_each, limma_outliers$metadata)
+  return(n_out)
+}
+
+
+examine_limma_significant = function(limma_compare_all) {
+  # tar_load(limma_compare_all)
+  zero_org = limma_compare_all |>
+    dplyr::filter(correlation %in% "original", n_sig == 0)
+  limma_use = limma_compare_all |>
+    dplyr::filter(!(id %in% zero_org$id))
+
+  limma_good = limma_compare_all |>
+    dplyr::filter(value_check %in% "good")
+  limma_class_frac = limma_good |>
+    dplyr::filter(correlation %in% "original") |>
+    dplyr::mutate(
+      sig_frac = dplyr::case_when(
+        frac_total <= 0.3 ~ "low",
+        TRUE ~ "high"
+      )
+    )
+  limma_good = dplyr::left_join(
+    limma_good,
+    limma_class_frac |> dplyr::select(id, sig_frac),
+    by = "id"
+  )
+  limma_good |>
+    ggplot(aes(x = frac_total, y = correlation)) +
+    geom_boxplot() +
+    facet_wrap(~sig_frac, nrow = 1, scales = "free")
+
+  limma_good |>
+    dplyr::summarise(
+      mean_total = mean(frac_total),
+      sd_total = sd(frac_total),
+      .by = c(correlation, sig_frac)
+    )
 }
