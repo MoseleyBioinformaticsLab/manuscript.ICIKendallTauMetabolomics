@@ -565,6 +565,13 @@ limma_compare_significant = function(limma_outliers) {
       frac_total = n_sig / total,
       frac_original = n_sig / n_org
     )
+  n_samples = limma_outliers$n_samples |>
+    dplyr::mutate(
+      n_feature = limma_outliers$n_feature,
+      n_measured = limma_outliers$n_feature *
+        limma_outliers$n_samples$n_samples[1]
+    )
+  n_each = dplyr::left_join(n_each, n_samples, by = "correlation")
   n_out = cbind(n_each, limma_outliers$metadata)
   return(n_out)
 }
@@ -579,28 +586,152 @@ examine_limma_significant = function(limma_compare_all) {
 
   limma_good = limma_compare_all |>
     dplyr::filter(value_check %in% "good")
-  limma_class_frac = limma_good |>
-    dplyr::filter(correlation %in% "original") |>
+
+  limma_original_frac = limma_good |>
+    dplyr::filter(correlation %in% "original")
+
+  frac_total_v_feature_plot = limma_original_frac |>
+    ggplot(aes(x = frac_total, y = n_feature)) +
+    geom_point(size = 3) +
+    coord_cartesian(ylim = c(0, 6000)) +
+    labs(
+      x = "Fraction Significant Original Samples",
+      y = "Number of Metabolites"
+    )
+
+  density_fraction = density(limma_original_frac$frac_total)
+
+  density_df = tibble::tibble(x = density_fraction$x, y = density_fraction$y)
+  density_df = density_df |>
+    dplyr::filter((x > 0.1), (x < 0.6))
+  density_min = density_df |>
+    dplyr::slice_min(y)
+
+  limma_original_frac = limma_original_frac |>
     dplyr::mutate(
       sig_frac = dplyr::case_when(
-        frac_total <= 0.3 ~ "low",
+        frac_total <= density_min$x[1] ~ "low",
         TRUE ~ "high"
-      )
+      ),
+      frac_total_original = frac_total
     )
   limma_good = dplyr::left_join(
     limma_good,
-    limma_class_frac |> dplyr::select(id, sig_frac),
+    limma_original_frac |> dplyr::select(id, sig_frac, frac_total_original),
     by = "id"
   )
+  limma_good = limma_good |>
+    dplyr::mutate(correlation_difference = frac_total - frac_total_original)
   limma_good |>
     ggplot(aes(x = frac_total, y = correlation)) +
     geom_boxplot() +
     facet_wrap(~sig_frac, nrow = 1, scales = "free")
 
-  limma_good |>
+  limma_summary = limma_good |>
     dplyr::summarise(
-      mean_total = mean(frac_total),
-      sd_total = sd(frac_total),
+      mean = mean(frac_total),
+      sd = sd(frac_total),
+      median = median(frac_total),
+      mad = mad(frac_total),
       .by = c(correlation, sig_frac)
     )
+  limma_summary_diff = limma_good |>
+    dplyr::summarise(
+      mean = mean(correlation_difference),
+      sd = sd(correlation_difference),
+      median = median(correlation_difference),
+      mad = mad(correlation_difference),
+      .by = c(correlation, sig_frac)
+    )
+
+  return(list(
+    good = limma_good,
+    fraction_total = limma_summary,
+    total_difference = limma_summary_diff
+  ))
+}
+
+
+calculate_group_variances = function(metabolomics_keep) {
+  # metabolomics_keep = tar_read(metabolomics_keep_AN000024)
+
+  sample_info = colData(metabolomics_keep) |> tibble::as_tibble()
+
+  norm_counts = assays(metabolomics_keep)$normalized
+  impute_counts = impute_missing(norm_counts) |> log2()
+
+  split_factors = split(sample_info$sample_id, sample_info$factors)
+  sd_split = purrr::imap(split_factors, \(in_samples, in_id) {
+    impute_sub = impute_counts[, in_samples]
+    impute_sd = apply(impute_sub, 1, sd, na.rm = TRUE)
+    sd_tibble = tibble::tibble(
+      feature_id = rownames(impute_sub),
+      sd = impute_sd,
+      factors = in_id
+    )
+    sd_tibble
+  }) |>
+    purrr::list_rbind()
+}
+
+summarize_group_variances = function(feature_variance, id) {
+  group_summary_all = feature_variance |>
+    dplyr::summarise(
+      n_zero = sum(sd == 0),
+      mean_all = mean(sd),
+      sd_all = sd(sd),
+      median_all = median(sd),
+      mad_all = mad(sd),
+      .by = factors
+    )
+  group_summary_n0 = feature_variance |>
+    dplyr::filter(sd > 0) |>
+    dplyr::summarize(
+      mean_no0 = mean(sd),
+      sd_no0 = sd(sd),
+      median_no0 = median(sd),
+      mad_no0 = mad(sd),
+      .by = factors
+    ) |>
+    dplyr::mutate(id = id)
+  full_summary = dplyr::left_join(
+    group_summary_all,
+    group_summary_n0,
+    by = "factors"
+  )
+  full_summary
+}
+
+compare_limma_variance = function(limma_comparisons, feature_variances_all) {
+  tar_load(c(limma_comparisons, feature_variances_all))
+  limma_good = limma_comparisons$good
+
+  feature_max = feature_variances_all |>
+    dplyr::summarise(
+      max_n_zero = max(n_zero),
+      max_sd = max(sd_all),
+      max_sd_n0 = max(sd_no0),
+      min_n_zero = min(n_zero),
+      min_sd = min(sd_all),
+      min_sd_n0 = min(sd_no0),
+      max_mean = max(mean_all),
+      min_mean = min(mean_all),
+      max_mean_n0 = max(mean_no0),
+      min_mean_n0 = min(mean_no0),
+      .by = id
+    )
+
+  limma_variance = dplyr::left_join(limma_good, feature_max, by = "id")
+
+  limma_log1p = limma_variance |>
+    dplyr::filter(correlation %in% c("pearson_log1p", "icikt_complete"))
+  limma_log1p_diff = limma_log1p |>
+    dplyr::select(correlation, id, frac_total) |>
+    tidyr::pivot_wider(names_from = correlation, values_from = frac_total) |>
+    dplyr::mutate(ici_pearson_diff = icikt_complete - pearson_log1p)
+  limma_variance2 = dplyr::left_join(
+    limma_variance,
+    limma_log1p_diff |> dplyr::select(id, ici_pearson_diff),
+    by = "id"
+  )
 }

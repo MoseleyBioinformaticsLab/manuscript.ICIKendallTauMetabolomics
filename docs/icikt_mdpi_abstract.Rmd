@@ -2,16 +2,15 @@
 title: 'Information-Content-Informed Kendall-tau Correlation Methodology: Interpreting Missing Values as Useful Information'
 author:
   - Robert M Flight:
-      institute: [markey, biochem, rcsirm]
+      institute: [markey, biochem]
   - Praneeth S Bhatt:
-      institute: compeng
+      institute: washu
   - Hunter NB Moseley:
-      institute: [markey, biochem, rcsirm, ibi, tox]
+      institute: [markey, biochem, ibi, tox]
 institute:
   - markey: Markey Cancer Center, University of Kentucky, Lexington, KY 40536, USA
   - biochem: Department of Molecular & Cellular Biochemistry, University of Kentucky, Lexington, KY 40536, USA
-  - rcsirm: Resource Center for Stable Isotope Resolved Metabolomics, University of Kentucky, Lexington, KY 40536, USA
-  - compeng: Department of Electrical and Computer Engineering, University of Kentucky, Lexington, KY 40506
+  - washu: University of Washington Graduate School, Seattle, WA, USA
   - ibi: Institute for Biomedical Informatics, University of Kentucky, Lexington, KY 40536, USA
   - tox: Department of Toxicology and Cancer Biology, University of Kentucky, Lexington, KY 40536, USA
 output: 
@@ -33,10 +32,10 @@ These missing data are not missing at random, but represent potentially useful i
 
 **Methods**: To use this left-censorship missingness in correlation, we propose the information-content-informed Kendall-tau (ICI-Kt) methodology.
 We show how left-censored missing values can be included within the definition of the Kendall-tau correlation coefficient, and how that inclusion leads to an interpretation of information being added to the correlation.
-We also implement calculations for additional measures of theoretical maxima and pairwise completeness that provied additional interprative perspectives to the methodology.
+We also implement calculations for additional measures of theoretical maxima and pairwise completeness that provide additional interpretive perspectives to the methodology.
 
-To test and validate the ICI-Kt methodology, we used a variety of simulated datasets with different types and amounts of missingness, as well as real metabolomics experiments from Metabolomics Workbench (MW). These include (but are not limited to) lipidomics of non-small cell lung carcinomia, and small molecule metabolomics of rat stamina (MW ID PR000016), comparing ICI-Kt to Kendall-tau, Spearman and Pearson correlations in each case.
+To test and validate the ICI-Kt methodology, we used a variety of simulated datasets with different types, amounts, and causes of missingness, as well as over 100 metabolomics experimental datasets from Metabolomics Workbench (MW); comparing ICI-Kt to Kendall-tau and Pearson correlations in each case.
 
-**Results**: Tests on both simulated and real metabolomics datasets demonstrate that ICI-Kt performs better than Kendall-tau, Spearman, or Pearson correlation methods when left-censored values are present, both in detecting outlier samples and constructing metabolite-metabolite networks.
+**Results**: Tests on both simulated and real metabolomics datasets demonstrate that ICI-Kt performs better than Kendall-tau, Spearman, or Pearson correlation methods when left-censored values are present, especially for outlier detection.
 
-We provide explicitly parallel implementations in both R and Python packages that enable fast calculations when applied to large datasets.
+We provide parallel processing implementations of these algorithms in both R and Python packages that enable fast calculations when applied to large datasets.
