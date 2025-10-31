@@ -305,6 +305,11 @@ metabolomics_map = tar_map(
   tar_target(
     feature_variance_summary,
     summarize_group_variances(feature_variance, id)
+  ),
+
+  tar_target(
+    limma_feature_compare,
+    compare_limma_feature_pvals(limma_outliers)
   )
 )
 
@@ -317,6 +322,12 @@ pca_outliers_comb = tar_combine(
 limma_outliers_comb = tar_combine(
   limma_compare_all,
   metabolomics_map[[13]],
+  command = bind_rows(!!!.x)
+)
+
+limma_feature_compare_comb = tar_combine(
+  limma_feature_compare_all,
+  metabolomics_map[[16]],
   command = bind_rows(!!!.x)
 )
 
@@ -419,6 +430,7 @@ list(
   rsd_diffs_subsets_comb,
   pca_outliers_comb,
   limma_outliers_comb,
+  limma_feature_compare_comb,
   feature_variance_comb,
   other_plan
 )

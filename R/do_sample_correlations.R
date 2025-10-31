@@ -32,6 +32,7 @@ read_smd = function(id, smd_file, type, value_check) {
 
 run_missingness_tests = function(in_smd) {
   # in_smd = tar_read(smd_data_AN005022)
+  # in_smd = tar_read(smd_data_AN002580)
   sample_counts = assays(in_smd)$counts
   sample_info = colData(in_smd) |> tibble::as_tibble()
 
@@ -224,6 +225,8 @@ calculate_cor_medians = function(sample_cor, sample_ids, sample_classes) {
 
 
 calculate_missingness = function(id, smd_file, type, value_check) {
+  # id = "AN000049"
+  # smd_file = "data/smd/AN000049.rds"
   sample_smd = readRDS(smd_file)
 
   sample_counts = assays(sample_smd)$counts

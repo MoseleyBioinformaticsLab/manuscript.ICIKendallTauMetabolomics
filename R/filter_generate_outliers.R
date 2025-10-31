@@ -584,11 +584,15 @@ examine_limma_significant = function(limma_compare_all) {
   limma_use = limma_compare_all |>
     dplyr::filter(!(id %in% zero_org$id))
 
+  # limma_good = limma_compare_all |>
+  #   dplyr::filter(value_check %in% "good") |>
+  #   dplyr::mutate(method = correlation)
+
   limma_good = limma_compare_all |>
-    dplyr::filter(value_check %in% "good")
+    dplyr::mutate(method = correlation)
 
   limma_original_frac = limma_good |>
-    dplyr::filter(correlation %in% "original")
+    dplyr::filter(method %in% "original")
 
   frac_total_v_feature_plot = limma_original_frac |>
     ggplot(aes(x = frac_total, y = n_feature)) +
@@ -603,7 +607,7 @@ examine_limma_significant = function(limma_compare_all) {
 
   density_df = tibble::tibble(x = density_fraction$x, y = density_fraction$y)
   density_df = density_df |>
-    dplyr::filter((x > 0.1), (x < 0.6))
+    dplyr::filter((x > 0.2), (x < 0.6))
   density_min = density_df |>
     dplyr::slice_min(y)
 
@@ -621,7 +625,7 @@ examine_limma_significant = function(limma_compare_all) {
     by = "id"
   )
   limma_good = limma_good |>
-    dplyr::mutate(correlation_difference = frac_total - frac_total_original)
+    dplyr::mutate(method_difference = frac_total - frac_total_original)
   limma_good |>
     ggplot(aes(x = frac_total, y = correlation)) +
     geom_boxplot() +
@@ -633,15 +637,15 @@ examine_limma_significant = function(limma_compare_all) {
       sd = sd(frac_total),
       median = median(frac_total),
       mad = mad(frac_total),
-      .by = c(correlation, sig_frac)
+      .by = c(method, sig_frac)
     )
   limma_summary_diff = limma_good |>
     dplyr::summarise(
-      mean = mean(correlation_difference),
-      sd = sd(correlation_difference),
-      median = median(correlation_difference),
-      mad = mad(correlation_difference),
-      .by = c(correlation, sig_frac)
+      mean = mean(method_difference),
+      sd = sd(method_difference),
+      median = median(method_difference),
+      mad = mad(method_difference),
+      .by = c(method, sig_frac)
     )
 
   return(list(
@@ -734,4 +738,63 @@ compare_limma_variance = function(limma_comparisons, feature_variances_all) {
     limma_log1p_diff |> dplyr::select(id, ici_pearson_diff),
     by = "id"
   )
+
+  # two mor
+}
+
+
+compare_limma_feature_pvals = function(limma_outlier) {
+  # limma_outlier = tar_read(limma_outliers_AN000710)
+  # limma_outlier = tar_read(limma_outliers_AN002900)
+
+  limma_data = limma_outlier$limma
+  all_comp = combn(unique(limma_outlier$limma$correlation), 2)
+
+  comp_labels = paste0(all_comp[1, ], "_v_", all_comp[2, ])
+
+  na_res = tibble::tribble(
+    ~estimate      , ~statistic     , ~p.value       , ~parameter     , ~conf.low      , ~conf.high     , ~method          , ~alternative     ,
+    as.numeric(NA) , as.numeric(NA) , as.numeric(NA) , as.numeric(NA) , as.numeric(NA) , as.numeric(NA) , as.character(NA) , as.character(NA)
+  )
+
+  out_comparisons = purrr::map(seq_len(length(comp_labels)), \(ilab) {
+    # ilab = 14
+    # ilab = 5
+    use_comp1 = all_comp[1, ilab]
+    use_comp2 = all_comp[2, ilab]
+    just_comp = limma_data |>
+      dplyr::filter(correlation %in% c(use_comp1, use_comp2)) |>
+      dplyr::select(adj.P.Val, feature_id, correlation)
+    comp_wide = just_comp |>
+      tidyr::pivot_wider(names_from = correlation, values_from = adj.P.Val)
+    comp_diff = comp_wide[[use_comp1]] - comp_wide[[use_comp2]]
+
+    sd_diff = sd(comp_diff)
+    if (sd_diff <= 1e-20) {
+      tmp_res = na_res |>
+        dplyr::mutate(test = "t-test", comparison = comp_labels[ilab])
+      return(tmp_res)
+    }
+
+    t_test_res = broom::tidy(t.test(comp_diff)) |>
+      dplyr::mutate(test = "t-test")
+    pos_with_0 = sum(comp_diff >= 0)
+    pos_pos = sum(comp_diff > 0)
+    neg_neg = sum(comp_diff < 0)
+
+    binom_0 = broom::tidy(binom.test(
+      c(pos_with_0, neg_neg)
+    )) |>
+      dplyr::mutate(test = "binom_0_pos")
+    binom_pos = broom::tidy(binom.test(c(pos_pos, neg_neg))) |>
+      dplyr::mutate(test = "binom_pos")
+    out_res = dplyr::bind_rows(t_test_res, binom_0, binom_pos)
+    out_res$comparison = comp_labels[ilab]
+    out_res
+  }) |>
+    purrr::list_rbind()
+  out_comparisons = out_comparisons |>
+    dplyr::mutate(id = limma_outlier$metadata$id)
+
+  out_comparisons
 }
