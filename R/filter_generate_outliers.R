@@ -577,19 +577,31 @@ limma_compare_significant = function(limma_outliers) {
 }
 
 
-examine_limma_significant = function(limma_compare_all) {
+examine_limma_significant = function(limma_compare_all, use_analyses = "good") {
   # tar_load(limma_compare_all)
-  zero_org = limma_compare_all |>
-    dplyr::filter(correlation %in% "original", n_sig == 0)
-  limma_use = limma_compare_all |>
-    dplyr::filter(!(id %in% zero_org$id))
+  # zero_org = limma_compare_all |>
+  #   dplyr::filter(correlation %in% "original", n_sig == 0)
+  # limma_use = limma_compare_all |>
+  #   dplyr::filter(!(id %in% zero_org$id))
 
-  # limma_good = limma_compare_all |>
-  #   dplyr::filter(value_check %in% "good") |>
-  #   dplyr::mutate(method = correlation)
+  n_method = length(unique(limma_compare_all$correlation))
+  zero_all = limma_compare_all |>
+    dplyr::filter(n_sig == 0) |>
+    dplyr::summarise(n_0 = dplyr::n(), .by = id) |>
+    dplyr::filter(n_0 == n_method)
 
-  limma_good = limma_compare_all |>
-    dplyr::mutate(method = correlation)
+  if (use_analyses %in% "good") {
+    limma_good = limma_compare_all |>
+      dplyr::filter(!(id %in% zero_all$id)) |>
+      dplyr::filter(value_check %in% "good") |>
+      dplyr::mutate(method = correlation)
+  } else if (use_analyses %in% "all") {
+    limma_good = limma_compare_all |>
+      dplyr::filter(!(id %in% zero_all$id)) |>
+      dplyr::mutate(method = correlation)
+  } else {
+    stop("That `use_analyses` is not supported!")
+  }
 
   limma_original_frac = limma_good |>
     dplyr::filter(method %in% "original")
@@ -653,6 +665,68 @@ examine_limma_significant = function(limma_compare_all) {
     fraction_total = limma_summary,
     total_difference = limma_summary_diff
   ))
+}
+
+test_limma_significant = function(limma_compare_all, use_analyses = "good") {
+  # tar_load(limma_compare_all)
+  n_method = length(unique(limma_compare_all$correlation))
+  zero_all = limma_compare_all |>
+    dplyr::filter(n_sig == 0) |>
+    dplyr::summarise(n_0 = dplyr::n(), .by = id) |>
+    dplyr::filter(n_0 == n_method)
+
+  # zero_org = limma_compare_all |>
+  #   dplyr::filter(correlation %in% "original", n_sig == 0)
+  # limma_use = limma_compare_all |>
+  #   dplyr::filter(!(id %in% zero_org$id))
+
+  if (use_analyses %in% "good") {
+    limma_good = limma_compare_all |>
+      dplyr::filter(!(id %in% zero_all$id)) |>
+      dplyr::filter(value_check %in% "good") |>
+      dplyr::mutate(method = correlation)
+  } else if (use_analyses %in% "all") {
+    limma_good = limma_compare_all |>
+      dplyr::mutate(method = correlation)
+  } else {
+    stop("That `use_analyses` is not supported!")
+  }
+
+  method_comparisons = combn(unique(limma_good$method), 2)
+  comparison_labels = paste0(
+    method_comparisons[1, ],
+    "_v_",
+    method_comparisons[2, ]
+  )
+
+  comparison_stats = purrr::map(seq_len(length(comparison_labels)), \(ilab) {
+    # ilab = 1
+    # ilab = 5
+    use_comp1 = method_comparisons[1, ilab]
+    use_comp2 = method_comparisons[2, ilab]
+    just_comp = limma_good |>
+      dplyr::filter(method %in% c(use_comp1, use_comp2)) |>
+      dplyr::select(frac_total, id, method)
+    comp_wide = just_comp |>
+      tidyr::pivot_wider(names_from = method, values_from = frac_total)
+    comp_diff = comp_wide[[use_comp1]] - comp_wide[[use_comp2]]
+
+    sd_diff = sd(comp_diff)
+    if (sd_diff <= 1e-20) {
+      tmp_res = na_res |>
+        dplyr::mutate(comparison = comp_labels[ilab])
+      return(tmp_res)
+    }
+
+    t_test_res = broom::tidy(t.test(
+      x = comp_wide[[use_comp1]],
+      y = comp_wide[[use_comp2]],
+      paired = TRUE
+    )) |>
+      dplyr::mutate(comparison = comparison_labels[ilab])
+  }) |>
+    purrr::list_rbind()
+  comparison_stats
 }
 
 

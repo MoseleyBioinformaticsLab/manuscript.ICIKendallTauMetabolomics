@@ -414,6 +414,8 @@ other_plan = tar_assign({
 
   limma_comparisons = examine_limma_significant(limma_compare_all) |>
     tar_target()
+  limma_test_comparisons = test_limma_significant(limma_compare_all) |>
+    tar_target()
 })
 
 list(
