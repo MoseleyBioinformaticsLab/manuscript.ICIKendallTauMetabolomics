@@ -60,6 +60,8 @@ parse_mwtab = function(mwtab_file) {
   #mwtab_file = "data/repaired/https:%2F%2Fwww_metabolomicsworkbench_org%2Frest%2Fstudy%2Fanalysis_id%2FAN000004%2Fmwtab%2Ftxt.txt"
 
   # mwtab_file = "data/repaired/https:%2F%2Fwww_metabolomicsworkbench_org%2Frest%2Fstudy%2Fanalysis_id%2FAN000038%2Fmwtab%2Ftxt.txt"
+
+  # mwtab_file = "data/repaired/https:%2F%2Fwww_metabolomicsworkbench_org%2Frest%2Fstudy%2Fanalysis_id%2FAN000555%2Fmwtab%2Ftxt.txt"
   mwtab_lines = readLines(mwtab_file)
   block_lines = which(stringr::str_detect(mwtab_lines, "^\\#"))
 
@@ -108,6 +110,7 @@ parse_mwtab = function(mwtab_file) {
   })
 
   if (is.null(parsed_data$SUBJECT_SAMPLE_FACTORS)) {
+    # browser()
     return(NULL)
   }
   n_reps_factors = count_factors_replicates(parsed_data$SUBJECT_SAMPLE_FACTORS)
@@ -254,12 +257,27 @@ parse_ms_data = function(ms_data) {
   }) |>
     purrr::list_rbind()
   ms_long_df$value = as.numeric(ms_long_df$value)
-  ms_wide_df = ms_long_df |>
+
+  # sometimes there are multiple entries
+  mult_entry = ms_long_df |>
+    dplyr::summarise(n = dplyr::n(), .by = c(id, sample_id)) |>
+    dplyr::filter(n > 1L) |>
+    dplyr::pull(id) |>
+    unique()
+  ms_long_df_uniq = ms_long_df |>
+    dplyr::filter(!(id %in% mult_entry))
+
+  if (nrow(ms_long_df_uniq) == 0) {
+    return(NULL)
+  }
+
+  ms_wide_df = ms_long_df_uniq |>
     tidyr::pivot_wider(
       id_cols = id,
       values_from = value,
       names_from = sample_id
     )
+
   ms_wide_df
 }
 
@@ -381,11 +399,11 @@ find_possible_mwtab = function() {
   keep_reps = purrr::map(mwtab_nonna$reps, \(in_reps) {
     # in_reps = mwtab_nonna$reps[[1]]
     keep_reps = in_reps |>
-      dplyr::filter(n >= 4)
+      dplyr::filter(n >= 3)
     keep_reps
   })
   has_multi = purrr::map_lgl(keep_reps, \(x) {
-    nrow(x) > 1
+    (nrow(x) >= 2) && (sum(x$n >= 5) >= 1)
   })
   n_has_multi = sum(has_multi)
 
@@ -434,6 +452,9 @@ load_and_check_mwtab = function(rds_file, reps, ...) {
   # rds_file = check_results$rds_file[70]
   # reps = check_results$reps[[70]]
 
+  # rds_file = check_results$rds_file[7]
+  # reps = check_results$reps[[7]]
+
   keep_factors = reps
   mwtab_data = readRDS(rds_file)
 
@@ -454,7 +475,20 @@ load_and_check_mwtab = function(rds_file, reps, ...) {
         0
     )
   ) {
-    return("missing samples")
+    match_samples = base::intersect(
+      sample_factors$sample_id,
+      colnames(mwtab_data$MEAUREMENTS)
+    )
+    sample_factors = sample_factors |>
+      dplyr::filter(sample_id %in% match_samples)
+
+    n_rep = sample_factors |>
+      dplyr::summarise(n = dplyr::n(), .by = factors)
+    keep_it = (nrow(n_rep) >= 2) && (sum(n_rep$n >= 5) >= 1)
+
+    if (!keep_it) {
+      return("missing or not enough samples")
+    }
   }
 
   if (
@@ -538,6 +572,14 @@ convert_mwtab_smd = function(rds_file, reps, smd_file, ...) {
   # rds_file = mwtab_keep$rds_file[6]
   # reps = mwtab_keep$reps[[6]]
   # smd_file = mwtab_keep$smd_file[6]
+
+  # rds_file = mwtab_keep$rds_file[7]
+  # reps = mwtab_keep$reps[[7]]
+  # smd_file = mwtab_keep$smd_file[7]
+
+  # rds_file = mwtab_keep$rds_file[118]
+  # reps = mwtab_keep$reps[[118]]
+  # smd_file = mwtab_keep$smd_file[118]
   mwtab_data = readRDS(rds_file)
   sample_metadata = mwtab_data$SUBJECT_SAMPLE_FACTORS
   sample_metadata = sample_metadata |>
@@ -572,6 +614,16 @@ convert_mwtab_smd = function(rds_file, reps, smd_file, ...) {
     )
   }
 
+  match_samples = base::intersect(
+    sample_metadata$sample_id,
+    colnames(mwtab_data$MEASUREMENTS)
+  )
+
+  if ((length(match_samples) == 0) || (is.null(match_samples))) {
+    stop("No matching samples!")
+  }
+  sample_metadata = sample_metadata |>
+    dplyr::filter(sample_id %in% match_samples)
   measurements = mwtab_data$MEASUREMENTS[, c("id", sample_metadata$sample_id)]
 
   feature_DF = DataFrame(feature_metadata)
@@ -671,4 +723,16 @@ convert_nsclc_smd = function() {
     )
   )
   saveRDS(mwtab_keep, "data/smd/mwtab_smd.rds")
+}
+
+
+convert_list_to_df = function(measurements) {
+  id = "AN000555"
+  rds_file = fs::path("data", "processed", id, ext = "rds")
+  mwtab_data = readRDS(rds_file)
+  measurements = mwtab_data$MEASUREMENTS
+
+  out_vals = purrr::map(measurements, \(in_meas) {
+    unlist(in_meas)
+  })
 }
