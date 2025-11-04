@@ -384,12 +384,6 @@ other_plan = tar_assign({
     dplyr::mutate(padjust = p.adjust(p.value, method = "BH")) |>
     tar_target()
 
-  missingness_image = create_percent_missingness(missingness_summary) |>
-    tar_target()
-  rank_images = rank_missingness(metabolomics_cor_AN001074) |>
-    tar_target()
-  rank_correlation_images = create_rank_correlation_image(rank_correlations) |>
-    tar_target()
   variable_dynamic_range_image = create_variable_dynamic_range_image(
     vl_diff_graph
   ) |>
@@ -399,12 +393,6 @@ other_plan = tar_assign({
   ) |>
     tar_target()
 
-  pca_outlier_comparisons = pca_compare_original(pca_outliers_all) |>
-    tar_target()
-  pca_outlier_plot_image = create_pca_outlier_image(
-    pca_outlier_comparisons
-  ) |>
-    tar_target()
   rank_missingness_image = create_figure1_image(
     missingness_summary,
     missingness_tests_AN001074,
@@ -414,7 +402,28 @@ other_plan = tar_assign({
 
   limma_comparisons = examine_limma_significant(limma_compare_all) |>
     tar_target()
-  limma_test_comparisons = test_limma_significant(limma_compare_all) |>
+  limma_test_comparisons_good = test_limma_significant(limma_compare_all) |>
+    tar_target()
+  limma_test_comparisons_all = test_limma_significant(
+    limma_compare_all,
+    "all"
+  ) |>
+    tar_target()
+
+  mean_tables_image = create_tabular_comparison_outputs(limma_comparisons) |>
+    tar_target()
+  ttest_tables_image = create_tabular_test_outputs(
+    limma_test_comparisons_good
+  ) |>
+    tar_target()
+
+  mean_comparison_image = create_graphical_comparison_outputs(
+    limma_comparisons
+  ) |>
+    tar_target()
+  ttest_graphic_image = create_graphical_test_outputs(
+    limma_test_comparisons_good
+  ) |>
     tar_target()
 })
 
