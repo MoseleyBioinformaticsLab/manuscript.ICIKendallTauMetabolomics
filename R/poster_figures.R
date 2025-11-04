@@ -22,10 +22,10 @@ create_example_missingness = function(in_cor) {
 }
 
 
-rank_missingness = function(in_cor) {
-  # in_cor = tar_read("metabolomics_cor_AN001074")
+rank_missingness = function(in_missingness) {
+  # in_missingness = tar_read("missingness_tests_AN001074")
   # in_cor = tar_read("metabolomics_cor_NSCLC")
-  use_ranks = in_cor$ranks
+  use_ranks = in_missingness$rank_info
   median_image = use_ranks |>
     ggplot(aes(x = n_na, y = median_rank)) +
     geom_point(size = 2) +
@@ -223,4 +223,162 @@ create_figure1_image = function(
   print(out_image)
   dev.off()
   invisible(NULL)
+}
+
+create_tabular_comparison_outputs = function(limma_comparisons) {
+  # tar_load(limma_comparisons)
+  frac_total = limma_comparisons$fraction_total |>
+    dplyr::mutate(overall = sig_frac)
+
+  order_values = frac_total |>
+    dplyr::filter(overall %in% "high") |>
+    dplyr::arrange(dplyr::desc(mean)) |>
+    dplyr::select(method)
+
+  high_values = dplyr::left_join(
+    order_values,
+    frac_total |> dplyr::filter(overall %in% "high"),
+    by = "method"
+  )
+  high_gt = high_values |>
+    dplyr::select(method, mean, sd) |>
+    dplyr::transmute(Method = method, Mean = mean, SD = sd) |>
+    gt::gt() |>
+    gt::fmt_number(decimals = 4) |>
+    gt::tab_style(
+      style = list(
+        gt::cell_text(weight = "bold")
+      ),
+      locations = gt::cells_body(
+        rows = c(1, 3)
+      )
+    )
+
+  low_values = dplyr::left_join(
+    order_values,
+    frac_total |> dplyr::filter(overall %in% "low"),
+    by = "method"
+  )
+  low_gt = low_values |>
+    dplyr::select(method, mean, sd) |>
+    dplyr::transmute(Method = method, Mean = mean, SD = sd) |>
+    gt::gt() |>
+    gt::fmt_number(decimals = 4) |>
+    gt::tab_style(
+      style = list(
+        gt::cell_text(weight = "bold")
+      ),
+      locations = gt::cells_body(
+        rows = c(1, 3)
+      )
+    )
+
+  # high_gtable = wrap_elements(gt::as_gtable(high_gt))
+  # low_gtable = wrap_elements(gt::as_gtable(low_gt))
+
+  # out_image = (high_gtable | low_gtable) + plot_annotation(tag_levels = "A")
+
+  gt::gtsave(
+    high_gt,
+    filename = "docs/poster/images/high_stats.png",
+    zoom = 2
+  )
+  gt::gtsave(low_gt, filename = "docs/poster/images/low_stats.png", zoom = 2)
+  return(invisible(NULL))
+}
+
+create_tabular_test_outputs = function(test_comparisons) {
+  # test_comparisons = tar_read(limma_test_comparisons_good)
+
+  table_comparisons = test_comparisons |>
+    dplyr::filter(p.value <= 0.05) |>
+    dplyr::arrange(p.value) |>
+    dplyr::transmute(
+      Comparison = gsub("_v_", "\nvs\n", comparison),
+      `P-Value` = p.value,
+      Difference = estimate
+    )
+  table_gt = table_comparisons |>
+    gt::gt() |>
+    gt::fmt_scientific(decimals = 1) |>
+    gt::tab_style(
+      style = list(
+        gt::cell_text(weight = "bold")
+      ),
+      locations = gt::cells_body(
+        rows = c(1, 2)
+      )
+    )
+
+  gt::gtsave(table_gt, file = "docs/poster/images/t_test_stats.png")
+  return(invisible(NULL))
+}
+
+create_graphical_comparison_outputs = function(limma_comparisons) {
+  # tar_load(limma_comparisons)
+  frac_total = limma_comparisons$fraction_total |>
+    dplyr::mutate(overall = stringr::str_to_sentence(sig_frac))
+
+  order_values = frac_total |>
+    dplyr::filter(overall %in% "High") |>
+    dplyr::arrange((mean))
+
+  frac_total = frac_total |>
+    dplyr::mutate(low = mean - (sd), high = mean + (sd))
+  frac_total$method = factor(frac_total$method, levels = order_values$method)
+  frac_total$overall = factor(frac_total$overall, levels = c("Low", "High"))
+  mean_plot = frac_total |>
+    ggplot(aes(x = mean, y = method)) +
+    geom_point(size = 3) +
+    facet_wrap(~overall, nrow = 1, scales = "free_x") +
+    labs(x = "Mean(Fraction Significant)", y = "Method")
+
+  sd_plot = frac_total |>
+    ggplot(aes(x = sd, y = method)) +
+    geom_point(size = 3) +
+    facet_wrap(~overall, nrow = 1, scales = "free_x") +
+    labs(x = "SD(Fraction Significant)", y = "Method")
+
+  basic_ragg(filename = "docs/poster/images/mean_comparison.png")
+  print(mean_plot)
+  dev.off()
+
+  basic_ragg(filename = "docs/poster/images/sd_comparison.png")
+  print(sd_plot)
+  dev.off()
+
+  return(invisible(NULL))
+}
+
+
+create_graphical_test_outputs = function(test_comparisons) {
+  # test_comparisons = tar_read(limma_test_comparisons_good)
+
+  table_comparisons = test_comparisons |>
+    dplyr::filter(p.value <= 0.05) |>
+    dplyr::arrange(dplyr::desc(p.value)) |>
+    dplyr::transmute(
+      Comparison = gsub("_v_", "\nvs\n", comparison),
+      `P-Value` = p.value,
+      Difference = estimate,
+      Low = conf.low,
+      High = conf.high,
+      logP = -1 * log10(`P-Value`)
+    )
+
+  table_comparisons$Comparison = factor(
+    table_comparisons$Comparison,
+    levels = table_comparisons$Comparison
+  )
+
+  table_plot = table_comparisons |>
+    ggplot(aes(x = Difference, y = Comparison)) +
+    geom_point(aes(size = logP)) +
+    geom_linerange(aes(xmin = Low, xmax = High)) +
+    theme(legend.position = "none")
+
+  basic_ragg("docs/poster/images/t_test_graphic.png")
+  print(table_plot)
+  dev.off()
+  return(invisible(NULL))
 }
