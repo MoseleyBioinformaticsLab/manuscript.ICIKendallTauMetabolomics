@@ -5,11 +5,11 @@ bibliography: icikt_references.json
 csl: minimal_citation.csl
 format:
   poster-typst: 
-    size: "38x54"
+    size: "48x36"
     poster-authors: "R.M. Flight, P. Bhatt, H.N.B. Moseley"
     departments: "University of Kentucky Markey Cancer Center"
     institution-logo: "./images/ukmarkeylogo.png"
-    footer-text: "IECM 2025"
+    footer-text: "https://pypi.org/icikt"
     footer-url: "https://moseleybioinformaticslab.github.io/ICIKendallTau"
     footer-emails: "robert.flight@uky.edu"
     footer-color: "ebcfb2"
@@ -19,22 +19,22 @@ format:
 
 # Missing Values in Metabolomics Data Not Random
 
-Metabolomics data can contain a large amount of missing values, regardless of whether the metabolites are measured using mass-spectrometry (MS) or nuclear magnetic resonance (NMR), with examples from metabolomics workbench ranging from 0.01 - 90% missing values for MS and 1 - 26% missing values for NMR experiments, respectively (@fig-ranks (A)).
-Using a binomial test for missing not at random (MNAR) due to left-censoring, we find that after adjusting for multiple testing, 235 of 242 experiments have a p-value < 0.05.
+Metabolomics data often contain a large amount of missing values, regardless of whether the metabolites are measured using mass-spectrometry (MS) or nuclear magnetic resonance (NMR), with examples from metabolomics workbench ranging from 0.01 - 90% missing values for MS and 1 - 26% missing values for NMR experiments, respectively (@fig-ranks (A)).
+Using a binomial test for missing not at random (MNAR) due to left-censoring, we find that after adjusting for multiple testing, 214 of 220 experiments have an adjusted p-value $\le 0.05$.
 
-Calculating the median rank of metabolites, and the number of missing samples, we can see there is an inverse relationship between the number of samples a metabolite is missing from and the minimum value of the median rank (@fig-ranks B & C).
-Over all the datasets, the correlation of rank to number of missing is overwhelmingly negative, with a few datasets with positive correlations that we suspect have incorrectly or insufficiently defined subject sample factors (@fig-ranks C).
+By calculating the median rank of metabolites, and the number of missing samples, we can see there is an inverse relationship between the number of samples a metabolite is missing from and the minimum value of the median rank (@fig-ranks B & C).
+Over all the datasets, the correlation of rank to number of missing is overwhelmingly negative, with a few datasets with positive correlations that we suspect have incorrectly or insufficiently defined subject sample factors (SSF) (@fig-ranks C).
 
 ![**A**: Percentage of values missing in MS and NMR datasets. **B**: Number of samples a metabolite is missing in vs the median rank (black) or minimum median rank (red) of the metabolite in the group of samples. **C**: Kendall-tau correlations of the median and minimum median rank to the number of samples a metabolite is missing from across all datasets.](./images/missingness_stuff.png){#fig-ranks}
 
-The most likely reason for this degree of missingness and the inverse correlation of minimum rank with number of missing values is due to metabolites being below the detectable limit of the detector being used to measure the metabolites, or left-censoring of the data.
+The most likely reason for this degree of missingness and the inverse correlation of minimum rank with number of missing values is due to metabolites being below the detectable limit of the detector being used to measure the metabolites, *i.e.* left-censoring of the data.
 
 Correlation of both metabolites and samples is frequently undertaken in metabolomics studies for many different purposes, including the generation of metabolite-metabolite interaction networks, and sample-sample pairwise correlations to highlight biological and batch groups, or determine possible outliers prior to subsequent analysis.
 However, correlation measures are severely impacted by the presence of missing values.
 
 # Missingness as Useful Information
 
-Given that the missingness is MNAR, and that it seems largely due to left-censoring in analytical instrumentation, we believe that the missingness therefore encodes useful information. 
+Given that the missingness is MNAR, and that it appears largely due to left-censoring in analytical instrumentation, we believe that missingness encodes information about left-censorship. 
 To make use of this information, we propose the **information-content-informed Kendall-tau** (ICI-Kt) methodology.
 Kendall-tau correlation is the easiest correlation to manipulate due to the way it encodes the ranks through pairwise comparisons of the ranks of data points by concordance and discordance of the **pairs** of data points.
 In this case, a pair are any two x-y points, $x_i, y_i$ and $x_j, y_j$, with $i \neq j$, composed from two joint random variables X and Y, where $x_i$ represents the *ith value* in X and $y_i$ represents the *ith value* in Y.
@@ -72,7 +72,7 @@ $$completness = \frac{n_{feat} - N (miss_i \cup miss_j)}{n_{feat}}$$
 
 where for any two samples *i* and *j*, $n_{feat}$ is the total number of features or entries, and $miss_i \cup miss_j$ are the features missing in either sample *i* or *j*, with $N$ being the total number of missing entries in either sample *i* or *j*.
 
-# MNAR vs MAR
+# Missing Not At Random (MNAR) vs Missing at Random (MAR)
 
 @fig-mnar-mar demonstrates the effect of introducing MNAR versus MAR in five different measures of correlation, including the ICI-Kt, the normal Kendall-tau with *pairwise-complete-observations*, the normal Kendall-tau replacing missing with 0, Pearson with *pairwise-complete-observations*, and Pearson replacing missing with 0.
 The ICI-Kt correlation demonstrates a slight increase from the starting 0.86 correlation value with growing left-centered missingness caused by a slight reinforcement of the correlation, while with **growing random missingness**, the ICI-Kt correlation drops precipitously due to the large increase in discordant pairs caused by the random missing values.
@@ -83,7 +83,7 @@ When replacing missing values with zero, Pearson correlation demonstrates a smal
 Pearson correlation drops precipitously with growing random missingness with a magnitude similar to the ICI-Kt and normal Kendall tau replacing missing with 0.
 Overall, the ICI-Kt and the normal Kendall-tau replacing missing with zero have the desirable characteristics of maintaining the correlation with growing left-centered missing **while sharply dropping the correlation** with growing random missingness.
 In a naive treatment of the left-centered missing data, if the values below the cutoff are set to missing followed by log-transforming the values and subsequently setting missing values to 0, then the Kendall tau correlation replacing missing with 0 will show some very odd patterns at low intensity cutoffs due to the introduction of discordant pairs.
-Likewise, Pearson correlation replacing missing with 0 shows a parabolic effect with increasing missing values.
+Likewise, Pearson correlation replacing missing with 0 shows a parabolic effect with increasing missing values, which is definitely **not** a desirable relationship in a correlation metric.
 
 ![Effect of introducing missing values from a cutoff (**A** & **B**) or randomly (**C**) on different measures of correlation, including ICI-Kt, Kendall with pairwise complete, Kendall replacing missing with 0, Pearson with pairwise complete, and Pearson replacing missing with 0. **A**: Missing values introduced by setting an increasing cutoff. **B**: Missing values introduced by setting an increasing cutoff, and then log-transforming the values before calculating correlation. **C**: Missing values introduced at random. For the random case, each sample of random positions was repeated 100 times. Pay attention to the different y-axis ranges across graphs, with **A** and **B** graphs having much smaller y-axis ranges compared to **C**.](./images/censored_value_plot.png){#fig-mnar-mar}
 
@@ -91,35 +91,34 @@ Likewise, Pearson correlation replacing missing with 0 shows a parabolic effect 
 
 Another way that missing values appear is due to changes in dynamic range between samples, as some samples have features with higher values, and the fixed dynamic range of the instrumentation results in features with lower values to be "missing" in those samples.
 We created a set of 100 simulated samples with uniform noise on the log-scale, with relatively constant dynamic ranges, and introduced changes to the overall dynamic range using a random censor at varying levels.
-Based on the number of values being censored, limits of 0.5, 1, and 1.5 were selected, representing low, medium and high variability of the dynamic range.
+Based on the number of values being left-censored, limits of 0.5, 1, and 1.5 were selected, representing low, medium and high variability of the dynamic range.
 
 For each level of possible missingness introduced by changes to the dynamic range, correlation across all samples were calculated using all values (reference), as well as after missingness was added (trimmed), and using Pearson correlation with global imputation (Pearson Imputed), or ICI-Kt.
 @fig-dynamic-range demonstrates that it is only as the number of missing values in one of the samples approaches 50% or more (500 of 1000 features) does the Pearson correlation with global imputation give correlation values closer to the known correlation with no missing values in any appreciable amount (points below the red lines in the top panels, and to the right of the red line in the histograms in the bottom panels).
 Points above the lines with slopes of -1 and 1 indicate that the difference of reference - trimmed is smaller in the ICI-Kt correlations, and below the lines indicate the difference is larger in the ICI-Kt correlations.
 This is further emphasized by the majority of the values are to the left of the line at 0 in the difference histograms.
 
-![Top: Difference of reference - trimmed ICI-Kt correlation *vs* Pearson imputed using ½ the minimum value in the dataset. Low, med, and high indicate the level of variability in dynamic range, using 0.5, 1, and 1.5, respectively. Red lines indicate slope of -1 and 1. Color indicates the maximum number of missing values between the two samples being correlated. Bottom: Differences in the absolute value of reference - trimmed differences between ICI-Kt and Pearson imputed correlations.](./images/variable_dynamic_range.png){#fig-dynamic-range}
+![**Top**: Difference of reference - trimmed ICI-Kt correlation *vs* Pearson imputed using ½ the minimum value in the dataset. Low, med, and high indicate the level of variability in dynamic range, using 0.5, 1, and 1.5, respectively. Red lines indicate slope of -1 and 1. Color indicates the maximum number of missing values between the two samples being correlated. **Bottom**: Differences in the absolute value of reference - trimmed differences between ICI-Kt and Pearson imputed correlations.](./images/variable_dynamic_range.png){#fig-dynamic-range}
 
 
 # Removing Outlier Samples
 
 A common use for correlation is in calculating sample-sample correlations to verify groupings of samples and removal of possible outliers before further calculations [@flight_timecourseexploration_2010].
-We evaluated the removal of outliers after sample-sample calculation using the various methods and then removal of any outlier samples based upon median correlations to all other samples in the same group, calculation of sample scores from principal component analysis (PCA), and then testing the sample scores of the most likely group PC using ANOVA to calculate the effect size $\eta^2$, and comparison with $\eta^2$ from the full dataset (*original*).
-@fig-pca-outliers plots the ranks based on $\eta^2$, as well as the difference in $\eta^2$ after outlier removal compared to the full dataset.
-@fig-pca-outliers does show that either ICI-Kt or the completeness variant are ranked first by effect size a majority of the time, followed closely by Pearson correlation using log-transformed values.
-In terms of differences in effect size compared to the original data, ICI-Kt and completeness and Pearson using log-transformed values show very similar distributions overall. 
+We evaluated the removal of outliers after sample-sample calculation using the various methods and then removal of any outlier samples based upon median correlations to all other samples in the same set of SSF, calculation of moderated F-test statistics and adjusting of p-values, and then counting how many metabolites had an adjusted-p-value $\le 0.05$, as a fraction of the total number of measured metabolites.
+@fig-mean-stats does show that ICI-Kt completeness and ICI-Kt are ranked first and third by mean fraction determined as significant, followed by Pearson correlation using log-transformed values.
 This indicates the importance of handling non-linear relationships between samples, either through the use of a rank based correlation, or transforming the non-linear to semi-linear by log-transformation.
 
-![**A**: Rank of $\eta^2$ after removal of outliers for each correlation method. **B**: Histogram of the difference of the correlation specific $\eta^2$ and the full dataset ($\eta^2_{org}). **C**: Zoomed version of **B** to highlight lower values.](./images/pca_outlier_plot.png){#fig-pca-outliers}
+![**Left**: Mean and standard deviation of the fraction total that is considered significant for each method across analyses for **high** fractions ($\ge 0.3$). **Middle**: Mean and standard deviation of the fraction total that is considered significant for each method across analyses for **low** fractions ($\le 0.3$). **Right**: T-test results from comparison of significant fraction total for a method with the original fraction.](./images/combined_stats.png){#fig-mean-stats width=100%}
+
 
 
 # Conclusions
 
-1. Metabolomics data missing values are not randomly distributed (i.e. are MNAR).
+1. Missing values in metabolomics datasets are not randomly distributed (*i.e.* are MNAR).
 1. Kendall-tau correlation can be modified to include missingness directly, in ICI-Kt.
 1. ICI-Kt correlation varies very little as left-censored values are introduced.
 1. ICI-Kt demonstrates significantly better performance over Pearson when left-censored values are introduced due to changes in dynamic range, at the low and medium levels.
-1. ICI-Kt and Pearson correlation demonstrate better performance in removing outlier samples.
+1. Both ICI-Kt and Pearson correlation demonstrate a small but statistically significantly better performance in removing outlier samples, with ICI-Kt slightly outperforming Pearson, but not significantly.
 
 # Methods
 
@@ -130,19 +129,19 @@ For each analysis, we parsed the various data blocks to generate R compatible da
 For this work, we only kept analyses that had:
 
 1. 200 or more metabolites measured;
-1. Two or more subject sample factors with 4 or more replicates;
+1. One or more SSF with 5 or more replicates;
 1. Contained missing values (parsing to numeric returned NA or 0);
-1. Abundance data could be directly parsed to a matrix (some were lists ...);
+1. Abundance data could be directly parsed to a matrix;
 1. Only one species was measured;
-1. The sample IDs between subject sample factors and the metabolites data matched.
+1. The sample IDs between SSF and the metabolites data matched.
 
-This resulted in 241 analyses, to which we added a previously published MS direct injection lipidomics dataset [@mitchellUntargetedLipidomicsNonSmall2021], for a total of **242** datasets.
-Unique combinations of subject sample factors defined the sample **factors** used for grouping samples.
+This resulted in 219 analyses, to which we added a previously published MS direct injection lipidomics dataset [@mitchellUntargetedLipidomicsNonSmall2021], for a total of **220** datasets.
+Unique combinations of SSF defined the sample **factors** used for grouping samples.
 
 Prior to calculations, all metabolite values $\leq 0$ were set to R's missing indicator, `NA`, so that zeros and actually missing indicated values were treated identically, and missingness could be replaced with zero for some correlation calculations.
 
-Metabolites present in at least one sample of each set of subject sample factors were kept for all further calculations.
-Each sample was normalized using the median metabolite abundance in the sample.
+Metabolites present in at least one sample of each set of SSF were kept for all further calculations.
+Each sample was normalized using the median metabolite abundance in the sample after removing missing values.
 
 ## Correlation Methods
 
@@ -163,15 +162,22 @@ For outlier detection, median sample-sample correlations within the sample treat
 As we are interested in only those correlations at the *low* end of correlation (becoming the high end after the subtraction and log-transform), we restrict to only those entries at the *high* end of the score distribution (using *visualizationQualityControl::determine_outliers* [@flightVisualizationQualityControlDevelopmentVisualization2021]).
 This is equivalent to using the correlation component of the score described by Gierliński et al [-@gierlinski_statisticalmodels_2015] and setting the other component weights to zero.
 
-## Principal Component Analysis of Outlier Removal
+## Differential Analysis of Outlier Removal
 
-For the original data with all samples, and then after removing outliers using the median sample-sample correlations reported by each method, a value 1/2 the lowest observed value in the data was imputed to all missing values, *log* transformed, and principal component analysis (PCA) of the samples undertaken.
-The scores of each sample on each PC were taken, and ANOVA and $\eta{^2}$ effect size of the sample scores against the sets of subject sample factor calculated.
-The most likely PC representing the subject sample factors was defined as the PC with the lowest p-value from ANOVA using the full dataset with no outliers removed.
-The unique $\eta^2$ from the ANOVA of each correlation method are determined, and ranked, therefore enabling tied rankings amongst the various correlation methods.
+For the original data with all samples, and then after removing outliers using the median sample-sample correlations reported by each method, a value 1/2 the lowest observed value in the data was imputed to all missing values, *log* transformed, and an ANOVA equivalent test of metabolite abundances across SSF using the `limma` R package and the moderated equivalent to the F-test [@ritchieLimmaPowersDifferential2015].
+Adjusted p-values were calculated using the Benjamini-Hochberg method [@benjaminiControllingFalseDiscovery1995], and the number of metabolites with an adjusted p-value $\le 0.05$ counted as a fraction of the total number of metabolites.
+
+Analyses where **all** methods returned zero significant metabolites were removed, as well as cases where there was a sign difference between the median and median minimum Kendall-tau of rank *vs* number of missing entries (see @fig-ranks C). 
+Means and standard deviations of the significant fractions across all analyses were calculated for each method.
+Differences between methods were evaluated using a paired t-test.
 
 ## Availability
 
 ICI-Kt is available in the R package `ICIKendallTau` from https://moseleybioinformaticslab.github.io/ICIKendallTau and a python package `icikt` from https://pypi.org/project/icikt/.
 
+## Support
+
+This work was supported in part by grants NSF 2020026 (PI Moseley), NSF ACI1626364 (Griffioen, Moseley), P30 CA177558 (PI Evers) via the Markey Cancer Center Biostatistics and Bioinformatics Shared Resource Facility (MCC BB-SRF), P20 GM121327 (PD St. Clair), and P42 ES007380 (PI Pennell) via the Data Management and Analysis Core (DMAC).
+
 ## Bibliography
+
