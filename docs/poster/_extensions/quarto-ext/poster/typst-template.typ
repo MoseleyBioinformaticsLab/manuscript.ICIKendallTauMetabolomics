@@ -45,10 +45,13 @@
   univ_logo_scale: "100",
 
   // University logo's column size (in in).
-  univ_logo_column_size: "6",
+  univ_logo_column_size: "5",
 
   // Title and authors' column size (in in).
-  title_column_size: "20",
+  title_column_size: "38",
+
+  // other logo size,
+  other_logo_column_size: "5",
 
   // Poster title's font size (in pt).
   title_font_size: "48",
@@ -76,6 +79,7 @@
   num_columns = int(num_columns)
   univ_logo_column_size = int(univ_logo_column_size) * 1in
   title_column_size = int(title_column_size) * 1in
+  other_logo_column_size = int(other_logo_column_size) * 1in
   footer_url_font_size = int(footer_url_font_size) * 1pt
   footer_text_font_size = int(footer_text_font_size) * 1pt
 
@@ -162,11 +166,12 @@
   align(center,
     grid(
       rows: 2,
-      columns: (univ_logo_column_size, title_column_size),
+      columns: (univ_logo_column_size, title_column_size, other_logo_column_size),
       column-gutter: 0pt,
       row-gutter: 50pt,
       image(univ_logo, width: univ_logo_scale),
       text(title_font_size, title + "\n\n") + 
+      text("") +
       text(authors_font_size, emph(authors) + 
           "   (" + departments + ") "),
     )
