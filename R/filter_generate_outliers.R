@@ -261,6 +261,22 @@ get_just_medians = function(median_diffs) {
   median_diffs$outliers$rsd_diff_median
 }
 
+combine_icikt_pearson = function(keep_samples) {
+  combine_list = list(
+    icikt_pearson = c("pearson_log1p", "icikt"),
+    icikt_complete_pearson = c("pearson_log1p", "icikt_complete")
+  )
+
+  combined_outliers = purrr::map(combine_list, \(in_combine) {
+    base::union(
+      keep_samples[[in_combine[1]]],
+      keep_samples[[in_combine[2]]]
+    )
+  })
+
+  combined_outliers
+}
+
 filter_outliers_do_limma = function(metabolomics_cor, metabolomics_keep) {
   # metabolomics_cor = tar_read(metabolomics_cor_AN001156)
   # metabolomics_keep = tar_read(metabolomics_keep_AN001156)
@@ -280,6 +296,10 @@ filter_outliers_do_limma = function(metabolomics_cor, metabolomics_keep) {
     find_remove_outliers,
     sample_info
   )
+
+  combined_keep = combine_icikt_pearson(keep_samples)
+
+  keep_samples = c(keep_samples, combined_keep)
 
   # don't forget to include original
   keep_samples$original = sample_info$sample_id

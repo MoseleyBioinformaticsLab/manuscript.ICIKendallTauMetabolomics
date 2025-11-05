@@ -6,18 +6,18 @@ csl: minimal_citation.csl
 format:
   poster-typst: 
     size: "48x36"
-    poster-authors: "R.M. Flight, P. Bhatt, H.N.B. Moseley"
+    poster-authors: "R.M. Flight, P.S. Bhatt, H.N.B. Moseley"
     departments: "University of Kentucky Markey Cancer Center"
     institution-logo: "./images/ukmarkeylogo.png"
-    footer-text: "https://pypi.org/icikt"
+    footer-text: "https://pypi.org/project/icikt/"
     footer-url: "https://moseleybioinformaticslab.github.io/ICIKendallTau"
     footer-emails: "robert.flight@uky.edu"
     footer-color: "ebcfb2"
-    keywords: ["Missing Not At Random", "Left-Censored", "Correlation"]
+    keywords: ["Missing Not At Random", "Left-Censored", "Correlation", "Metabolomics"]
     keep-typ: true
 ---
 
-# Missing Values in Metabolomics Data Not Random
+# Missing Values in Metabolomics Data Are Not Random
 
 Metabolomics data often contain a large amount of missing values, regardless of whether the metabolites are measured using mass-spectrometry (MS) or nuclear magnetic resonance (NMR), with examples from metabolomics workbench ranging from 0.01 - 90% missing values for MS and 1 - 26% missing values for NMR experiments, respectively (@fig-ranks (A)).
 Using a binomial test for missing not at random (MNAR) due to left-censoring, we find that after adjusting for multiple testing, 214 of 220 experiments have an adjusted p-value $\le 0.05$.
@@ -36,9 +36,9 @@ However, correlation measures are severely impacted by the presence of missing v
 
 Given that the missingness is MNAR, and that it appears largely due to left-censoring in analytical instrumentation, we believe that missingness encodes information about left-censorship. 
 To make use of this information, we propose the **information-content-informed Kendall-tau** (ICI-Kt) methodology.
-Kendall-tau correlation is the easiest correlation to manipulate due to the way it encodes the ranks through pairwise comparisons of the ranks of data points by concordance and discordance of the **pairs** of data points.
+Kendall-tau correlation is the easiest correlation to manipulate due to the way it encodes the relationships via pairwise comparisons of the ranks of data points by concordance and discordance of the **pairs** of data points.
 In this case, a pair are any two x-y points, $x_i, y_i$ and $x_j, y_j$, with $i \neq j$, composed from two joint random variables X and Y, where $x_i$ represents the *ith value* in X and $y_i$ represents the *ith value* in Y.
-In a metabolomics context, X and Y can represent metabolite abundance vectors for two experimental samples or two specific metabolites across a set of samples.
+In a metabolomics context, X and Y can represent metabolite abundance vectors for two experimental samples **or** two specific metabolites across a set of samples.
 
 * Concordant:  $x_i > x_j \text{and} y_i > y_j \| x_i < x_j \text{and} y_i < y_j$
 * Discordant:  $x_i > x_j \text{and} y_i < y_j \| x_i < x_j  \text{and} y_i > y_j$
@@ -58,8 +58,7 @@ We can also consider commonly missing values in X and Y specially as well.
 In the first instance, we remove those x-y points where **both values** are missing.
 We refer to this case as the "local" ICI-Kt correlation.
 It is most appropriate for the comparison of only two experimental samples, where we are concerned with what values are present in the two experimental samples, with the odd case of missingness.
-
-The other case, where we leave ties resulting from points with missing X and Y, we refer to as the "global" ICI-Kt correlation.
+The second case, where we leave ties resulting from points with missing X and Y, we refer to as the "global" ICI-Kt correlation.
 In this case, every single correlation over multiple comparisons with the same set of features will consider the same number of pair comparisons.
 This is useful when analyzing and interpreting correlations from a large number of experimental samples, not just two samples.
 
@@ -76,13 +75,13 @@ where for any two samples *i* and *j*, $n_{feat}$ is the total number of feature
 
 @fig-mnar-mar demonstrates the effect of introducing MNAR versus MAR in five different measures of correlation, including the ICI-Kt, the normal Kendall-tau with *pairwise-complete-observations*, the normal Kendall-tau replacing missing with 0, Pearson with *pairwise-complete-observations*, and Pearson replacing missing with 0.
 The ICI-Kt correlation demonstrates a slight increase from the starting 0.86 correlation value with growing left-centered missingness caused by a slight reinforcement of the correlation, while with **growing random missingness**, the ICI-Kt correlation drops precipitously due to the large increase in discordant pairs caused by the random missing values.
-The normal Kendall tau correlation with pairwise complete has a small decrease in the correlation value with growing left-centered missingness caused by a loss of supporting pairs, while this correlation has a near constant average value with growing random missingness.
-The normal Kendall tau correlation replacing missing with 0 has identical behavior to the ICI-Kt correlation.
+The normal Kendall-tau correlation with pairwise complete has a small decrease in the correlation value with growing left-centered missingness caused by a loss of supporting pairs, while this correlation has a near constant average value with growing random missingness.
+The normal Kendall-tau correlation replacing missing with 0 has identical behavior to the ICI-Kt correlation.
 In contrast to ICI-Kt, the Pearson correlation calculated using only pairwise complete entries is **practically constant** (i.e., range of 0.004 or less) over growing left-centered and random missingness.
 When replacing missing values with zero, Pearson correlation demonstrates a small decrease in the correlation value with growing left-centered missingness due to the zero values causing some deviation from linearity. 
 Pearson correlation drops precipitously with growing random missingness with a magnitude similar to the ICI-Kt and normal Kendall tau replacing missing with 0.
-Overall, the ICI-Kt and the normal Kendall-tau replacing missing with zero have the desirable characteristics of maintaining the correlation with growing left-centered missing **while sharply dropping the correlation** with growing random missingness.
-In a naive treatment of the left-centered missing data, if the values below the cutoff are set to missing followed by log-transforming the values and subsequently setting missing values to 0, then the Kendall tau correlation replacing missing with 0 will show some very odd patterns at low intensity cutoffs due to the introduction of discordant pairs.
+Overall, the ICI-Kt and the normal Kendall-tau replacing missing with zero have the desirable characteristics of maintaining the correlation with growing left-centered missing **while sharply dropping the correlation** with growing random missingness (@fig-mnar-mar C).
+In a naive treatment of the left-centered missing data, if the values below the cutoff are set to missing followed by log-transforming the values and subsequently setting missing values to 0, then the Kendall-tau correlation replacing missing with 0 will show some very odd patterns at low intensity cutoffs due to the introduction of discordant pairs (@fig-mnar-mar B, center panel).
 Likewise, Pearson correlation replacing missing with 0 shows a parabolic effect with increasing missing values, which is definitely **not** a desirable relationship in a correlation metric.
 
 ![Effect of introducing missing values from a cutoff (**A** & **B**) or randomly (**C**) on different measures of correlation, including ICI-Kt, Kendall with pairwise complete, Kendall replacing missing with 0, Pearson with pairwise complete, and Pearson replacing missing with 0. **A**: Missing values introduced by setting an increasing cutoff. **B**: Missing values introduced by setting an increasing cutoff, and then log-transforming the values before calculating correlation. **C**: Missing values introduced at random. For the random case, each sample of random positions was repeated 100 times. Pay attention to the different y-axis ranges across graphs, with **A** and **B** graphs having much smaller y-axis ranges compared to **C**.](./images/censored_value_plot.png){#fig-mnar-mar}
@@ -91,9 +90,9 @@ Likewise, Pearson correlation replacing missing with 0 shows a parabolic effect 
 
 Another way that missing values appear is due to changes in dynamic range between samples, as some samples have features with higher values, and the fixed dynamic range of the instrumentation results in features with lower values to be "missing" in those samples.
 We created a set of 100 simulated samples with uniform noise on the log-scale, with relatively constant dynamic ranges, and introduced changes to the overall dynamic range using a random censor at varying levels.
-Based on the number of values being left-censored, limits of 0.5, 1, and 1.5 were selected, representing low, medium and high variability of the dynamic range.
+Based on the number of values being left-censored, limits of 0.5, 1, and 1.5 were selected, representing low, medium and high **variability** of the dynamic range.
 
-For each level of possible missingness introduced by changes to the dynamic range, correlation across all samples were calculated using all values (reference), as well as after missingness was added (trimmed), and using Pearson correlation with global imputation (Pearson Imputed), or ICI-Kt.
+For each level of possible missingness introduced by changes in the dynamic range, correlations across all samples were calculated using all values (reference), as well as after missingness was added (trimmed), and using Pearson correlation with global imputation (Pearson Imputed), or ICI-Kt.
 @fig-dynamic-range demonstrates that it is only as the number of missing values in one of the samples approaches 50% or more (500 of 1000 features) does the Pearson correlation with global imputation give correlation values closer to the known correlation with no missing values in any appreciable amount (points below the red lines in the top panels, and to the right of the red line in the histograms in the bottom panels).
 Points above the lines with slopes of -1 and 1 indicate that the difference of reference - trimmed is smaller in the ICI-Kt correlations, and below the lines indicate the difference is larger in the ICI-Kt correlations.
 This is further emphasized by the majority of the values are to the left of the line at 0 in the difference histograms.
@@ -104,11 +103,11 @@ This is further emphasized by the majority of the values are to the left of the 
 # Removing Outlier Samples
 
 A common use for correlation is in calculating sample-sample correlations to verify groupings of samples and removal of possible outliers before further calculations [@flight_timecourseexploration_2010].
-We evaluated the removal of outliers after sample-sample calculation using the various methods and then removal of any outlier samples based upon median correlations to all other samples in the same set of SSF, calculation of moderated F-test statistics and adjusting of p-values, and then counting how many metabolites had an adjusted-p-value $\le 0.05$, as a fraction of the total number of measured metabolites.
-@fig-mean-stats does show that ICI-Kt completeness and ICI-Kt are ranked first and third by mean fraction determined as significant, followed by Pearson correlation using log-transformed values.
+We evaluated the removal of outliers after sample-sample calculation using the various correlation methods and then removal of any outlier samples based upon median correlations to all other samples in the same set of SSF, calculation of moderated F-test statistics and adjusting of p-values, and then counting how many metabolites had an adjusted-p-value $\le 0.05$, as a fraction of the total number of measured metabolites.
+@fig-mean-stats shows that ICI-Kt completeness (icikt_complete) and ICI-Kt (icikt) are ranked first and third by mean fraction determined as significant, followed by Pearson correlation using log-transformed values (pearson_log1p).
 This indicates the importance of handling non-linear relationships between samples, either through the use of a rank based correlation, or transforming the non-linear to semi-linear by log-transformation.
 
-![**Left**: Mean and standard deviation of the fraction total that is considered significant for each method across analyses for **high** fractions ($\ge 0.3$). **Middle**: Mean and standard deviation of the fraction total that is considered significant for each method across analyses for **low** fractions ($\le 0.3$). **Right**: T-test results from comparison of significant fraction total for a method with the original fraction.](./images/combined_stats.png){#fig-mean-stats width=100%}
+![**A**: Mean and standard deviation of the fraction total that is considered significant for each method across analyses for **high** fractions ($\ge 0.3$). **B**: Mean and standard deviation of the fraction total that is considered significant for each method across analyses for **low** fractions ($\le 0.3$). **C**: T-test results from comparison of significant fraction total for a method with the original fraction.](./images/combined_stats_label.png){#fig-mean-stats width=100%}
 
 
 
@@ -129,11 +128,11 @@ For each analysis, we parsed the various data blocks to generate R compatible da
 For this work, we only kept analyses that had:
 
 1. 200 or more metabolites measured;
-1. One or more SSF with 5 or more replicates;
-1. Contained missing values (parsing to numeric returned NA or 0);
+1. One or more SSF group with 5 or more replicates;
+1. Contained at least one missing value (parsing to numeric returned NA or 0);
 1. Abundance data could be directly parsed to a matrix;
 1. Only one species was measured;
-1. The sample IDs between SSF and the metabolites data matched.
+1. The sample IDs between SSF and the metabolites data block matched.
 
 This resulted in 219 analyses, to which we added a previously published MS direct injection lipidomics dataset [@mitchellUntargetedLipidomicsNonSmall2021], for a total of **220** datasets.
 Unique combinations of SSF defined the sample **factors** used for grouping samples.
@@ -146,19 +145,19 @@ Each sample was normalized using the median metabolite abundance in the sample a
 ## Correlation Methods
 
 For each dataset, we calculated correlations using a variety of methods. In each dataset, there were either zero values or `NA` values to represent missingness.
-To start, we replaced all zero values with `NA`, and then either left them as `NA` or changed them to zero as appropriate.
+For consistency, we replaced all zero values with `NA`, and then either left them as `NA` or changed them to zero as appropriate for the method.
 
 * ICI-Kendall-tau using `NA` (icikt); 
 * and then scaled (multiplied) by a completeness metric (icikt_completeness);
-* Kendall-tau using `NA`, and then using pairwise-complete-observations (kt);
+* Kendall-tau using `NA`, and then using pairwise-complete-observations (kt_base);
 * Pearson, with zeros replacing `NA`, using pairwise-complete-observations (pearson_base);
 * Pearson, using `NA` and pairwise-complete-observations (pearson_no_zero).
 * Pearson, with zeros replacing `NA`, and then a $log(x + 1)$ transform applied, using pairwise-complete-observations (pearson_log1p).
-* Pearson, with zeros replacing `NA`, and then a $log(x)$ transform, and setting infinite values to `NA` values, using pairwise-complete-observations (PL).
+* Pearson, with zeros replacing `NA`, and then a $log(x)$ transform, and setting infinite values to `NA` values, using pairwise-complete-observations (pearson_log).
 
 ## Detecting and Removing Possible Outliers
 
-For outlier detection, median sample-sample correlations within the sample treatment (genotype, condition, etc) is calculated, and $log(1 - cor_{median})$ calculated to transform it into a score. Then outliers are determined using *grDevices::boxplot.stats*, which by default are at 1.5X the whiskers in a box-and-whisker plot.
+For outlier detection, median sample-sample correlations within each SSF is calculated, and $log(1 - cor_{median})$ calculated to transform it into a score. Then outliers are determined using *grDevices::boxplot.stats*, which by default are at 1.5X the whiskers in a box-and-whisker plot.
 As we are interested in only those correlations at the *low* end of correlation (becoming the high end after the subtraction and log-transform), we restrict to only those entries at the *high* end of the score distribution (using *visualizationQualityControl::determine_outliers* [@flightVisualizationQualityControlDevelopmentVisualization2021]).
 This is equivalent to using the correlation component of the score described by Gierliński et al [-@gierlinski_statisticalmodels_2015] and setting the other component weights to zero.
 
@@ -173,11 +172,12 @@ Differences between methods were evaluated using a paired t-test.
 
 ## Availability
 
-ICI-Kt is available in the R package `ICIKendallTau` from https://moseleybioinformaticslab.github.io/ICIKendallTau and a python package `icikt` from https://pypi.org/project/icikt/.
+ICI-Kt is available in the R package `ICIKendallTau` from https://moseleybioinformaticslab.github.io/ICIKendallTau and the python package `icikt` from https://pypi.org/project/icikt/.
 
-## Support
+## Acknowledgements
 
 This work was supported in part by grants NSF 2020026 (PI Moseley), NSF ACI1626364 (Griffioen, Moseley), P30 CA177558 (PI Evers) via the Markey Cancer Center Biostatistics and Bioinformatics Shared Resource Facility (MCC BB-SRF), P20 GM121327 (PD St. Clair), and P42 ES007380 (PI Pennell) via the Data Management and Analysis Core (DMAC).
+We also thank Travis Thompson for providing repaired mwTab files, as well as the Metabolomics Workbench for access to deposited metabolomics datasets.
 
 ## Bibliography
 
