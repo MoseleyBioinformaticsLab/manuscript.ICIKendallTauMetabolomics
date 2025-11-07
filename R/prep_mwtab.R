@@ -1,3 +1,16 @@
+extract_mwtab_ids = function(mwtab_files) {
+  split_files = stringr::str_split(fs::path_file(mwtab_files), "%2F")
+  mwtab_df = tibble::tibble(
+    id = purrr::map_chr(split_files, \(in_file) {
+      in_file[7]
+    }),
+    file = mwtab_files
+  )
+  mwtab_df
+}
+
+parse_getmwtab = function(id, mwtab_file) {}
+
 prep_mwtab_data = function() {
   #fs::dir_create("data/processed")
 
@@ -130,6 +143,142 @@ parse_mwtab = function(mwtab_file) {
   parsed_data
 }
 
+run_mwtab_checks = function(
+  processed_mwtab,
+  min_n = 5,
+  min_metabolites = 100,
+  min_ssf = 2
+) {
+  # processed_mwtab = tar_read(processed_AN002428)
+  # min_n = 5
+  # min_metabolites = 100
+  # min_ssf = 2
+
+  check_res = list(
+    FEATURE_CHECK = "",
+    SSF_CHECK = "",
+    NA_CHECK = "",
+    RANK_CHECK = ""
+  )
+  n_features = nrow(processed_mwtab$MEASUREMENTS)
+  if (is.na(n_features)) {
+    check_res$FEATURE_CHECK = "NA FEATURES"
+    processed_mwtab$CHECK = check_res
+    return(processed_mwtab)
+  }
+
+  if (n_features < min_metabolites) {
+    check_res$FEATURE_CHECK = "FEW METABOLITES"
+    processed_mwtab$CHECK = check_res
+    return(processed_mwtab)
+  } else {
+    check_res$FEATURE_CHECK = "GOOD"
+  }
+
+  if (is.null(processed_mwtab$METABOLITES)) {
+    feature_metadata = data.frame(
+      metabolite_name = processed_mwtab$MEASUREMENTS$id,
+      feature_id = janitor::make_clean_names(processed_mwtab$MEASUREMENTS$id)
+    )
+    processed_mwtab$METABOLITES = feature_metadata
+  } else {
+    processed_mwtab$METABOLITES$feature_id = janitor::make_clean_names(
+      processed_mwtab$METABOLITES$metabolite_name
+    )
+  }
+
+  ssf_data = processed_mwtab$SUBJECT_SAMPLE_FACTORS
+  match_samples = base::intersect(
+    ssf_data$sample_id,
+    colnames(processed_mwtab$MEASUREMENTS)
+  )
+  ssf_data2 = ssf_data |>
+    dplyr::filter(sample_id %in% match_samples)
+
+  ssf_check_result = check_ssf(ssf_data2, min_ssf, min_n)
+  processed_mwtab$SUBJECT_SAMPLE_FACTORS = ssf_data2
+
+  processed_mwtab$MEASUREMENTS = processed_mwtab$MEASUREMENTS[, c(
+    "feature_id",
+    "id",
+    ssf_data2$sample_id
+  )]
+
+  check_res$SSF_CHECK = ssf_check_result
+  if (ssf_check_result %in% "NOT ENOUGH SAMPLES") {
+    processed_mwtab$CHECK = check_res
+    return(processed_mwtab)
+  }
+
+  measurements = processed_mwtab$MEASUREMENTS[, ssf_data2$sample_id] |>
+    as.matrix()
+  factors = ssf_data2$factors
+
+  missingness_rank_check = check_missingness_ranks(measurements, factors)
+
+  check_res$RANK_CHECK = missingness_rank_check
+
+  processed_mwtab$CHECK = check_res
+  processed_mwtab
+}
+
+check_ssf = function(ssf_data2, min_ssf = 2, min_n = 5) {
+  ssf_n = ssf_data2 |>
+    dplyr::summarise(n = dplyr::n(), .by = factors)
+
+  if (any(ssf_n$n >= min_n) && (nrow(ssf_n) >= min_ssf)) {
+    return("GOOD SSF")
+  } else {
+    return("NOT ENOUGH SAMPLES")
+  }
+}
+
+check_missingness_ranks = function(measurements, factors) {
+  if ((sum(is.na(measurements)) == 0) && (sum(measurements == 0) == 0)) {
+    return("NO MISSING VALUES")
+  }
+
+  ranked_data = ICIKendallTau::rank_order_data(
+    measurements,
+    sample_classes = factors
+  )
+
+  ranked_null = purrr::map_lgl(ranked_data, is.null)
+  if (any(ranked_null)) {
+    return("ALL NA IN A GROUP")
+  }
+
+  ranked_cor = purrr::map(ranked_data, \(in_data) {
+    min_rank = in_data$n_na_rank |>
+      dplyr::summarise(min_rank = min(median_rank), .by = n_na)
+    full_cor = cor(
+      in_data$n_na_rank$n_na,
+      in_data$n_na_rank$median_rank,
+      method = "kendall"
+    )
+    min_cor = cor(
+      min_rank$n_na,
+      min_rank$min_rank,
+      method = "kendall"
+    )
+    tibble::tibble(median = full_cor, min = min_cor)
+  }) |>
+    purrr::list_rbind() |>
+    dplyr::mutate(sign_diff = sign(median) * sign(min))
+
+  if (any(is.na(ranked_cor$sign_diff))) {
+    return("NA CORRELATION")
+  } else if (any(ranked_cor$sign_diff == -1)) {
+    return("SIGN DIFFERENCE")
+  } else if (any(sign(ranked_cor$median) == 1)) {
+    return("POSITIVE MEDIAN")
+  } else if (any(sign(ranked_cor$min) == 1)) {
+    return("POSITIVE MINIMUM")
+  } else {
+    return("GOOD")
+  }
+}
+
 count_factors_replicates = function(subject_sample_factors) {
   # subject_sample_factors = parsed_data$SUBJECT_SAMPLE_FACTORS
 
@@ -144,6 +293,11 @@ count_factors_replicates = function(subject_sample_factors) {
     concat_factors,
     by = "sample_id"
   )
+
+  subject_sample_factors$sample_id = janitor::make_clean_names(
+    subject_sample_factors$sample_id
+  )
+
   n_samples = subject_sample_factors |>
     dplyr::summarise(n = dplyr::n(), .by = factors)
   list(sample_factors = subject_sample_factors, n = n_samples)
@@ -206,6 +360,8 @@ parse_nmr_data = function(nmr_data) {
       values_from = value,
       names_from = sample_id
     )
+  names(nmr_wide_df) = janitor::make_clean_names(nmr_wide_df)
+  nmr_wide_df$feature_id = janitor::make_clean_names(nmr_wide_df$id)
   nmr_wide_df
 }
 
@@ -278,6 +434,9 @@ parse_ms_data = function(ms_data) {
       names_from = sample_id
     )
 
+  names(ms_wide_df) = janitor::make_clean_names(names(ms_wide_df))
+  ms_wide_df$feature_id = janitor::make_clean_names(ms_wide_df$id)
+
   ms_wide_df
 }
 
@@ -349,7 +508,8 @@ split_and_return_factors = function(factor_string) {
 parse_metabolites_block = function(metabolites_block) {
   # metabolites_block = block_data$METABOLITES
 
-  metabolites_range = seq(2, length(metabolites_block) - 1)
+  end_loc = which(grepl("METABOLITES_END", metabolites_block)) - 1
+  metabolites_range = seq(2, end_loc)
   metabolites_block = metabolites_block[metabolites_range]
 
   if (length(metabolites_block) < 2) {
@@ -363,7 +523,7 @@ parse_metabolites_block = function(metabolites_block) {
 
   all_split = stringr::str_split(metabolites_block, "\t")
   if (has_id_row) {
-    col_id = all_split[[1]]
+    col_id = janitor::make_clean_names(all_split[[1]])
     all_split = all_split[-1]
   } else {
     col_id = janitor::make_clean_names(seq(1, length(all_split[[1]])))
@@ -587,7 +747,7 @@ convert_mwtab_smd = function(rds_file, reps, smd_file, ...) {
   if (mwtab_data$MEASUREMENT_TYPE %in% "MS") {
     mwtab_data$MEASUREMENT_INFO = mwtab_data$MS
   } else if (mwtab_data$MEASUREMENT_TYPE %in% "NMR") {
-    mwtab_data$MEASUREMENT_INFO %in% "NMR"
+    mwtab_data$MEASUREMENT_INFO = mwtab_data$NMR
   }
   project_data = mwtab_data[c(
     "MWINFO",
