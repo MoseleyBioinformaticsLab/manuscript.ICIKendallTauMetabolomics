@@ -31,11 +31,18 @@ mwtab_targets = tar_map(
   mwtab_samples,
   names = id,
   tar_target(mwtab, file, format = "file"),
-  tar_target(processed, parse_mwtab(mwtab)),
+  tar_target(processed, parse_mwtab(mwtab, id)),
   tar_target(
     checked,
     run_mwtab_checks(processed, min_n = 5, min_metabolites = 100, min_ssf = 2)
-  )
+  ),
+  tar_target(check_result, get_check(checked))
+)
+
+check_comb = tar_combine(
+  check_data,
+  mwtab_targets[[4]],
+  command = bind_rows(!!!.x)
 )
 
 correlation_samples = readRDS("data/smd/mwtab_smd.rds")
@@ -443,6 +450,7 @@ other_plan = tar_assign({
 
 list(
   mwtab_targets,
+  check_comb,
   small_realistic_examples,
   vl_plan,
   vl_lod_map,

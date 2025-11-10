@@ -64,7 +64,7 @@ parse_getinfo = function(id, file, save_loc) {
   return(out_info)
 }
 
-parse_mwtab = function(mwtab_file) {
+parse_mwtab = function(mwtab_file, id) {
   #mwtab_file = "data/repaired/https:%2F%2Fwww_metabolomicsworkbench_org%2Frest%2Fstudy%2Fanalysis_id%2FAN000023%2Fmwtab%2Ftxt.txt"  # MS file
   # mwtab_file = "data/repaired/https:%2F%2Fwww_metabolomicsworkbench_org%2Frest%2Fstudy%2Fanalysis_id%2FAN000693%2Fmwtab%2Ftxt.txt"  # NMR file
 
@@ -75,30 +75,42 @@ parse_mwtab = function(mwtab_file) {
   # mwtab_file = "data/repaired/https:%2F%2Fwww_metabolomicsworkbench_org%2Frest%2Fstudy%2Fanalysis_id%2FAN000038%2Fmwtab%2Ftxt.txt"
 
   # mwtab_file = "data/repaired/https:%2F%2Fwww_metabolomicsworkbench_org%2Frest%2Fstudy%2Fanalysis_id%2FAN000555%2Fmwtab%2Ftxt.txt"
-  mwtab_lines = readLines(mwtab_file)
-  block_lines = which(stringr::str_detect(mwtab_lines, "^\\#"))
 
-  block_data = vector("list", length(block_lines) - 1)
+  # mwtab_file = tar_read(mwtab_AN000172)
+  # mwtab_file = tar_read(mwtab_AN003177)
+  # mwtab_file = tar_read(mwtab_AN002445)
+  # mwtab_file = tar_read(mwtab_AN003894)
+  mwtab_lines = readLines(mwtab_file)
+  block_lines = which(stringr::str_detect(
+    mwtab_lines,
+    "^\\#[[:upper:]]|EXTENDED.*START"
+  ))
+  end_line = which(stringr::str_detect(mwtab_lines, "^\\#END"))
+  block_lines = block_lines[!(block_lines %in% end_line)]
+
+  block_data = vector("list", length(block_lines))
   for (iblock in seq_len(length(block_lines))) {
     # message(iblock)
     # iblock = 1
     if (iblock != length(block_lines)) {
       block_range = seq(block_lines[iblock] + 1, block_lines[iblock + 1] - 1)
-      if (iblock == 1) {
-        block_id = "MWINFO"
-        block_range = c(1, block_range)
-      } else {
-        block_id = stringr::str_replace(
-          mwtab_lines[block_lines[iblock]],
-          "\\#",
-          ""
-        ) |>
-          stringr::str_replace("\\ .*", "") |>
-          stringr::str_replace("\\:", "")
-      }
-      names(block_data)[iblock] = block_id
-      block_data[[iblock]] = mwtab_lines[block_range]
+    } else {
+      block_range = seq(block_lines[iblock] + 1, length(mwtab_lines) - 1)
     }
+    if (iblock == 1) {
+      block_id = "MWINFO"
+      block_range = c(1, block_range)
+    } else {
+      block_id = stringr::str_replace(
+        mwtab_lines[block_lines[iblock]],
+        "\\#",
+        ""
+      ) |>
+        stringr::str_replace("\\ .*", "") |>
+        stringr::str_replace("\\:", "")
+    }
+    names(block_data)[iblock] = block_id
+    block_data[[iblock]] = mwtab_lines[block_range]
   }
 
   parsed_data = purrr::imap(block_data, \(block, block_id) {
@@ -118,13 +130,15 @@ parse_mwtab = function(mwtab_file) {
       MS_METABOLITE_DATA = parse_ms_data(block),
       METABOLITES = parse_metabolites_block(block),
       NMR = parse_tabs(block),
-      NMR_BINNED_DATA = parse_nmr_data(block)
+      NMR_BINNED_DATA = parse_nmr_data(block),
+      block
     )
   })
 
+  parsed_data$ID = id
   if (is.null(parsed_data$SUBJECT_SAMPLE_FACTORS)) {
     # browser()
-    return(NULL)
+    return(parsed_data)
   }
   n_reps_factors = count_factors_replicates(parsed_data$SUBJECT_SAMPLE_FACTORS)
   parsed_data$SUBJECT_SAMPLE_FACTORS = n_reps_factors$sample_factors
@@ -137,10 +151,14 @@ parse_mwtab = function(mwtab_file) {
     parsed_data$MEASUREMENTS = parsed_data$NMR_BINNED_DATA
     parsed_data$MEASUREMENT_TYPE = "NMR"
   } else {
-    return(NULL)
+    return(parsed_data)
   }
 
   parsed_data
+}
+
+get_check = function(checked_mwtab) {
+  tibble::as_tibble(checked_mwtab$CHECK)
 }
 
 run_mwtab_checks = function(
@@ -150,6 +168,9 @@ run_mwtab_checks = function(
   min_ssf = 2
 ) {
   # processed_mwtab = tar_read(processed_AN002428)
+  # processed_mwtab = tar_read(processed_AN003177)
+  # processed_mwtab = tar_read(processed_AN003224)
+  # processed_mwtab = tar_read(processed_AN003894)
   # min_n = 5
   # min_metabolites = 100
   # min_ssf = 2
@@ -158,10 +179,14 @@ run_mwtab_checks = function(
     FEATURE_CHECK = "",
     SSF_CHECK = "",
     NA_CHECK = "",
-    RANK_CHECK = ""
+    RANK_CHECK = "",
+    ID = processed_mwtab$ID
   )
+  if (is.null(check_res$ID)) {
+    check_res$ID = ""
+  }
   n_features = nrow(processed_mwtab$MEASUREMENTS)
-  if (is.na(n_features)) {
+  if (is.na(n_features) || is.null(n_features)) {
     check_res$FEATURE_CHECK = "NA FEATURES"
     processed_mwtab$CHECK = check_res
     return(processed_mwtab)
@@ -360,7 +385,7 @@ parse_nmr_data = function(nmr_data) {
       values_from = value,
       names_from = sample_id
     )
-  names(nmr_wide_df) = janitor::make_clean_names(nmr_wide_df)
+  names(nmr_wide_df) = janitor::make_clean_names(names(nmr_wide_df))
   nmr_wide_df$feature_id = janitor::make_clean_names(nmr_wide_df$id)
   nmr_wide_df
 }
@@ -895,4 +920,25 @@ convert_list_to_df = function(measurements) {
   out_vals = purrr::map(measurements, \(in_meas) {
     unlist(in_meas)
   })
+}
+
+
+download_ancillary = function(
+  ancillary_files = "data/ancillary/results_files.txt",
+  download_dir = "data/ancillary"
+) {
+  # the list of files can be created by doing:
+  # grep -R -h -o "ST.*[[:digit:]].*\\_AN.*[[:digit:]].*.txt" > ../results_files.txt
+  url_loc = "https://www.metabolomicsworkbench.org/studydownload/"
+  exist_files = fs::dir_ls(download_dir)
+  all_files = readLines(ancillary_files)
+  all_files = all_files[!(all_files %in% exist_files)]
+  url_full = paste0(url_loc, all_files)
+
+  dest_files = fs::path(download_dir, all_files)
+  for (iloc in seq_len(length(all_files))) {
+    try(download.file(url = url_full[iloc], destfile = dest_files[iloc]))
+    Sys.sleep(2)
+  }
+  return(invisible(NULL))
 }
