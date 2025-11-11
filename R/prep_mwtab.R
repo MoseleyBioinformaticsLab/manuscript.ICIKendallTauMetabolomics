@@ -924,8 +924,8 @@ convert_list_to_df = function(measurements) {
 
 
 download_ancillary = function(
-  ancillary_files = "data/ancillary/results_files.txt",
-  download_dir = "data/ancillary"
+  ancillary_files = "/big_data/data/rmflight_icikt_poster_iecm/data/ancillary/ancillary_files.txt",
+  download_dir = "/big_data/data/rmflight_icikt_poster_iecm/data/ancillary/"
 ) {
   # the list of files can be created by doing:
   # grep -R -h -o "ST.*[[:digit:]].*\\_AN.*[[:digit:]].*.txt" > ../results_files.txt

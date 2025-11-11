@@ -23,7 +23,9 @@ correlation_methods = c(
   "kt"
 )
 
-mwtab_files = fs::dir_ls("data/repaired/")
+mwtab_files = fs::dir_ls(
+  "/big_data/data/rmflight_icikt_poster_iecm/data/repaired"
+)
 mwtab_samples = extract_mwtab_ids(mwtab_files)
 
 
