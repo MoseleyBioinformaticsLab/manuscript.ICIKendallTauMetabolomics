@@ -930,7 +930,7 @@ download_ancillary = function(
   # the list of files can be created by doing:
   # grep -R -h -o "ST.*[[:digit:]].*\\_AN.*[[:digit:]].*.txt" > ../results_files.txt
   url_loc = "https://www.metabolomicsworkbench.org/studydownload/"
-  exist_files = fs::dir_ls(download_dir)
+  exist_files = fs::dir_ls(download_dir) |> fs::path_file()
   all_files = readLines(ancillary_files)
   all_files = all_files[!(all_files %in% exist_files)]
   url_full = paste0(url_loc, all_files)
