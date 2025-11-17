@@ -9,62 +9,8 @@ extract_mwtab_ids = function(mwtab_files) {
   mwtab_df
 }
 
-parse_getmwtab = function(id, mwtab_file) {}
 
-prep_mwtab_data = function() {
-  #fs::dir_create("data/processed")
-
-  mwtab_files = fs::dir_ls("data/repaired")
-  split_files = stringr::str_split(mwtab_files, "%2F")
-  mwtab_df = tibble::tibble(
-    id = purrr::map_chr(split_files, \(in_file) {
-      in_file[7]
-    }),
-    file = mwtab_files
-  ) |>
-    dplyr::mutate(save_loc = fs::path("data", "processed", id, ext = "rds"))
-
-  mwtab_results = purrr::pmap(
-    mwtab_df,
-    parse_getinfo,
-    .progress = TRUE
-  ) |>
-    purrr::list_rbind()
-
-  saveRDS(mwtab_results, "data/processed/mwtab_results.rds")
-  return(invisible(NULL))
-}
-
-parse_getinfo = function(id, file, save_loc) {
-  if (fs::file_exists(save_loc)) {
-    parsed_data = readRDS(save_loc)
-  } else {
-    parsed_data = parse_mwtab(file)
-  }
-
-  if (is.null(parsed_data)) {
-    out_info = tibble::tibble(
-      id = id,
-      type = NULL,
-      reps = NULL
-    )
-  } else {
-    if (!fs::file_exists(save_loc)) {
-      saveRDS(parsed_data, save_loc)
-    }
-
-    out_info = tibble::tibble(
-      id = id,
-      type = parsed_data$MEASUREMENT_TYPE,
-      reps = list(parsed_data$N_REPLICATES),
-      n_features = nrow(parsed_data$MEASUREMENTS)
-    )
-  }
-
-  return(out_info)
-}
-
-parse_mwtab = function(mwtab_file, id) {
+parse_mwtab = function(mwtab_file, id, ancillary_path) {
   #mwtab_file = "data/repaired/https:%2F%2Fwww_metabolomicsworkbench_org%2Frest%2Fstudy%2Fanalysis_id%2FAN000023%2Fmwtab%2Ftxt.txt"  # MS file
   # mwtab_file = "data/repaired/https:%2F%2Fwww_metabolomicsworkbench_org%2Frest%2Fstudy%2Fanalysis_id%2FAN000693%2Fmwtab%2Ftxt.txt"  # NMR file
 
@@ -80,6 +26,7 @@ parse_mwtab = function(mwtab_file, id) {
   # mwtab_file = tar_read(mwtab_AN003177)
   # mwtab_file = tar_read(mwtab_AN002445)
   # mwtab_file = tar_read(mwtab_AN003894)
+  # mwtab_file = tar_read(mwtab_AN001238)
   mwtab_lines = readLines(mwtab_file)
   block_lines = which(stringr::str_detect(
     mwtab_lines,
@@ -120,17 +67,17 @@ parse_mwtab = function(mwtab_file, id) {
       PROJECT = parse_tabs(block),
       STUDY = parse_tabs(block),
       SUBJECT = parse_tabs(block),
-      SUBJECT_SAMPLE_FACTORS = parse_factors(block),
+      SUBJECT_SAMPLE_FACTORS = parse_factors_mwtab(block),
       COLLECTION = parse_tabs(block),
       TREATMENT = parse_tabs(block),
       SAMPLEPREP = parse_tabs(block),
       CHROMATOGRAPHY = parse_tabs(block),
       ANALYSIS = parse_tabs(block),
       MS = parse_tabs(block),
-      MS_METABOLITE_DATA = parse_ms_data(block),
-      METABOLITES = parse_metabolites_block(block),
+      MS_METABOLITE_DATA = parse_ms_data_mwtab(block),
+      METABOLITES = parse_metabolites_mwtab(block),
       NMR = parse_tabs(block),
-      NMR_BINNED_DATA = parse_nmr_data(block),
+      NMR_BINNED_DATA = parse_nmr_data_mwtab(block),
       block
     )
   })
@@ -140,7 +87,9 @@ parse_mwtab = function(mwtab_file, id) {
     # browser()
     return(parsed_data)
   }
-  n_reps_factors = count_factors_replicates(parsed_data$SUBJECT_SAMPLE_FACTORS)
+  n_reps_factors = count_factors_replicates_mwtab(
+    parsed_data$SUBJECT_SAMPLE_FACTORS
+  )
   parsed_data$SUBJECT_SAMPLE_FACTORS = n_reps_factors$sample_factors
   parsed_data$N_REPLICATES = n_reps_factors$n
 
@@ -151,15 +100,96 @@ parse_mwtab = function(mwtab_file, id) {
     parsed_data$MEASUREMENTS = parsed_data$NMR_BINNED_DATA
     parsed_data$MEASUREMENT_TYPE = "NMR"
   } else {
-    return(parsed_data)
+    parsed_data = check_and_parse_ancillary_mwtab(parsed_data)
   }
 
   parsed_data
 }
 
-get_check = function(checked_mwtab) {
-  tibble::as_tibble(checked_mwtab$CHECK)
+check_and_parse_ancillary_mwtab = function(
+  parsed_data,
+  ancillary_path = "/big_data/data/rmflight_icikt_poster_iecm/data/ancillary/"
+) {
+  # parsed_data = tar_read(processed_AN000111)
+  # ancillary_path = "/big_data/data/rmflight_icikt_poster_iecm/data/ancillary/"
+  if (!is.null(parsed_data$MS)) {
+    results_file = parsed_data$MS |>
+      dplyr::filter(grepl("MS_RESULTS_FILE", field)) |>
+      dplyr::pull(value)
+    data_type = "MS"
+  } else if (!is.null(parsed_data$NMR)) {
+    results_file = parsed_data$NMR |>
+      dplyr::filter(grepl("NMR_RESULTS_FILE", field)) |>
+      dplyr::pull(value)
+    data_type = "NMR"
+  }
+  just_file = stringr::str_split(results_file, "\t")[[1]][1]
+
+  ancillary_files = fs::dir_ls(ancillary_path)
+  ancillary_just_file = fs::path_file(ancillary_files)
+  names(ancillary_files) = ancillary_just_file
+
+  match_file = ancillary_files[just_file]
+
+  # can't find a match, just return early
+  if (is.na(match_file)) {
+    return(parsed_data)
+  }
+
+  ancillary_data = readr::read_delim(
+    match_file,
+    delim = "\t",
+    show_col_types = FALSE
+  ) |>
+    janitor::clean_names()
+
+  check_character_reread = function(ancillary_data, match_file) {
+    character_cols = purrr::map_lgl(ancillary_data, \(x) {
+      inherits(x, "character")
+    })
+    numeric_cols = !character_cols
+
+    if (sum(character_cols) == ncol(ancillary_data)) {
+      ancillary_tmp = readr::read_delim(
+        match_file,
+        skip = 1,
+        col_names = FALSE,
+        show_col_types = FALSE
+      )
+      character_cols = purrr::map_lgl(ancillary_tmp, \(x) {
+        inherits(x, "character")
+      })
+      if (sum(character_cols) == ncol(ancillary_tmp)) {
+        ancillary_tmp = readr::read_delim(
+          match_file,
+          skip = 2,
+          col_names = FALSE,
+          show_col_types = FALSE
+        )
+      }
+    }
+  }
+  # not everything can be a character column, there should
+  # be some numeric columns
+
+  # we assume the first character column is an ID.
+  # if there are no character columns, we just make our own.
+  if (length(character_cols) == 0) {
+    metabolite_data = tibble::tibble(
+      feature_id = janitor::make_clean_names(seq_len(nrow(ancillary_data)))
+    )
+    ancillary_data$feature_id = metabolite_data$feature_id
+  } else {
+    metabolite_data = ancillary_data[, character_cols]
+    metabolite_data$feature_id = janitor::make_clean_names(metabolite_data[[1]])
+    ancillary_data$feature_id = metabolite_data$feature_id
+  }
+
+  parsed_data$MEASUREMENTS = ancillary_data
+  parsed_data$METABOLITES = metabolite_data
+  return(parsed_data)
 }
+
 
 run_mwtab_checks = function(
   processed_mwtab,
@@ -258,53 +288,8 @@ check_ssf = function(ssf_data2, min_ssf = 2, min_n = 5) {
   }
 }
 
-check_missingness_ranks = function(measurements, factors) {
-  if ((sum(is.na(measurements)) == 0) && (sum(measurements == 0) == 0)) {
-    return("NO MISSING VALUES")
-  }
 
-  ranked_data = ICIKendallTau::rank_order_data(
-    measurements,
-    sample_classes = factors
-  )
-
-  ranked_null = purrr::map_lgl(ranked_data, is.null)
-  if (any(ranked_null)) {
-    return("ALL NA IN A GROUP")
-  }
-
-  ranked_cor = purrr::map(ranked_data, \(in_data) {
-    min_rank = in_data$n_na_rank |>
-      dplyr::summarise(min_rank = min(median_rank), .by = n_na)
-    full_cor = cor(
-      in_data$n_na_rank$n_na,
-      in_data$n_na_rank$median_rank,
-      method = "kendall"
-    )
-    min_cor = cor(
-      min_rank$n_na,
-      min_rank$min_rank,
-      method = "kendall"
-    )
-    tibble::tibble(median = full_cor, min = min_cor)
-  }) |>
-    purrr::list_rbind() |>
-    dplyr::mutate(sign_diff = sign(median) * sign(min))
-
-  if (any(is.na(ranked_cor$sign_diff))) {
-    return("NA CORRELATION")
-  } else if (any(ranked_cor$sign_diff == -1)) {
-    return("SIGN DIFFERENCE")
-  } else if (any(sign(ranked_cor$median) == 1)) {
-    return("POSITIVE MEDIAN")
-  } else if (any(sign(ranked_cor$min) == 1)) {
-    return("POSITIVE MINIMUM")
-  } else {
-    return("GOOD")
-  }
-}
-
-count_factors_replicates = function(subject_sample_factors) {
+count_factors_replicates_mwtab = function(subject_sample_factors) {
   # subject_sample_factors = parsed_data$SUBJECT_SAMPLE_FACTORS
 
   other_cols = names(subject_sample_factors)[
@@ -338,7 +323,7 @@ parse_tabs = function(in_block) {
   tab_split
 }
 
-parse_nmr_data = function(nmr_data) {
+parse_nmr_data_mwtab = function(nmr_data) {
   # nmr_data = block_data[["NMR_BINNED_DATA"]]
   start_loc = which(stringr::str_detect(nmr_data, "NMR_BINNED_DATA_START")) +
     1
@@ -390,12 +375,13 @@ parse_nmr_data = function(nmr_data) {
   nmr_wide_df
 }
 
-parse_ms_data = function(ms_data) {
+parse_ms_data_mwtab = function(ms_data) {
   # ms_data = block_data[["MS_METABOLITE_DATA"]]
   # message("ms data!")
   start_loc = which(stringr::str_detect(ms_data, "MS_METABOLITE_DATA_START")) +
     1
   end_loc = length(ms_data) - 1
+
   ms_data = ms_data[seq(start_loc, end_loc)]
 
   if (length(ms_data) <= 5) {
@@ -465,7 +451,8 @@ parse_ms_data = function(ms_data) {
   ms_wide_df
 }
 
-parse_factors = function(factor_data) {
+
+parse_factors_mwtab = function(factor_data) {
   # message("factor data!")
   # factor_data = block_data[["SUBJECT_SAMPLE_FACTORS"]]
 
@@ -530,7 +517,7 @@ split_and_return_factors = function(factor_string) {
 }
 
 
-parse_metabolites_block = function(metabolites_block) {
+parse_metabolites_mwtab = function(metabolites_block) {
   # metabolites_block = block_data$METABOLITES
 
   end_loc = which(grepl("METABOLITES_END", metabolites_block)) - 1
@@ -569,180 +556,7 @@ parse_metabolites_block = function(metabolites_block) {
 }
 
 
-find_possible_mwtab = function() {
-  mwtab_results = readRDS("data/processed/mwtab_results.rds")
-  n_analyses = nrow(mwtab_results)
-  n_na = sum(is.na(mwtab_results$n_features))
-  n_less_200 = sum(
-    !is.na(mwtab_results$n_features) & (mwtab_results$n_features < 200),
-    na.rm = TRUE
-  )
-  mwtab_nonna = mwtab_results |>
-    dplyr::filter(!is.na(n_features)) |>
-    dplyr::filter(n_features >= 200)
-  n_nonna = nrow(mwtab_nonna)
-  keep_reps = purrr::map(mwtab_nonna$reps, \(in_reps) {
-    # in_reps = mwtab_nonna$reps[[1]]
-    keep_reps = in_reps |>
-      dplyr::filter(n >= 3)
-    keep_reps
-  })
-  has_multi = purrr::map_lgl(keep_reps, \(x) {
-    (nrow(x) >= 2) && (sum(x$n >= 5) >= 1)
-  })
-  n_has_multi = sum(has_multi)
-
-  mwtab_nonna$reps = keep_reps
-
-  check_results = mwtab_nonna[has_multi, ]
-  n_data = tibble::tibble(
-    `N Analyses` = n_analyses,
-    `N NA Features` = n_na,
-    `N Less 200` = n_less_200,
-    `N Few Factors` = sum(!has_multi),
-    `N Multiple Factors` = n_has_multi
-  )
-  out_results = list(N = n_data, check = check_results)
-  saveRDS(out_results, "data/processed/mwtab_check.rds")
-}
-
-
-check_ranking_mwtab = function() {
-  out_results = readRDS("data/processed/mwtab_check.rds")
-
-  check_results = out_results$check |>
-    dplyr::mutate(rds_file = fs::path("data", "processed", id, ext = "rds"))
-
-  check_each = purrr::pmap_chr(
-    check_results,
-    load_and_check_mwtab,
-    .progress = TRUE
-  )
-
-  check_results$value_check = check_each
-  saveRDS(check_results, "data/processed/mwtab_rank.rds")
-  return(invisible(NULL))
-}
-
-find_mwtab_keep = function() {
-  check_results = readRDS("data/processed/mwtab_rank.rds")
-
-  keep_results = check_results |>
-    dplyr::filter(value_check %in% c("good", "sign difference"))
-
-  saveRDS(keep_results, "data/processed/mwtab_keep.rds")
-}
-
-load_and_check_mwtab = function(rds_file, reps, ...) {
-  # rds_file = check_results$rds_file[70]
-  # reps = check_results$reps[[70]]
-
-  # rds_file = check_results$rds_file[7]
-  # reps = check_results$reps[[7]]
-
-  keep_factors = reps
-  mwtab_data = readRDS(rds_file)
-
-  sample_factors = mwtab_data$SUBJECT_SAMPLE_FACTORS |>
-    dplyr::filter(factors %in% keep_factors$factors)
-
-  sample_subjects = mwtab_data$SUBJECT
-  if (any(grepl("\\;", sample_subjects$value))) {
-    return("multiple species")
-  }
-
-  if (
-    length(
-      base::setdiff(
-        sample_factors$sample_id,
-        colnames(mwtab_data$MEASUREMENTS)
-      ) >
-        0
-    )
-  ) {
-    match_samples = base::intersect(
-      sample_factors$sample_id,
-      colnames(mwtab_data$MEAUREMENTS)
-    )
-    sample_factors = sample_factors |>
-      dplyr::filter(sample_id %in% match_samples)
-
-    n_rep = sample_factors |>
-      dplyr::summarise(n = dplyr::n(), .by = factors)
-    keep_it = (nrow(n_rep) >= 2) && (sum(n_rep$n >= 5) >= 1)
-
-    if (!keep_it) {
-      return("missing or not enough samples")
-    }
-  }
-
-  if (
-    inherits(mwtab_data$MEASUREMENTS[[sample_factors$sample_id[1]]], "list")
-  ) {
-    return("list data")
-  }
-
-  metabolite_values = mwtab_data$MEASUREMENTS[, sample_factors$sample_id] |>
-    as.matrix()
-
-  ranked_data = ICIKendallTau::rank_order_data(
-    metabolite_values,
-    sample_classes = sample_factors$factors
-  )
-  ranked_null = purrr::map_lgl(ranked_data, is.null)
-  if (any(ranked_null)) {
-    return("all NA in a group")
-  }
-
-  if (
-    (sum(is.na(metabolite_values)) == 0) && (sum(metabolite_values == 0) == 0)
-  ) {
-    return("no missing")
-  }
-  rank_cor = purrr::map(ranked_data, \(in_data) {
-    # in_data = ranked_data[[1]]
-    min_rank = in_data$n_na_rank |>
-      dplyr::summarise(min_rank = min(median_rank), .by = n_na)
-    full_cor = cor(
-      in_data$n_na_rank$n_na,
-      in_data$n_na_rank$median_rank,
-      method = "kendall"
-    )
-    min_cor = cor(
-      min_rank$n_na,
-      min_rank$min_rank,
-      method = "kendall"
-    )
-    tibble::tibble(median = full_cor, min = min_cor)
-  }) |>
-    purrr::list_rbind()
-
-  rank_cor = rank_cor |>
-    dplyr::mutate(sign_diff = sign(median) * sign(min))
-
-  if (any(is.na(rank_cor$sign_diff))) {
-    return("na corr")
-  } else if (any(rank_cor$sign_diff == -1)) {
-    return("sign difference")
-  } else if (any(sign(rank_cor$median) == 1)) {
-    return("positive median")
-  } else if (any(sign(rank_cor$min) == 1)) {
-    return("positive minimum")
-  } else {
-    return("good")
-  }
-}
-
-convert_mwtabs_2_smd = function() {
-  mwtab_keep = readRDS("data/processed/mwtab_keep.rds")
-
-  mwtab_keep = mwtab_keep |>
-    dplyr::mutate(smd_file = fs::path("data", "smd", id, ext = "rds"))
-  purrr::pwalk(mwtab_keep, convert_mwtab_smd, .progress = TRUE)
-  saveRDS(mwtab_keep, "data/smd/mwtab_smd.rds")
-}
-
-convert_mwtab_smd = function(rds_file, reps, smd_file, ...) {
+convert_json_smd = function(rds_file, reps, smd_file, ...) {
   # rep_data = readRDS("data/processed/mwtab_keep.rds")
   # use_reps = rep_data |>
   #   dplyr::filter(id %in% "AN000023") |>
@@ -908,37 +722,4 @@ convert_nsclc_smd = function() {
     )
   )
   saveRDS(mwtab_keep, "data/smd/mwtab_smd.rds")
-}
-
-
-convert_list_to_df = function(measurements) {
-  id = "AN000555"
-  rds_file = fs::path("data", "processed", id, ext = "rds")
-  mwtab_data = readRDS(rds_file)
-  measurements = mwtab_data$MEASUREMENTS
-
-  out_vals = purrr::map(measurements, \(in_meas) {
-    unlist(in_meas)
-  })
-}
-
-
-download_ancillary = function(
-  ancillary_files = "/big_data/data/rmflight_icikt_poster_iecm/data/ancillary/ancillary_files.txt",
-  download_dir = "/big_data/data/rmflight_icikt_poster_iecm/data/ancillary/"
-) {
-  # the list of files can be created by doing:
-  # grep -R -h -o "ST.*[[:digit:]].*\\_AN.*[[:digit:]].*.txt" > ../results_files.txt
-  url_loc = "https://www.metabolomicsworkbench.org/studydownload/"
-  exist_files = fs::dir_ls(download_dir) |> fs::path_file()
-  all_files = readLines(ancillary_files)
-  all_files = all_files[!(all_files %in% exist_files)]
-  url_full = paste0(url_loc, all_files)
-
-  dest_files = fs::path(download_dir, all_files)
-  for (iloc in seq_len(length(all_files))) {
-    try(download.file(url = url_full[iloc], destfile = dest_files[iloc]))
-    Sys.sleep(2)
-  }
-  return(invisible(NULL))
 }

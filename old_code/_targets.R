@@ -34,7 +34,7 @@ mwtab_targets = tar_map(
   mwtab_datasets,
   names = id,
   tar_target(dataset, file, format = "file"),
-  tar_target(processed, parse_json(dataset, id, ancillary_path)),
+  tar_target(processed, parse_mwtab_json(mwtab, id, ancillary_path)),
   tar_target(
     checked,
     run_mwtab_checks(processed, min_n = 5, min_metabolites = 100, min_ssf = 2)
@@ -263,6 +263,191 @@ vl_cor_diff_combine_map = tar_combine(
   command = bind_rows(!!!.x)
 )
 
+metabolomics_map = tar_map(
+  correlation_samples,
+  names = id,
+  tar_target(
+    smd_data,
+    read_smd(id, smd_file, type, value_check)
+  ),
+  tar_target(missingness_tests, run_missingness_tests(smd_data)),
+  tar_target(
+    metabolomics_keep,
+    keep_in_samples(smd_data)
+  ),
+  tar_target(
+    metabolomics_cor,
+    run_cor_everyway_new(metabolomics_keep)
+  ),
+  tar_target(
+    outliers_all,
+    calculate_outlier_effects(metabolomics_cor, metabolomics_keep, "all")
+  ),
+  tar_target(
+    outliers_subsets,
+    calculate_outlier_effects(metabolomics_cor, metabolomics_keep, "subsets")
+  ),
+  tar_target(
+    rsd_subsets,
+    calculate_rsd_differences(outliers_subsets)
+  ),
+  tar_target(
+    rsd_all,
+    calculate_rsd_differences(outliers_all)
+  ),
+  tar_target(
+    rsd_subsets_median,
+    calculate_median_rsd_diffs(rsd_subsets)
+  ),
+  tar_target(
+    rsd_all_median,
+    calculate_median_rsd_diffs(rsd_all)
+  ),
+
+  tar_target(
+    pca_outliers,
+    filter_outlier_dopca(metabolomics_cor, metabolomics_keep)
+  ),
+
+  tar_target(
+    limma_outliers,
+    filter_outliers_do_limma(metabolomics_cor, metabolomics_keep)
+  ),
+
+  tar_target(
+    limma_compare,
+    limma_compare_significant(limma_outliers)
+  ),
+
+  tar_target(
+    feature_variance,
+    calculate_group_variances(metabolomics_keep)
+  ),
+
+  tar_target(
+    feature_variance_summary,
+    summarize_group_variances(feature_variance, id)
+  ),
+
+  tar_target(
+    limma_feature_compare,
+    compare_limma_feature_pvals(limma_outliers)
+  )
+)
+
+pca_outliers_comb = tar_combine(
+  pca_outliers_all,
+  metabolomics_map[[11]],
+  command = bind_rows(!!!.x)
+)
+
+limma_outliers_comb = tar_combine(
+  limma_compare_all,
+  metabolomics_map[[13]],
+  command = bind_rows(!!!.x)
+)
+
+limma_feature_compare_comb = tar_combine(
+  limma_feature_compare_all,
+  metabolomics_map[[16]],
+  command = bind_rows(!!!.x)
+)
+
+feature_variance_comb = tar_combine(
+  feature_variances_all,
+  metabolomics_map[[15]],
+  command = bind_rows(!!!.x)
+)
+
+rsd_diffs_all_comb = tar_combine(
+  rsd_diffs_all,
+  metabolomics_map[[10]],
+  command = bind_rows(!!!.x)
+)
+
+rsd_diffs_subsets_comb = tar_combine(
+  rsd_diffs_subsets,
+  metabolomics_map[[9]],
+  command = bind_rows(!!!.x)
+)
+
+missingness_map = tar_map(
+  correlation_samples,
+  names = id,
+  tar_target(
+    missingness,
+    calculate_missingness(id, smd_file, type, value_check)
+  )
+)
+
+rank_cor_map = tar_map(
+  correlation_samples,
+  names = id,
+  tar_target(
+    rank_cor,
+    calculate_rank_correlation(id, smd_file, type, value_check)
+  )
+)
+
+missingness_comb = tar_combine(
+  missingness_values,
+  missingness_map,
+  command = bind_rows(!!!.x)
+)
+
+rank_cor_comb = tar_combine(
+  rank_correlations,
+  rank_cor_map,
+  command = bind_rows(!!!.x)
+)
+
+other_plan = tar_assign({
+  missingness_summary = missingness_values |>
+    dplyr::mutate(padjust = p.adjust(p.value, method = "BH")) |>
+    tar_target()
+
+  variable_dynamic_range_image = create_variable_dynamic_range_image(
+    vl_diff_graph
+  ) |>
+    tar_target()
+  censored_value_plot_image = create_censored_value_images(
+    censored_value_plots
+  ) |>
+    tar_target()
+
+  rank_missingness_image = create_figure1_image(
+    missingness_summary,
+    missingness_tests_AN001074,
+    rank_correlations
+  ) |>
+    tar_target()
+
+  limma_comparisons = examine_limma_significant(limma_compare_all) |>
+    tar_target()
+  limma_test_comparisons_good = test_limma_significant(limma_compare_all) |>
+    tar_target()
+  limma_test_comparisons_all = test_limma_significant(
+    limma_compare_all,
+    "all"
+  ) |>
+    tar_target()
+
+  mean_tables_image = create_tabular_comparison_outputs(limma_comparisons) |>
+    tar_target()
+  ttest_tables_image = create_tabular_test_outputs(
+    limma_test_comparisons_good
+  ) |>
+    tar_target()
+
+  mean_comparison_image = create_graphical_comparison_outputs(
+    limma_comparisons
+  ) |>
+    tar_target()
+  ttest_graphic_image = create_graphical_test_outputs(
+    limma_test_comparisons_good
+  ) |>
+    tar_target()
+})
 
 list(
   mwtab_targets,
@@ -270,5 +455,17 @@ list(
   small_realistic_examples,
   vl_plan,
   vl_lod_map,
-  vl_cor_diff_combine_map
+  vl_cor_diff_combine_map,
+  metabolomics_map,
+  missingness_map,
+  missingness_comb,
+  rank_cor_map,
+  rank_cor_comb,
+  rsd_diffs_all_comb,
+  rsd_diffs_subsets_comb,
+  pca_outliers_comb,
+  limma_outliers_comb,
+  limma_feature_compare_comb,
+  feature_variance_comb,
+  other_plan
 )
