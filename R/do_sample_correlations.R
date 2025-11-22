@@ -91,11 +91,17 @@ keep_in_samples = function(sample_smd) {
 run_cor_everyway_new = function(keep_smd) {
   # keep_smd = tar_read(metabolomics_keep_AN000364)
   # keep_smd = tar_read(metabolomics_cor_AN001156)
+  # keep_smd = tar_read(smd_AN000131)
+  # keep_smd = tar_read(smd_AN004902)
+
+  if (is.null(keep_smd)) {
+    return(NULL)
+  }
 
   sample_counts = assays(keep_smd)$normalized
   sample_info = colData(keep_smd) |> as.data.frame()
 
-  other_metadata = metadata(keep_smd)$other
+  other_metadata = metadata(keep_smd)
 
   sample_completeness = pairwise_completeness(sample_counts)
   ici_cor = ici_kendalltau(sample_counts, global_na = c(NA, 0))$cor

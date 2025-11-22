@@ -44,6 +44,18 @@ parse_json = function(mwtab_file, id, ancillary_path) {
   # id = "AN000352"
   # mwtab_file = tar_read(dataset_AN000593)
   # id = "AN000593"
+  # mwtab_file = tar_read(dataset_AN000409)
+  # id = "AN000409"
+  # mwtab_file = tar_read(dataset_AN005567)
+  # id = "AN005567"
+  # mwtab_file = tar_read(dataset_AN003914)
+  # id = "AN003914"
+  # mwtab_file = tar_read(dataset_AN007063)
+  # id = "AN007063"
+  # mwtab_file = tar_read(dataset_AN002549)
+  # id = "AN002549"
+  # mwtab_file = tar_read(dataset_AN000033)
+  # id = "AN000033"
   mwtab_list = jsonlite::fromJSON(mwtab_file, simplifyVector = FALSE)
 
   parsed_data = purrr::imap(mwtab_list, \(block, block_id) {
@@ -213,24 +225,35 @@ get_check = function(checked_mwtab) {
 }
 
 
-run_mwtab_checks = function(
+run_mwtab_checks_json = function(
   processed_mwtab,
   min_n = 5,
   min_metabolites = 100,
-  min_ssf = 2
+  max_min_value = 20,
+  min_ssf = 2,
+  use_ssf_only = "yes"
 ) {
   # processed_mwtab = tar_read(processed_AN002428)
   # processed_mwtab = tar_read(processed_AN003177)
   # processed_mwtab = tar_read(processed_AN003224)
   # processed_mwtab = tar_read(processed_AN003894)
+  # processed_mwtab = tar_read(processed_AN000176)
+  # processed_mwtab = tar_read(processed_AN001959)
+  # processed_mwtab = tar_read(processed_AN001936)
+  # processed_mwtab = tar_read(processed_AN000409)
+  # processed_mwtab = tar_read(processed_AN003719)
+  # processed_mwtab = tar_read(processed_AN004603)
+  # processed_mwtab = tar_read(processed_AN000033)
   # min_n = 5
   # min_metabolites = 100
+  # max_min_value = 20
   # min_ssf = 2
+  # use_ssf_only = "yes"
 
   check_res = list(
     FEATURE_CHECK = "",
     SSF_CHECK = "",
-    NA_CHECK = "",
+    RANGE_CHECK = "",
     RANK_CHECK = "",
     ID = processed_mwtab$ID
   )
@@ -252,34 +275,53 @@ run_mwtab_checks = function(
     check_res$FEATURE_CHECK = "GOOD"
   }
 
-  if (is.null(processed_mwtab$METABOLITES)) {
-    feature_metadata = data.frame(
-      metabolite_name = processed_mwtab$MEASUREMENTS$id,
-      feature_id = janitor::make_clean_names(processed_mwtab$MEASUREMENTS$id)
-    )
-    processed_mwtab$METABOLITES = feature_metadata
-  } else {
-    processed_mwtab$METABOLITES$feature_id = janitor::make_clean_names(
-      processed_mwtab$METABOLITES$metabolite_name
-    )
-  }
-
   ssf_data = processed_mwtab$SUBJECT_SAMPLE_FACTORS
+
   match_samples = base::intersect(
     ssf_data$sample_id,
     colnames(processed_mwtab$MEASUREMENTS)
   )
+
+  if (length(match_samples) == 0) {
+    check_res$SSF_CHECK = "NO COMMON SAMPLES"
+    processed_mwtab$CHECK = check_res
+    return(processed_mwtab)
+  }
   ssf_data2 = ssf_data |>
     dplyr::filter(sample_id %in% match_samples)
 
-  ssf_check_result = check_ssf(ssf_data2, min_ssf, min_n)
-  processed_mwtab$SUBJECT_SAMPLE_FACTORS = ssf_data2
+  is_pooled_qc = ssf_data2 |>
+    dplyr::filter(
+      grepl(
+        ".*pool.*|.*qc.*",
+        sample_id,
+        ignore.case = TRUE
+      ) |
+        grepl(".*pool.*|.*qc.*", item, ignore.case = TRUE)
+    ) |>
+    dplyr::pull(sample_id)
 
-  processed_mwtab$MEASUREMENTS = processed_mwtab$MEASUREMENTS[, c(
-    "feature_id",
-    "id",
-    ssf_data2$sample_id
-  )]
+  ssf_data2 = ssf_data2 |>
+    dplyr::filter(!(sample_id %in% is_pooled_qc))
+
+  if (use_ssf_only %in% "yes") {
+    ssf_data_use = ssf_data2 |>
+      dplyr::filter(type %in% "subject_sample_factor")
+  } else {
+    ssf_data_use = ssf_data2
+  }
+
+  if (nrow(ssf_data_use) == 0) {
+    check_res$SSF_CHECK = "NO SAMPLES LEFT"
+    processed_mwtab$CHECK = check_res
+    return(processed_mwtab)
+  }
+  ssf_wide = widen_ssf_json(ssf_data_use)
+  ssf_wide_grouped = create_factor_groups_json(ssf_wide)
+
+  ssf_check_result = check_ssf_json(ssf_wide_grouped, min_ssf, min_n)
+  processed_mwtab$SUBJECT_SAMPLE_FACTORS = ssf_data2
+  processed_mwtab$SUBJECT_METADATA = ssf_wide_grouped
 
   check_res$SSF_CHECK = ssf_check_result
   if (ssf_check_result %in% "NOT ENOUGH SAMPLES") {
@@ -287,11 +329,21 @@ run_mwtab_checks = function(
     return(processed_mwtab)
   }
 
-  measurements = processed_mwtab$MEASUREMENTS[, ssf_data2$sample_id] |>
+  measurements = processed_mwtab$MEASUREMENTS[, ssf_wide_grouped$sample_id] |>
     as.matrix()
-  factors = ssf_data2$factors
+  factors = ssf_wide_grouped$factors
 
-  missingness_rank_check = check_missingness_ranks(measurements, factors)
+  max_measurement = max(measurements, na.rm = TRUE)
+
+  if (max_measurement <= max_min_value) {
+    check_res$RANGE_CHECK = "TOO LOW"
+    processed_mwtab$CHECK = check_res
+    return(processed_mwtab)
+  } else {
+    check_res$RANGE_CHECK = "GOOD"
+  }
+
+  missingness_rank_check = check_missingness_ranks_json(measurements, factors)
 
   check_res$RANK_CHECK = missingness_rank_check
 
@@ -299,7 +351,39 @@ run_mwtab_checks = function(
   processed_mwtab
 }
 
-check_ssf = function(ssf_data2, min_ssf = 2, min_n = 5) {
+widen_ssf_json = function(ssf_data2) {
+  ssf_data2 |>
+    tidyr::pivot_wider(
+      id_cols = c(subject, sample_id),
+      names_from = factor,
+      values_from = item
+    ) |>
+    janitor::clean_names()
+}
+
+create_factor_groups_json = function(ssf_wide) {
+  other_cols = names(ssf_wide)[
+    !(names(ssf_wide) %in% c("sample_id", "subject"))
+  ]
+
+  concat_factors = ssf_wide |>
+    tidyr::unite("factors", tidyselect::all_of(other_cols), sep = "|")
+
+  if (!is.null(ssf_wide[["factors"]])) {
+    ssf_nofact = ssf_wide |> dplyr::select(-factors)
+  } else {
+    ssf_nofact = ssf_wide
+  }
+  concat_output = dplyr::left_join(
+    ssf_nofact,
+    concat_factors,
+    by = c("subject", "sample_id")
+  )
+
+  concat_output
+}
+
+check_ssf_json = function(ssf_data2, min_ssf = 2, min_n = 5) {
   ssf_n = ssf_data2 |>
     dplyr::summarise(n = dplyr::n(), .by = factors)
 
@@ -310,7 +394,7 @@ check_ssf = function(ssf_data2, min_ssf = 2, min_n = 5) {
   }
 }
 
-check_missingness_ranks = function(measurements, factors) {
+check_missingness_ranks_json = function(measurements, factors) {
   if ((sum(is.na(measurements)) == 0) && (sum(measurements == 0) == 0)) {
     return("NO MISSING VALUES")
   }
@@ -392,26 +476,31 @@ parse_nmr_data_json = function(nmr_data) {
 
   nmr_data_df = tryCatch(
     {
-      purrr::map(nmr_data$Data, tibble::as_tibble) |>
-        purrr::list_rbind() |>
-        readr::type_convert() |>
-        janitor::clean_names()
+      ms_create_tibble(nmr_data$Data)
     },
-    error = return(NULL)
+    error = function(e) {
+      return(NULL)
+    }
   )
+  if (is.null(nmr_data_df)) {
+    return(NULL)
+  }
 
   nmr_data_df$feature_id = janitor::make_clean_names(nmr_data_df[[1]])
 
   if (!is.null(nmr_data$Metabolites)) {
     metabolite_df = tryCatch(
       {
-        purrr::map(nmr_data$Metabolites, tibble::as_tibble) |>
-          purrr::list_rbind() |>
-          readr::type_convert() |>
-          janitor::clean_names()
+        ms_create_tibble(nmr_data$Metabolites)
       },
-      error = return(NULL)
+      error = function(e) {
+        return(NULL)
+      }
     )
+    metabolite_df$feature_id = janitor::make_clean_names(metabolite_df[[1]])
+    if (is.null(metabolite_df)) {
+      metabolite_df = tibble::tibble(feature_id = nmr_data_df$feature_id)
+    }
   } else {
     metabolite_df = tibble::tibble(feature_id = nmr_data_df$feature_id)
   }
@@ -419,36 +508,65 @@ parse_nmr_data_json = function(nmr_data) {
   list(DATA = nmr_data_df, METABOLITES = metabolite_df)
 }
 
+ms_create_tibble = function(ms_data_json) {
+  purrr::map(ms_data_json, tibble::as_tibble) |>
+    purrr::list_rbind() |>
+    readr::type_convert() |>
+    janitor::clean_names()
+}
+
+custom_convert_numeric = function(in_df) {
+  numeric_df = suppressWarnings(purrr::map(in_df, as.numeric)) |>
+    dplyr::bind_cols()
+  is_character = purrr::map_lgl(numeric_df, \(x) {
+    all(is.na(x))
+  }) |>
+    which()
+
+  if (length(is_character) > 0) {
+    numeric_df[, is_character] = in_df[, is_character]
+  }
+  numeric_df
+}
+
 parse_ms_data_json = function(ms_data) {
   # ms_data = block_data[["MS_METABOLITE_DATA"]]
   # message("ms data!")
   # ms_data = mwtab_list$MS_METABOLITE_DATA
 
-  ms_df_1 = try(tibble::as_tibble(ms_data$Data[[1]]))
+  ms_df_1 = try(
+    tibble::as_tibble(ms_data$Data[[1]])
+  )
   if (inherits(ms_df_1, "try-error")) {
     return(NULL)
   }
   ms_data_df = tryCatch(
     {
-      purrr::map(ms_data$Data, tibble::as_tibble) |>
-        purrr::list_rbind() |>
-        readr::type_convert() |>
-        janitor::clean_names()
+      ms_create_tibble(ms_data$Data)
     },
-    error = return(NULL)
+    error = function(e) {
+      return(NULL)
+    }
   )
+
+  if (is.null(ms_data_df)) {
+    return(NULL)
+  }
   ms_data_df$feature_id = janitor::make_clean_names(ms_data_df[[1]])
 
   if (!is.null(ms_data$Metabolites)) {
     metabolite_df = tryCatch(
       {
-        purrr::map(ms_data$Metabolites, tibble::as_tibble) |>
-          purrr::list_rbind() |>
-          readr::type_convert() |>
-          janitor::clean_names()
+        ms_create_tibble(ms_data$Metabolites)
       },
-      error = return(NULL)
+      error = function(e) {
+        return(NULL)
+      }
     )
+    metabolite_df$feature_id = janitor::make_clean_names(metabolite_df[[1]])
+    if (is.null(metabolite_df)) {
+      metabolite_df = tibble::tibble(feature_id = ms_data_df$feature_id)
+    }
   } else {
     metabolite_df = tibble::tibble(feature_id = ms_data_df$feature_id)
   }
@@ -488,15 +606,33 @@ parse_factors_json = function(factor_data) {
   }) |>
     purrr::list_rbind()
 
+  if (nrow(factor_df) == 0) {
+    return(NULL)
+  }
   null_subject = factor_df[["subject"]] == "-"
   if (any(factor_df$factor %in% "sample_id")) {
     return(NULL)
   }
 
   # these basically can't be empty, if they are, bad things happen.
+  empty_factors = factor_df |>
+    dplyr::filter(nchar(factor) == 0)
+  unique_samples = factor_df$sample_id |> unique()
+
+  if (nrow(empty_factors) > 0) {
+    mod_rows = nrow(empty_factors) %% length(unique_samples)
+    if (!all(unique_samples %in% empty_factors$sample_id) || !(mod_rows == 0)) {
+      return(NULL)
+    } else {
+      factor_df = factor_df |>
+        dplyr::filter(!(nchar(factor) == 0))
+    }
+  }
+
   if (any(nchar(factor_df$factor) == 0)) {
     return(NULL)
   }
+
   if (any(nchar(factor_df$sample_id) == 0)) {
     return(NULL)
   }
@@ -726,40 +862,29 @@ load_and_check_mwtab = function(rds_file, reps, ...) {
 }
 
 
-convert_mwtab_json_smd = function(rds_file, reps, smd_file, ...) {
-  # rep_data = readRDS("data/processed/mwtab_keep.rds")
-  # use_reps = rep_data |>
-  #   dplyr::filter(id %in% "AN000023") |>
-  #   dplyr::pull(reps)
-  # use_reps = use_reps[[1]]
-  # mwtab_data = readRDS("data/processed/AN000023.rds")
-  # mwtab_keep = readRDS("data/processed/mwtab_keep.rds")
-  # rds_file = mwtab_keep$rds_file[24]
-  # reps = mwtab_keep$reps[[24]]
-  # smd_file = mwtab_keep$smd_file[24]
+convert_mwtab_json_smd = function(json_checked) {
+  # json_checked = tar_read(checked_AN000033)
+  # json_checked = tar_read(checked_AN007099)
 
-  # rds_file = mwtab_keep$rds_file[6]
-  # reps = mwtab_keep$reps[[6]]
-  # smd_file = mwtab_keep$smd_file[6]
-
-  # rds_file = mwtab_keep$rds_file[7]
-  # reps = mwtab_keep$reps[[7]]
-  # smd_file = mwtab_keep$smd_file[7]
-
-  # rds_file = mwtab_keep$rds_file[118]
-  # reps = mwtab_keep$reps[[118]]
-  # smd_file = mwtab_keep$smd_file[118]
-  mwtab_data = readRDS(rds_file)
-  sample_metadata = mwtab_data$SUBJECT_SAMPLE_FACTORS
-  sample_metadata = sample_metadata |>
-    dplyr::filter(factors %in% reps$factors)
-  if (mwtab_data$MEASUREMENT_TYPE %in% "MS") {
-    mwtab_data$MEASUREMENT_INFO = mwtab_data$MS
-  } else if (mwtab_data$MEASUREMENT_TYPE %in% "NMR") {
-    mwtab_data$MEASUREMENT_INFO = mwtab_data$NMR
+  check_res = json_checked$CHECK
+  if (
+    !(check_res$FEATURE_CHECK %in% "GOOD") ||
+      !(check_res$SSF_CHECK %in% "GOOD SSF") ||
+      !(check_res$RANK_CHECK %in% c("GOOD", "SIGN DIFFERENCE")) ||
+      !(check_res$RANGE_CHECK %in% "GOOD")
+  ) {
+    return(NULL)
   }
-  project_data = mwtab_data[c(
-    "MWINFO",
+
+  sample_metadata = json_checked$SUBJECT_METADATA
+
+  if (json_checked$MEASUREMENT_TYPE %in% "MS") {
+    json_checked$MEASUREMENT_INFO = json_checked$MS
+  } else if (json_checked$MEASUREMENT_TYPE %in% "NMR") {
+    json_checked$MEASUREMENT_INFO = json_checked$NMR
+  }
+  project_data = json_checked[c(
+    "METABOLOMICS WORKBENCH",
     "PROJECT",
     "STUDY",
     "SUBJECT",
@@ -768,67 +893,60 @@ convert_mwtab_json_smd = function(rds_file, reps, smd_file, ...) {
     "SAMPLEPREP",
     "CHROMATOGRAPHY",
     "ANALYSIS",
-    "METABOLITES",
-    "N_REPLICATES",
-    "MEASUREMENTS",
     "MEASUREMENT_TYPE",
-    "MEASUREMENT_INFO"
+    "MEASUREMENT_INFO",
+    "CHECK"
   )]
-
-  if (!is.null(mwtab_data$METABOLITES)) {
-    feature_metadata = mwtab_data$METABOLITES
-  } else {
-    feature_metadata = data.frame(
-      metabolite_name = mwtab_data$MEASUREMENTS$id
-    )
-  }
 
   match_samples = base::intersect(
     sample_metadata$sample_id,
-    colnames(mwtab_data$MEASUREMENTS)
+    colnames(json_checked$MEASUREMENTS)
   )
 
-  if ((length(match_samples) == 0) || (is.null(match_samples))) {
-    stop("No matching samples!")
-  }
   sample_metadata = sample_metadata |>
     dplyr::filter(sample_id %in% match_samples)
-  measurements = mwtab_data$MEASUREMENTS[, c("id", sample_metadata$sample_id)]
+  measurements = json_checked$MEASUREMENTS[, c(
+    "feature_id",
+    sample_metadata$sample_id
+  )]
 
+  feature_metadata = json_checked$METABOLITES
   feature_DF = DataFrame(feature_metadata)
-  feature_DF$feature_id = janitor::make_clean_names(feature_DF$metabolite_name)
   rownames(feature_DF) = feature_DF$feature_id
 
   sample_DF = DataFrame(sample_metadata)
-  sample_DF$sample_id = janitor::make_clean_names(sample_DF$sample_id)
-  colnames(sample_DF) = janitor::make_clean_names(colnames(sample_DF))
   rownames(sample_DF) = sample_DF$sample_id
   measurement_array = measurements |>
-    dplyr::select(-id) |>
+    dplyr::select(-feature_id) |>
     as.matrix()
-  colnames(measurement_array) = janitor::make_clean_names(colnames(
-    measurement_array
-  ))
-  rownames(measurement_array) = janitor::make_clean_names(measurements$id)
+
+  rownames(measurement_array) = measurements$feature_id
   keep_metabolites = base::intersect(
     rownames(feature_DF),
     rownames(measurement_array)
   )
-  feature_DF = feature_DF[keep_metabolites, ]
+  feature_DF = feature_DF[keep_metabolites, , drop = FALSE]
   measurement_array = measurement_array[
     feature_DF$feature_id,
     sample_DF$sample_id
   ]
 
+  if (typeof(measurement_array) %in% "character") {
+    mode(measurement_array) = "numeric"
+  }
   measurement_array[measurement_array <= 0] = NA
+  normalized_array = median_normalize(measurement_array)
 
   out_smd = SummarizedExperiment(
-    assays = SimpleList(counts = measurement_array),
+    assays = SimpleList(
+      counts = measurement_array,
+      normalized = normalized_array
+    ),
     rowData = feature_DF,
     colData = sample_DF,
     metadata = project_data
   )
-  saveRDS(out_smd, smd_file)
+  out_smd
 }
 
 
@@ -915,4 +1033,90 @@ test_json_parsing = function() {
 
   json_parsed = purrr::pmap(test_datasets, parse_json, .progress = TRUE) |>
     flighttools::ft_notify_success_error()
+  check_parsed = purrr::map(
+    json_parsed,
+    run_mwtab_checks_json,
+    min_n = 5,
+    min_metabolites = 100,
+    min_ssf = 2,
+    use_ssf_only = "yes",
+    .progress = TRUE
+  ) |>
+    flighttools::ft_notify_success_error()
+}
+
+handle_pooled_samples = function() {
+  # this would be code that is useful for "other" types of tasks, or
+  # for processing for inclusion in an atlas and then excluding.
+  # for this project, we want to get rid of them right now, because
+  # they don't add any information, and can cloud our analysis.
+  just_subject_sample = ssf_data2 |>
+    dplyr::select(subject, sample_id) |>
+    dplyr::distinct()
+  pooled_qc_status = just_subject_sample |>
+    dplyr::mutate(
+      factor = "pooled_qc_status",
+      item = dplyr::case_when(
+        sample_id %in% is_pooled_qc ~ "pooled_or_qc_sample",
+        TRUE ~ "experimental"
+      ),
+      type = "subject_sample_factor"
+    )
+
+  ssf_data2 = dplyr::bind_rows(ssf_data2, pooled_qc_status)
+
+  other_cols = names(ssf_wide)[
+    !(names(ssf_wide) %in% c("sample_id", "subject", "pooled_qc_status"))
+  ]
+
+  concat_factors = ssf_wide |>
+    tidyr::unite("factors", tidyselect::all_of(other_cols), sep = "|")
+  concat_output = dplyr::left_join(
+    ssf_wide,
+    concat_factors |> dplyr::select(-pooled_qc_status),
+    by = c("subject", "sample_id")
+  )
+
+  ssf_wide_grouped_noqc = ssf_wide_grouped |>
+    dplyr::filter(pooled_qc_status %in% "experimental")
+}
+
+generate_output_lists = function(
+  check_data,
+  no_data_file = "output_data/no_data.txt",
+  no_common_file = "output_data/non_matching_samples.txt"
+) {
+  no_data = check_data |>
+    dplyr::filter(FEATURE_CHECK %in% "NA FEATURES") |>
+    dplyr::transmute(CHECK = FEATURE_CHECK, DATASET = ID)
+  non_matching = check_data |>
+    dplyr::filter(SSF_CHECK %in% "NO COMMON SAMPLES") |>
+    dplyr::transmute(CHECK = SSF_CHECK, DATASET = ID)
+
+  write.table(
+    no_data,
+    file = no_data_file,
+    sep = "\t",
+    row.names = FALSE,
+    col.names = TRUE
+  )
+
+  write.table(
+    non_matching,
+    file = no_common_file,
+    sep = "\t",
+    row.names = FALSE,
+    col.names = TRUE
+  )
+  return(invisible(NULL))
+}
+
+filter_good_experiments = function(check_data) {
+  good_data = check_data |>
+    dplyr::filter(
+      (FEATURE_CHECK %in% "GOOD") &
+        (SSF_CHECK %in% "GOOD SSF") &
+        (RANK_CHECK %in% c("GOOD", "SIGN DIFFERENCE"))
+    )
+  good_data
 }

@@ -280,8 +280,14 @@ combine_icikt_pearson = function(keep_samples) {
 filter_outliers_do_limma = function(metabolomics_cor, metabolomics_keep) {
   # metabolomics_cor = tar_read(metabolomics_cor_AN001156)
   # metabolomics_keep = tar_read(metabolomics_keep_AN001156)
+  # metabolomics_keep = tar_read(smd_AN000114)
+  # metabolomics_keep = tar_read(smd_AN000131)
+  # metabolomics_keep = tar_read(smd_AN004971)
   # tar_source("R")
 
+  if (is.null(metabolomics_cor) || is.null(metabolomics_keep)) {
+    return(NULL)
+  }
   sample_counts = assays(metabolomics_keep)$normalized
   sample_info = colData(metabolomics_keep) |> as.data.frame()
 
@@ -319,7 +325,7 @@ filter_outliers_do_limma = function(metabolomics_cor, metabolomics_keep) {
     n_feature = nrow(sample_counts),
     limma = limma_results,
     n_samples = n_kept,
-    metadata = metadata(metabolomics_keep)$other
+    metadata = metadata(metabolomics_keep)
   )
 }
 
@@ -345,7 +351,7 @@ do_limma = function(in_samples, sample_counts, sample_info, in_id) {
   })
   contr_matrix = makeContrasts(
     contrasts = factor_contr,
-    levels = unique(in_info$clean_factors)
+    levels = grp_design
   )
 
   fit = lmFit(log_counts, design = grp_design)
@@ -354,6 +360,7 @@ do_limma = function(in_samples, sample_counts, sample_info, in_id) {
   out_res = topTable(fit2, number = Inf)
   out_res$feature_id = rownames(out_res)
   out_res$correlation = in_id
+  out_res$n_contrast = ncol(contr_matrix)
   out_res
 }
 

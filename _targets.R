@@ -2,6 +2,10 @@
 targets::tar_source(c("./packages.R", "R"))
 
 
+tar_option_set(
+  controller = crew_controller_local(workers = 3)
+)
+
 # this is great, but we don't actually want to do this. We need something we can subset to
 # things that are more useful.
 #
@@ -37,9 +41,19 @@ mwtab_targets = tar_map(
   tar_target(processed, parse_json(dataset, id, ancillary_path)),
   tar_target(
     checked,
-    run_mwtab_checks(processed, min_n = 5, min_metabolites = 100, min_ssf = 2)
+    run_mwtab_checks_json(
+      processed,
+      min_n = 5,
+      min_metabolites = 100,
+      max_min_value = 20,
+      min_ssf = 2,
+      use_ssf_only = "yes"
+    )
   ),
-  tar_target(check_result, get_check(checked))
+  tar_target(check_result, get_check(checked)),
+  tar_target(smd, convert_mwtab_json_smd(checked)),
+  tar_target(cor, run_cor_everyway_new(smd)),
+  tar_target(limma, filter_outliers_do_limma(cor, smd))
 )
 
 check_comb = tar_combine(
