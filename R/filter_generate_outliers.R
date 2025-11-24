@@ -573,6 +573,7 @@ pca_compare_original = function(pca_outliers_all) {
 limma_compare_significant = function(limma_outliers) {
   # limma_outliers = tar_read(limma_outliers_AN001156)
   # limma_outliers = tar_read(limma_outliers_AN004368)
+  # limma_outliers = tar_read(limma_AN007057)
   if (is.null(limma_outliers)) {
     return(NULL)
   }
@@ -599,8 +600,10 @@ limma_compare_significant = function(limma_outliers) {
         limma_outliers$n_samples$n_samples[1]
     )
   n_each = dplyr::left_join(n_each, n_samples, by = "correlation")
-  n_out = cbind(n_each, limma_outliers$metadata)
-  return(n_out)
+  n_each$dataset = limma_outliers$metadata$CHECK$ID
+  n_each$check = limma_outliers$metadata$CHECK$RANK_CHECK
+
+  return(n_each)
 }
 
 
@@ -694,7 +697,7 @@ examine_limma_significant = function(limma_compare_all, use_analyses = "good") {
   ))
 }
 
-test_limma_significant = function(limma_compare_all, use_analyses = "good") {
+test_limma_significant = function(limma_compare_all, use_analyses = "GOOD") {
   # tar_load(limma_compare_all)
   n_method = length(unique(limma_compare_all$correlation))
   zero_all = limma_compare_all |>

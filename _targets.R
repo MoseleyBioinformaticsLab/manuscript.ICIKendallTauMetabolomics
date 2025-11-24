@@ -3,7 +3,7 @@ targets::tar_source(c("./packages.R", "R"))
 
 
 tar_option_set(
-  controller = crew_controller_local(workers = 3)
+  controller = crew_controller_local(workers = 2)
 )
 
 # this is great, but we don't actually want to do this. We need something we can subset to
@@ -53,12 +53,19 @@ mwtab_targets = tar_map(
   tar_target(check_result, get_check(checked)),
   tar_target(smd, convert_mwtab_json_smd(checked)),
   tar_target(cor, run_cor_everyway_new(smd)),
-  tar_target(limma, filter_outliers_do_limma(cor, smd))
+  tar_target(limma, filter_outliers_do_limma(cor, smd)),
+  tar_target(compare, limma_compare_significant(limma))
 )
 
 check_comb = tar_combine(
   check_data,
   mwtab_targets[[4]],
+  command = bind_rows(!!!.x)
+)
+
+compare_comb = tar_combine(
+  compare_data,
+  mwtab_targets[[8]],
   command = bind_rows(!!!.x)
 )
 
@@ -281,6 +288,7 @@ vl_cor_diff_combine_map = tar_combine(
 list(
   mwtab_targets,
   check_comb,
+  compare_comb,
   small_realistic_examples,
   vl_plan,
   vl_lod_map,
