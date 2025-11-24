@@ -2,9 +2,9 @@
 targets::tar_source(c("./packages.R", "R"))
 
 
-tar_option_set(
-  controller = crew_controller_local(workers = 2)
-)
+# tar_option_set(
+#   controller = crew_controller_local(workers = 2)
+# )
 
 # this is great, but we don't actually want to do this. We need something we can subset to
 # things that are more useful.
@@ -28,11 +28,11 @@ correlation_methods = c(
 )
 
 json_files = fs::dir_ls(
-  "/big_data/data/MetabolomicsWorkbench/repaired/json_2025-11-12"
+  "mwtab/repaired/json_2025-11-12"
 )
 mwtab_datasets = extract_mwtab_ids(json_files)
 
-ancillary_path = "/big_data/data/MetabolomicsWorkbench/ancillary/"
+ancillary_path = "mwtab/ancillary/"
 
 mwtab_targets = tar_map(
   mwtab_datasets,
