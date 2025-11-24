@@ -1,57 +1,16 @@
-prep_mwtab_data = function() {
-  #fs::dir_create("data/processed")
-
-  mwtab_files = fs::dir_ls("data/repaired")
-  split_files = stringr::str_split(mwtab_files, "%2F")
+extract_mwtab_ids = function(mwtab_files) {
+  split_files = stringr::str_split(fs::path_file(mwtab_files), "%2F")
   mwtab_df = tibble::tibble(
     id = purrr::map_chr(split_files, \(in_file) {
       in_file[7]
     }),
     file = mwtab_files
-  ) |>
-    dplyr::mutate(save_loc = fs::path("data", "processed", id, ext = "rds"))
-
-  mwtab_results = purrr::pmap(
-    mwtab_df,
-    parse_getinfo,
-    .progress = TRUE
-  ) |>
-    purrr::list_rbind()
-
-  saveRDS(mwtab_results, "data/processed/mwtab_results.rds")
-  return(invisible(NULL))
+  )
+  mwtab_df
 }
 
-parse_getinfo = function(id, file, save_loc) {
-  if (fs::file_exists(save_loc)) {
-    parsed_data = readRDS(save_loc)
-  } else {
-    parsed_data = parse_mwtab(file)
-  }
 
-  if (is.null(parsed_data)) {
-    out_info = tibble::tibble(
-      id = id,
-      type = NULL,
-      reps = NULL
-    )
-  } else {
-    if (!fs::file_exists(save_loc)) {
-      saveRDS(parsed_data, save_loc)
-    }
-
-    out_info = tibble::tibble(
-      id = id,
-      type = parsed_data$MEASUREMENT_TYPE,
-      reps = list(parsed_data$N_REPLICATES),
-      n_features = nrow(parsed_data$MEASUREMENTS)
-    )
-  }
-
-  return(out_info)
-}
-
-parse_mwtab = function(mwtab_file) {
+parse_mwtab = function(mwtab_file, id, ancillary_path) {
   #mwtab_file = "data/repaired/https:%2F%2Fwww_metabolomicsworkbench_org%2Frest%2Fstudy%2Fanalysis_id%2FAN000023%2Fmwtab%2Ftxt.txt"  # MS file
   # mwtab_file = "data/repaired/https:%2F%2Fwww_metabolomicsworkbench_org%2Frest%2Fstudy%2Fanalysis_id%2FAN000693%2Fmwtab%2Ftxt.txt"  # NMR file
 
@@ -62,30 +21,43 @@ parse_mwtab = function(mwtab_file) {
   # mwtab_file = "data/repaired/https:%2F%2Fwww_metabolomicsworkbench_org%2Frest%2Fstudy%2Fanalysis_id%2FAN000038%2Fmwtab%2Ftxt.txt"
 
   # mwtab_file = "data/repaired/https:%2F%2Fwww_metabolomicsworkbench_org%2Frest%2Fstudy%2Fanalysis_id%2FAN000555%2Fmwtab%2Ftxt.txt"
-  mwtab_lines = readLines(mwtab_file)
-  block_lines = which(stringr::str_detect(mwtab_lines, "^\\#"))
 
-  block_data = vector("list", length(block_lines) - 1)
+  # mwtab_file = tar_read(mwtab_AN000172)
+  # mwtab_file = tar_read(mwtab_AN003177)
+  # mwtab_file = tar_read(mwtab_AN002445)
+  # mwtab_file = tar_read(mwtab_AN003894)
+  # mwtab_file = tar_read(mwtab_AN001238)
+  mwtab_lines = readLines(mwtab_file)
+  block_lines = which(stringr::str_detect(
+    mwtab_lines,
+    "^\\#[[:upper:]]|EXTENDED.*START"
+  ))
+  end_line = which(stringr::str_detect(mwtab_lines, "^\\#END"))
+  block_lines = block_lines[!(block_lines %in% end_line)]
+
+  block_data = vector("list", length(block_lines))
   for (iblock in seq_len(length(block_lines))) {
     # message(iblock)
     # iblock = 1
     if (iblock != length(block_lines)) {
       block_range = seq(block_lines[iblock] + 1, block_lines[iblock + 1] - 1)
-      if (iblock == 1) {
-        block_id = "MWINFO"
-        block_range = c(1, block_range)
-      } else {
-        block_id = stringr::str_replace(
-          mwtab_lines[block_lines[iblock]],
-          "\\#",
-          ""
-        ) |>
-          stringr::str_replace("\\ .*", "") |>
-          stringr::str_replace("\\:", "")
-      }
-      names(block_data)[iblock] = block_id
-      block_data[[iblock]] = mwtab_lines[block_range]
+    } else {
+      block_range = seq(block_lines[iblock] + 1, length(mwtab_lines) - 1)
     }
+    if (iblock == 1) {
+      block_id = "MWINFO"
+      block_range = c(1, block_range)
+    } else {
+      block_id = stringr::str_replace(
+        mwtab_lines[block_lines[iblock]],
+        "\\#",
+        ""
+      ) |>
+        stringr::str_replace("\\ .*", "") |>
+        stringr::str_replace("\\:", "")
+    }
+    names(block_data)[iblock] = block_id
+    block_data[[iblock]] = mwtab_lines[block_range]
   }
 
   parsed_data = purrr::imap(block_data, \(block, block_id) {
@@ -95,25 +67,29 @@ parse_mwtab = function(mwtab_file) {
       PROJECT = parse_tabs(block),
       STUDY = parse_tabs(block),
       SUBJECT = parse_tabs(block),
-      SUBJECT_SAMPLE_FACTORS = parse_factors(block),
+      SUBJECT_SAMPLE_FACTORS = parse_factors_mwtab(block),
       COLLECTION = parse_tabs(block),
       TREATMENT = parse_tabs(block),
       SAMPLEPREP = parse_tabs(block),
       CHROMATOGRAPHY = parse_tabs(block),
       ANALYSIS = parse_tabs(block),
       MS = parse_tabs(block),
-      MS_METABOLITE_DATA = parse_ms_data(block),
-      METABOLITES = parse_metabolites_block(block),
+      MS_METABOLITE_DATA = parse_ms_data_mwtab(block),
+      METABOLITES = parse_metabolites_mwtab(block),
       NMR = parse_tabs(block),
-      NMR_BINNED_DATA = parse_nmr_data(block)
+      NMR_BINNED_DATA = parse_nmr_data_mwtab(block),
+      block
     )
   })
 
+  parsed_data$ID = id
   if (is.null(parsed_data$SUBJECT_SAMPLE_FACTORS)) {
     # browser()
-    return(NULL)
+    return(parsed_data)
   }
-  n_reps_factors = count_factors_replicates(parsed_data$SUBJECT_SAMPLE_FACTORS)
+  n_reps_factors = count_factors_replicates_mwtab(
+    parsed_data$SUBJECT_SAMPLE_FACTORS
+  )
   parsed_data$SUBJECT_SAMPLE_FACTORS = n_reps_factors$sample_factors
   parsed_data$N_REPLICATES = n_reps_factors$n
 
@@ -124,13 +100,196 @@ parse_mwtab = function(mwtab_file) {
     parsed_data$MEASUREMENTS = parsed_data$NMR_BINNED_DATA
     parsed_data$MEASUREMENT_TYPE = "NMR"
   } else {
-    return(NULL)
+    parsed_data = check_and_parse_ancillary_mwtab(parsed_data)
   }
 
   parsed_data
 }
 
-count_factors_replicates = function(subject_sample_factors) {
+check_and_parse_ancillary_mwtab = function(
+  parsed_data,
+  ancillary_path = "/big_data/data/rmflight_icikt_poster_iecm/data/ancillary/"
+) {
+  # parsed_data = tar_read(processed_AN000111)
+  # ancillary_path = "/big_data/data/rmflight_icikt_poster_iecm/data/ancillary/"
+  if (!is.null(parsed_data$MS)) {
+    results_file = parsed_data$MS |>
+      dplyr::filter(grepl("MS_RESULTS_FILE", field)) |>
+      dplyr::pull(value)
+    data_type = "MS"
+  } else if (!is.null(parsed_data$NMR)) {
+    results_file = parsed_data$NMR |>
+      dplyr::filter(grepl("NMR_RESULTS_FILE", field)) |>
+      dplyr::pull(value)
+    data_type = "NMR"
+  }
+  just_file = stringr::str_split(results_file, "\t")[[1]][1]
+
+  ancillary_files = fs::dir_ls(ancillary_path)
+  ancillary_just_file = fs::path_file(ancillary_files)
+  names(ancillary_files) = ancillary_just_file
+
+  match_file = ancillary_files[just_file]
+
+  # can't find a match, just return early
+  if (is.na(match_file)) {
+    return(parsed_data)
+  }
+
+  ancillary_data = readr::read_delim(
+    match_file,
+    delim = "\t",
+    show_col_types = FALSE
+  ) |>
+    janitor::clean_names()
+
+  check_character_reread = function(ancillary_data, match_file) {
+    character_cols = purrr::map_lgl(ancillary_data, \(x) {
+      inherits(x, "character")
+    })
+    numeric_cols = !character_cols
+
+    if (sum(character_cols) == ncol(ancillary_data)) {
+      ancillary_tmp = readr::read_delim(
+        match_file,
+        skip = 1,
+        col_names = FALSE,
+        show_col_types = FALSE
+      )
+      character_cols = purrr::map_lgl(ancillary_tmp, \(x) {
+        inherits(x, "character")
+      })
+      if (sum(character_cols) == ncol(ancillary_tmp)) {
+        ancillary_tmp = readr::read_delim(
+          match_file,
+          skip = 2,
+          col_names = FALSE,
+          show_col_types = FALSE
+        )
+      }
+    }
+  }
+  # not everything can be a character column, there should
+  # be some numeric columns
+
+  # we assume the first character column is an ID.
+  # if there are no character columns, we just make our own.
+  if (length(character_cols) == 0) {
+    metabolite_data = tibble::tibble(
+      feature_id = janitor::make_clean_names(seq_len(nrow(ancillary_data)))
+    )
+    ancillary_data$feature_id = metabolite_data$feature_id
+  } else {
+    metabolite_data = ancillary_data[, character_cols]
+    metabolite_data$feature_id = janitor::make_clean_names(metabolite_data[[1]])
+    ancillary_data$feature_id = metabolite_data$feature_id
+  }
+
+  parsed_data$MEASUREMENTS = ancillary_data
+  parsed_data$METABOLITES = metabolite_data
+  return(parsed_data)
+}
+
+
+run_mwtab_checks = function(
+  processed_mwtab,
+  min_n = 5,
+  min_metabolites = 100,
+  min_ssf = 2
+) {
+  # processed_mwtab = tar_read(processed_AN002428)
+  # processed_mwtab = tar_read(processed_AN003177)
+  # processed_mwtab = tar_read(processed_AN003224)
+  # processed_mwtab = tar_read(processed_AN003894)
+  # min_n = 5
+  # min_metabolites = 100
+  # min_ssf = 2
+
+  check_res = list(
+    FEATURE_CHECK = "",
+    SSF_CHECK = "",
+    NA_CHECK = "",
+    RANK_CHECK = "",
+    ID = processed_mwtab$ID
+  )
+  if (is.null(check_res$ID)) {
+    check_res$ID = ""
+  }
+  n_features = nrow(processed_mwtab$MEASUREMENTS)
+  if (is.na(n_features) || is.null(n_features)) {
+    check_res$FEATURE_CHECK = "NA FEATURES"
+    processed_mwtab$CHECK = check_res
+    return(processed_mwtab)
+  }
+
+  if (n_features < min_metabolites) {
+    check_res$FEATURE_CHECK = "FEW METABOLITES"
+    processed_mwtab$CHECK = check_res
+    return(processed_mwtab)
+  } else {
+    check_res$FEATURE_CHECK = "GOOD"
+  }
+
+  if (is.null(processed_mwtab$METABOLITES)) {
+    feature_metadata = data.frame(
+      metabolite_name = processed_mwtab$MEASUREMENTS$id,
+      feature_id = janitor::make_clean_names(processed_mwtab$MEASUREMENTS$id)
+    )
+    processed_mwtab$METABOLITES = feature_metadata
+  } else {
+    processed_mwtab$METABOLITES$feature_id = janitor::make_clean_names(
+      processed_mwtab$METABOLITES$metabolite_name
+    )
+  }
+
+  ssf_data = processed_mwtab$SUBJECT_SAMPLE_FACTORS
+  match_samples = base::intersect(
+    ssf_data$sample_id,
+    colnames(processed_mwtab$MEASUREMENTS)
+  )
+  ssf_data2 = ssf_data |>
+    dplyr::filter(sample_id %in% match_samples)
+
+  ssf_check_result = check_ssf(ssf_data2, min_ssf, min_n)
+  processed_mwtab$SUBJECT_SAMPLE_FACTORS = ssf_data2
+
+  processed_mwtab$MEASUREMENTS = processed_mwtab$MEASUREMENTS[, c(
+    "feature_id",
+    "id",
+    ssf_data2$sample_id
+  )]
+
+  check_res$SSF_CHECK = ssf_check_result
+  if (ssf_check_result %in% "NOT ENOUGH SAMPLES") {
+    processed_mwtab$CHECK = check_res
+    return(processed_mwtab)
+  }
+
+  measurements = processed_mwtab$MEASUREMENTS[, ssf_data2$sample_id] |>
+    as.matrix()
+  factors = ssf_data2$factors
+
+  missingness_rank_check = check_missingness_ranks(measurements, factors)
+
+  check_res$RANK_CHECK = missingness_rank_check
+
+  processed_mwtab$CHECK = check_res
+  processed_mwtab
+}
+
+check_ssf = function(ssf_data2, min_ssf = 2, min_n = 5) {
+  ssf_n = ssf_data2 |>
+    dplyr::summarise(n = dplyr::n(), .by = factors)
+
+  if (any(ssf_n$n >= min_n) && (nrow(ssf_n) >= min_ssf)) {
+    return("GOOD SSF")
+  } else {
+    return("NOT ENOUGH SAMPLES")
+  }
+}
+
+
+count_factors_replicates_mwtab = function(subject_sample_factors) {
   # subject_sample_factors = parsed_data$SUBJECT_SAMPLE_FACTORS
 
   other_cols = names(subject_sample_factors)[
@@ -144,6 +303,11 @@ count_factors_replicates = function(subject_sample_factors) {
     concat_factors,
     by = "sample_id"
   )
+
+  subject_sample_factors$sample_id = janitor::make_clean_names(
+    subject_sample_factors$sample_id
+  )
+
   n_samples = subject_sample_factors |>
     dplyr::summarise(n = dplyr::n(), .by = factors)
   list(sample_factors = subject_sample_factors, n = n_samples)
@@ -159,7 +323,7 @@ parse_tabs = function(in_block) {
   tab_split
 }
 
-parse_nmr_data = function(nmr_data) {
+parse_nmr_data_mwtab = function(nmr_data) {
   # nmr_data = block_data[["NMR_BINNED_DATA"]]
   start_loc = which(stringr::str_detect(nmr_data, "NMR_BINNED_DATA_START")) +
     1
@@ -206,15 +370,18 @@ parse_nmr_data = function(nmr_data) {
       values_from = value,
       names_from = sample_id
     )
+  names(nmr_wide_df) = janitor::make_clean_names(names(nmr_wide_df))
+  nmr_wide_df$feature_id = janitor::make_clean_names(nmr_wide_df$id)
   nmr_wide_df
 }
 
-parse_ms_data = function(ms_data) {
+parse_ms_data_mwtab = function(ms_data) {
   # ms_data = block_data[["MS_METABOLITE_DATA"]]
   # message("ms data!")
   start_loc = which(stringr::str_detect(ms_data, "MS_METABOLITE_DATA_START")) +
     1
   end_loc = length(ms_data) - 1
+
   ms_data = ms_data[seq(start_loc, end_loc)]
 
   if (length(ms_data) <= 5) {
@@ -278,10 +445,14 @@ parse_ms_data = function(ms_data) {
       names_from = sample_id
     )
 
+  names(ms_wide_df) = janitor::make_clean_names(names(ms_wide_df))
+  ms_wide_df$feature_id = janitor::make_clean_names(ms_wide_df$id)
+
   ms_wide_df
 }
 
-parse_factors = function(factor_data) {
+
+parse_factors_mwtab = function(factor_data) {
   # message("factor data!")
   # factor_data = block_data[["SUBJECT_SAMPLE_FACTORS"]]
 
@@ -346,10 +517,11 @@ split_and_return_factors = function(factor_string) {
 }
 
 
-parse_metabolites_block = function(metabolites_block) {
+parse_metabolites_mwtab = function(metabolites_block) {
   # metabolites_block = block_data$METABOLITES
 
-  metabolites_range = seq(2, length(metabolites_block) - 1)
+  end_loc = which(grepl("METABOLITES_END", metabolites_block)) - 1
+  metabolites_range = seq(2, end_loc)
   metabolites_block = metabolites_block[metabolites_range]
 
   if (length(metabolites_block) < 2) {
@@ -363,7 +535,7 @@ parse_metabolites_block = function(metabolites_block) {
 
   all_split = stringr::str_split(metabolites_block, "\t")
   if (has_id_row) {
-    col_id = all_split[[1]]
+    col_id = janitor::make_clean_names(all_split[[1]])
     all_split = all_split[-1]
   } else {
     col_id = janitor::make_clean_names(seq(1, length(all_split[[1]])))
@@ -414,7 +586,7 @@ convert_mwtab_smd = function(rds_file, reps, smd_file, ...) {
   if (mwtab_data$MEASUREMENT_TYPE %in% "MS") {
     mwtab_data$MEASUREMENT_INFO = mwtab_data$MS
   } else if (mwtab_data$MEASUREMENT_TYPE %in% "NMR") {
-    mwtab_data$MEASUREMENT_INFO %in% "NMR"
+    mwtab_data$MEASUREMENT_INFO = mwtab_data$NMR
   }
   project_data = mwtab_data[c(
     "MWINFO",
@@ -550,16 +722,4 @@ convert_nsclc_smd = function() {
     )
   )
   saveRDS(mwtab_keep, "data/smd/mwtab_smd.rds")
-}
-
-
-convert_list_to_df = function(measurements) {
-  id = "AN000555"
-  rds_file = fs::path("data", "processed", id, ext = "rds")
-  mwtab_data = readRDS(rds_file)
-  measurements = mwtab_data$MEASUREMENTS
-
-  out_vals = purrr::map(measurements, \(in_meas) {
-    unlist(in_meas)
-  })
 }
