@@ -244,6 +244,7 @@ run_mwtab_checks_json = function(
   # processed_mwtab = tar_read(processed_AN003719)
   # processed_mwtab = tar_read(processed_AN004603)
   # processed_mwtab = tar_read(processed_AN000033)
+  # processed_mwtab = tar_read(processed_AN005159)
   # min_n = 5
   # min_metabolites = 100
   # max_min_value = 20
@@ -401,6 +402,12 @@ check_missingness_ranks_json = function(measurements, factors) {
     return("ALL NA IN A GROUP")
   }
 
+  if (length(unique(factors)) == 1) {
+    ranked_use = vector("list", 1)
+    ranked_use[[1]] = ranked_data
+    names(ranked_use) = unique(factors)
+    ranked_data = ranked_use
+  }
   ranked_cor = purrr::map(ranked_data, \(in_data) {
     min_rank = in_data$n_na_rank |>
       dplyr::summarise(min_rank = min(median_rank), .by = n_na)
