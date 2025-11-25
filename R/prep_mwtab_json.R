@@ -269,8 +269,6 @@ run_mwtab_checks_json = function(
 
   if (n_features < min_metabolites) {
     check_res$FEATURE_CHECK = "FEW METABOLITES"
-    processed_mwtab$CHECK = check_res
-    return(processed_mwtab)
   } else {
     check_res$FEATURE_CHECK = "GOOD"
   }
@@ -293,11 +291,11 @@ run_mwtab_checks_json = function(
   is_pooled_qc = ssf_data2 |>
     dplyr::filter(
       grepl(
-        ".*pool.*|.*qc.*",
+        ".*pool.*|.*qc.*|.*blank.*",
         sample_id,
         ignore.case = TRUE
       ) |
-        grepl(".*pool.*|.*qc.*", item, ignore.case = TRUE)
+        grepl(".*pool.*|.*qc.*|.*blank.*", item, ignore.case = TRUE)
     ) |>
     dplyr::pull(sample_id)
 
@@ -324,10 +322,6 @@ run_mwtab_checks_json = function(
   processed_mwtab$SUBJECT_METADATA = ssf_wide_grouped
 
   check_res$SSF_CHECK = ssf_check_result
-  if (ssf_check_result %in% "NOT ENOUGH SAMPLES") {
-    processed_mwtab$CHECK = check_res
-    return(processed_mwtab)
-  }
 
   measurements = processed_mwtab$MEASUREMENTS[, ssf_wide_grouped$sample_id] |>
     as.matrix()
@@ -337,8 +331,6 @@ run_mwtab_checks_json = function(
 
   if (max_measurement <= max_min_value) {
     check_res$RANGE_CHECK = "TOO LOW"
-    processed_mwtab$CHECK = check_res
-    return(processed_mwtab)
   } else {
     check_res$RANGE_CHECK = "GOOD"
   }
