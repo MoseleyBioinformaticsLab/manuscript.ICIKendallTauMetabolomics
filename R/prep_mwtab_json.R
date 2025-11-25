@@ -935,6 +935,11 @@ convert_mwtab_json_smd = function(json_checked) {
     mode(measurement_array) = "numeric"
   }
   measurement_array[measurement_array <= 0] = NA
+
+  if (nrow(measurement_array) == 0) {
+    return(NULL)
+  }
+
   normalized_array = median_normalize(measurement_array)
 
   out_smd = SummarizedExperiment(
