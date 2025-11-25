@@ -245,6 +245,7 @@ run_mwtab_checks_json = function(
   # processed_mwtab = tar_read(processed_AN004603)
   # processed_mwtab = tar_read(processed_AN000033)
   # processed_mwtab = tar_read(processed_AN005159)
+  # processed_mwtab = tar_read(processed_AN003251)
   # min_n = 5
   # min_metabolites = 100
   # max_min_value = 20
@@ -315,7 +316,9 @@ run_mwtab_checks_json = function(
     processed_mwtab$CHECK = check_res
     return(processed_mwtab)
   }
+
   ssf_wide = widen_ssf_json(ssf_data_use)
+
   ssf_wide_grouped = create_factor_groups_json(ssf_wide)
 
   ssf_check_result = check_ssf_json(ssf_wide_grouped, min_ssf, min_n)
@@ -390,6 +393,10 @@ check_ssf_json = function(ssf_data2, min_ssf = 2, min_n = 5) {
 check_missingness_ranks_json = function(measurements, factors) {
   if ((sum(is.na(measurements)) == 0) && (sum(measurements == 0) == 0)) {
     return("NO MISSING VALUES")
+  }
+
+  if (ncol(measurements) < 2) {
+    return("TOO FEW SAMPLES")
   }
 
   ranked_data = ICIKendallTau::rank_order_data(
