@@ -607,27 +607,29 @@ limma_compare_significant = function(limma_outliers) {
 }
 
 
-examine_limma_significant = function(limma_compare_all, use_analyses = "good") {
+examine_limma_significant = function(limma_compare_all, use_analyses = "GOOD") {
   # tar_load(limma_compare_all)
   # zero_org = limma_compare_all |>
   #   dplyr::filter(correlation %in% "original", n_sig == 0)
   # limma_use = limma_compare_all |>
   #   dplyr::filter(!(id %in% zero_org$id))
+  # limma_compare_all = tar_read(compare_data)
+  # use_analyses = "GOOD"
 
   n_method = length(unique(limma_compare_all$correlation))
   zero_all = limma_compare_all |>
     dplyr::filter(n_sig == 0) |>
-    dplyr::summarise(n_0 = dplyr::n(), .by = id) |>
+    dplyr::summarise(n_0 = dplyr::n(), .by = dataset) |>
     dplyr::filter(n_0 == n_method)
 
-  if (use_analyses %in% "good") {
+  if (use_analyses %in% "GOOD") {
     limma_good = limma_compare_all |>
-      dplyr::filter(!(id %in% zero_all$id)) |>
-      dplyr::filter(value_check %in% "good") |>
+      dplyr::filter(!(dataset %in% zero_all$dataset)) |>
+      dplyr::filter(check %in% "GOOD") |>
       dplyr::mutate(method = correlation)
-  } else if (use_analyses %in% "all") {
+  } else if (use_analyses %in% "ALL") {
     limma_good = limma_compare_all |>
-      dplyr::filter(!(id %in% zero_all$id)) |>
+      dplyr::filter(!(dataset %in% zero_all$dataset)) |>
       dplyr::mutate(method = correlation)
   } else {
     stop("That `use_analyses` is not supported!")
@@ -645,33 +647,34 @@ examine_limma_significant = function(limma_compare_all, use_analyses = "good") {
       y = "Number of Metabolites"
     )
 
-  density_fraction = density(limma_original_frac$frac_total)
+  # density_fraction = density(limma_original_frac$frac_total)
 
-  density_df = tibble::tibble(x = density_fraction$x, y = density_fraction$y)
-  density_df = density_df |>
-    dplyr::filter((x > 0.2), (x < 0.6))
-  density_min = density_df |>
-    dplyr::slice_min(y)
+  # density_df = tibble::tibble(x = density_fraction$x, y = density_fraction$y)
+  # density_df = density_df |>
+  #   dplyr::filter((x > 0.2), (x < 0.6))
+  # density_min = density_df |>
+  #   dplyr::slice_min(y)
 
-  limma_original_frac = limma_original_frac |>
-    dplyr::mutate(
-      sig_frac = dplyr::case_when(
-        frac_total <= density_min$x[1] ~ "low",
-        TRUE ~ "high"
-      ),
-      frac_total_original = frac_total
-    )
+  # limma_original_frac = limma_original_frac |>
+  #   dplyr::mutate(
+  #     sig_frac = dplyr::case_when(
+  #       frac_total <= density_min$x[1] ~ "low",
+  #       TRUE ~ "high"
+  #     ),
+  #     frac_total_original = frac_total
+  #   )
   limma_good = dplyr::left_join(
     limma_good,
-    limma_original_frac |> dplyr::select(id, sig_frac, frac_total_original),
-    by = "id"
+    limma_original_frac |>
+      dplyr::mutate(frac_total_original = frac_total) |>
+      dplyr::select(dataset, frac_total_original),
+    by = "dataset"
   )
   limma_good = limma_good |>
     dplyr::mutate(method_difference = frac_total - frac_total_original)
   limma_good |>
     ggplot(aes(x = frac_total, y = correlation)) +
-    geom_boxplot() +
-    facet_wrap(~sig_frac, nrow = 1, scales = "free")
+    geom_boxplot()
 
   limma_summary = limma_good |>
     dplyr::summarise(
@@ -679,7 +682,7 @@ examine_limma_significant = function(limma_compare_all, use_analyses = "good") {
       sd = sd(frac_total),
       median = median(frac_total),
       mad = mad(frac_total),
-      .by = c(method, sig_frac)
+      .by = c(method)
     )
   limma_summary_diff = limma_good |>
     dplyr::summarise(
@@ -687,7 +690,7 @@ examine_limma_significant = function(limma_compare_all, use_analyses = "good") {
       sd = sd(method_difference),
       median = median(method_difference),
       mad = mad(method_difference),
-      .by = c(method, sig_frac)
+      .by = c(method)
     )
 
   return(list(
@@ -702,7 +705,7 @@ test_limma_significant = function(limma_compare_all, use_analyses = "GOOD") {
   n_method = length(unique(limma_compare_all$correlation))
   zero_all = limma_compare_all |>
     dplyr::filter(n_sig == 0) |>
-    dplyr::summarise(n_0 = dplyr::n(), .by = id) |>
+    dplyr::summarise(n_0 = dplyr::n(), .by = dataset) |>
     dplyr::filter(n_0 == n_method)
 
   # zero_org = limma_compare_all |>
@@ -710,12 +713,12 @@ test_limma_significant = function(limma_compare_all, use_analyses = "GOOD") {
   # limma_use = limma_compare_all |>
   #   dplyr::filter(!(id %in% zero_org$id))
 
-  if (use_analyses %in% "good") {
+  if (use_analyses %in% "GOOD") {
     limma_good = limma_compare_all |>
-      dplyr::filter(!(id %in% zero_all$id)) |>
-      dplyr::filter(value_check %in% "good") |>
+      dplyr::filter(!(dataset %in% zero_all$dataset)) |>
+      dplyr::filter(check %in% "GOOD") |>
       dplyr::mutate(method = correlation)
-  } else if (use_analyses %in% "all") {
+  } else if (use_analyses %in% "ALL") {
     limma_good = limma_compare_all |>
       dplyr::mutate(method = correlation)
   } else {
@@ -736,7 +739,7 @@ test_limma_significant = function(limma_compare_all, use_analyses = "GOOD") {
     use_comp2 = method_comparisons[2, ilab]
     just_comp = limma_good |>
       dplyr::filter(method %in% c(use_comp1, use_comp2)) |>
-      dplyr::select(frac_total, id, method)
+      dplyr::select(frac_total, dataset, method)
     comp_wide = just_comp |>
       tidyr::pivot_wider(names_from = method, values_from = frac_total)
     comp_diff = comp_wide[[use_comp1]] - comp_wide[[use_comp2]]
