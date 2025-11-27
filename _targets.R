@@ -2,9 +2,9 @@
 targets::tar_source(c("./packages.R", "R"))
 
 
-# tar_option_set(
-#   controller = crew_controller_local(workers = 2)
-# )
+tar_option_set(
+  controller = crew_controller_local(workers = 5)
+)
 
 # this is great, but we don't actually want to do this. We need something we can subset to
 # things that are more useful.
