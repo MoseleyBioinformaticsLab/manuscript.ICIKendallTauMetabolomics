@@ -69,6 +69,14 @@ compare_comb = tar_combine(
   command = bind_rows(!!!.x)
 )
 
+mwtab_result_plan = tar_assign({
+  compare_description_good = examine_limma_significant(compare_data, "GOOD") |> tar_target()
+  compare_description_all = examine_limma_significant(compare_data, "ALL") |> tar_target()
+
+  compare_stats_good = test_limma_significant(compare_data, "GOOD") |> tar_target()
+  compare_stats_all = test_limma_significant(compare_data, "GOOD") |> tar_target()
+})
+
 
 ## lod mapping as orders of magnitude ---------
 lod_ranges = tibble::tibble(max = c(0.5, 1, 1.5), id = c("low", "med", "high"))
@@ -289,6 +297,7 @@ list(
   mwtab_targets,
   check_comb,
   compare_comb,
+  mwtab_result_plan,
   small_realistic_examples,
   vl_plan,
   vl_lod_map,
