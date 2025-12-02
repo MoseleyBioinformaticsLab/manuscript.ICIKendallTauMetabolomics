@@ -759,6 +759,8 @@ test_limma_significant = function(limma_compare_all, use_analyses = "GOOD") {
       dplyr::mutate(comparison = comparison_labels[ilab])
   }) |>
     purrr::list_rbind()
+  comparison_stats = comparison_stats |>
+    dplyr::mutate(p.adjust = p.adjust(p.value, method = "bonferroni"))
   comparison_stats
 }
 
