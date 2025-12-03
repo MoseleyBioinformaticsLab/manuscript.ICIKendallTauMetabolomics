@@ -233,6 +233,9 @@ calculate_cor_medians = function(sample_cor, sample_ids, sample_classes) {
 
 calculate_missingness = function(smd) {
   # smd = tar_read(smd_AN000500)
+  if (is.null(smd)) {
+    return(NULL)
+  }
 
   sample_counts = assays(smd)$counts
   sample_info = colData(smd) |> as.data.frame()
@@ -272,6 +275,9 @@ calculate_missingness = function(smd) {
 
 calculate_rank_correlation = function(smd) {
   # smd = tar_read(smd_AN000500)
+  if (is.null(smd)) {
+    return(NULL)
+  }
 
   sample_counts = assays(smd)$counts
   sample_info = colData(smd) |> as.data.frame()
