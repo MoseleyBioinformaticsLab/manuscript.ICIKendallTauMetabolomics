@@ -289,7 +289,7 @@ calculate_rank_correlation = function(smd) {
     missing_value = c(NA)
   )
 
-  sample_smd = sample_smd[keep_counts, ]
+  smd = smd[keep_counts, ]
   sample_counts = sample_counts[keep_counts, ]
 
   ranked_data = ICIKendallTau::rank_order_data(
