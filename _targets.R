@@ -54,7 +54,9 @@ mwtab_targets = tar_map(
   tar_target(smd, convert_mwtab_json_smd(checked)),
   tar_target(cor, run_cor_everyway_new(smd)),
   tar_target(limma, filter_outliers_do_limma(cor, smd)),
-  tar_target(compare, limma_compare_significant(limma))
+  tar_target(compare, limma_compare_significant(limma)),
+  tar_target(missingness, calculate_missingness(smd)),
+  tar_target(rank_cor, calculate_rank_correlation(smd))
 )
 
 check_comb = tar_combine(
@@ -69,12 +71,29 @@ compare_comb = tar_combine(
   command = bind_rows(!!!.x)
 )
 
-mwtab_result_plan = tar_assign({
-  compare_description_good = examine_limma_significant(compare_data, "GOOD") |> tar_target()
-  compare_description_all = examine_limma_significant(compare_data, "ALL") |> tar_target()
+missingness_comb = tar_combine(
+  missingness_data,
+  mwtab_targets[[9]],
+  command = bind_rows(!!!.x)
+)
 
-  compare_stats_good = test_limma_significant(compare_data, "GOOD") |> tar_target()
-  compare_stats_all = test_limma_significant(compare_data, "GOOD") |> tar_target()
+rank_cor_comb = tar_combine(
+  rank_correlations,
+  mwtab_targets[[10]],
+  command = bind_rows(!!!.x)
+)
+
+
+mwtab_result_plan = tar_assign({
+  compare_description_good = examine_limma_significant(compare_data, "GOOD") |>
+    tar_target()
+  compare_description_all = examine_limma_significant(compare_data, "ALL") |>
+    tar_target()
+
+  compare_stats_good = test_limma_significant(compare_data, "GOOD") |>
+    tar_target()
+  compare_stats_all = test_limma_significant(compare_data, "GOOD") |>
+    tar_target()
 })
 
 
@@ -293,11 +312,38 @@ vl_cor_diff_combine_map = tar_combine(
 )
 
 
+figures_tables_plan = tar_assign({
+  missingness_summary = missingness_data |>
+    dplyr::mutate(padjust = p.adjust(p.value, method = "BH")) |>
+    tar_target()
+  variable_dynamic_range_image = create_variable_dynamic_range_image(
+    vl_diff_graph
+  ) |>
+    tar_target()
+  censored_value_plot_image = create_censored_value_images(
+    censored_value_plots
+  ) |>
+    tar_target()
+  rank_missingness_image = create_figure1_image(
+    missingness_summary,
+    missingness_tests_AN001074,
+    rank_correlations
+  ) |>
+    tar_target()
+})
+
+docs_plan = tar_assign({
+  ici_kt_manuscript = tar_render("docs/ici_kt_manuscript.Rmd")
+  supp_materials = tar_render("docs/supplemental_materials.Rmd")
+})
+
 list(
   mwtab_targets,
   check_comb,
   compare_comb,
   mwtab_result_plan,
+  missingness_comb,
+  rank_cor_comb,
   small_realistic_examples,
   vl_plan,
   vl_lod_map,

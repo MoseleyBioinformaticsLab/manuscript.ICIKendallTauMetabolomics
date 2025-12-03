@@ -231,35 +231,34 @@ calculate_cor_medians = function(sample_cor, sample_ids, sample_classes) {
 }
 
 
-calculate_missingness = function(id, smd_file, type, value_check) {
-  # id = "AN000049"
-  # smd_file = "data/smd/AN000049.rds"
-  sample_smd = readRDS(smd_file)
+calculate_missingness = function(smd) {
+  # smd = tar_read(smd_AN000500)
 
-  sample_counts = assays(sample_smd)$counts
-  sample_info = colData(sample_smd) |> as.data.frame()
-
+  sample_counts = assays(smd)$counts
+  sample_info = colData(smd) |> as.data.frame()
+  dataset_metadata = metadata(smd)
   keep_counts = keep_non_missing_percentage(
     sample_counts,
     sample_classes = sample_info$factors,
     keep_num = 1,
-    missing_value = c(0, NA)
+    missing_value = c(NA)
   )
 
-  sample_smd = sample_smd[keep_counts, ]
+  smd = smd[keep_counts, ]
   sample_counts = sample_counts[keep_counts, ]
 
-  n_miss = sum(
-    is.na(sample_counts) | (is.infinite(sample_counts)) | (sample_counts == 0)
-  )
+  n_miss = sum(is.na(sample_counts))
+
   n_value = nrow(sample_counts) * ncol(sample_counts)
 
-  missing_table = tibble::tibble(
-    id = id,
-    type = type,
-    missing = n_miss,
-    values = n_value,
-    value_check = value_check
+  missing_table = dplyr::bind_cols(
+    tibble::tibble(
+      id = dataset_metadata$CHECK$ID,
+      type = dataset_metadata$MEASUREMENT_TYPE,
+      missing = n_miss,
+      values = n_value
+    ),
+    tibble::as_tibble(dataset_metadata$CHECK)
   ) |>
     dplyr::mutate(perc_miss = missing / values * 100)
   missing_test = ICIKendallTau::test_left_censorship(
@@ -271,17 +270,17 @@ calculate_missingness = function(id, smd_file, type, value_check) {
   missing_table
 }
 
-calculate_rank_correlation = function(id, smd_file, type, value_check) {
-  sample_smd = readRDS(smd_file)
+calculate_rank_correlation = function(smd) {
+  # smd = tar_read(smd_AN000500)
 
-  sample_counts = assays(sample_smd)$counts
-  sample_info = colData(sample_smd) |> as.data.frame()
+  sample_counts = assays(smd)$counts
+  sample_info = colData(smd) |> as.data.frame()
 
   keep_counts = keep_non_missing_percentage(
     sample_counts,
     sample_classes = sample_info$factors,
     keep_num = 1,
-    missing_value = c(0, NA)
+    missing_value = c(NA)
   )
 
   sample_smd = sample_smd[keep_counts, ]
@@ -309,9 +308,11 @@ calculate_rank_correlation = function(id, smd_file, type, value_check) {
     tibble::tibble(median = full_cor, min = min_cor, factors = id)
   }) |>
     purrr::list_rbind()
-  rank_cor$id = id
-  rank_cor$type = type
-  rank_cor$value_check = value_check
+  dataset_metadata = metadata(smd)
+
+  rank_cor$id = dataset_metadata$CHECK$ID
+  rank_cor$type = dataset_metadata$MEASUREMENT_TYPE
+  rank_cor$rank_check = dataset_metadata$CHECK$RANK_CHECK
 
   rank_cor
 }
