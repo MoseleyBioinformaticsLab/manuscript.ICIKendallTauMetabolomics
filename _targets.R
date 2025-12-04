@@ -56,7 +56,11 @@ mwtab_targets = tar_map(
   tar_target(limma, filter_outliers_do_limma(cor, smd)),
   tar_target(compare, limma_compare_significant(limma)),
   tar_target(missingness, calculate_missingness(smd)),
-  tar_target(ranked_data_cor, calculate_rank_correlation(smd))
+  tar_target(missingness_ranks, calculate_missingness_ranks(smd)),
+  tar_target(
+    missingness_ranks_correlation,
+    calculate_missingness_rank_correlation(missingness_ranks)
+  )
 )
 
 check_comb = tar_combine(
@@ -79,8 +83,8 @@ missingness_comb = tar_combine(
 
 rank_cor_comb = tar_combine(
   rank_correlations,
-  mwtab_targets[[10]],
-  command = bind_rows(!!!.x$rank_cor)
+  mwtab_targets[[11]],
+  command = bind_rows(!!!.x)
 )
 
 

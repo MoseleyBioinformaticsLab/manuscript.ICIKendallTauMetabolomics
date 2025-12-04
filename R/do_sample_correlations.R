@@ -273,8 +273,7 @@ calculate_missingness = function(smd) {
   missing_table
 }
 
-calculate_rank_correlation = function(smd) {
-  # smd = tar_read(smd_AN000500)
+calculate_missingness_ranks = function(smd) {
   if (is.null(smd)) {
     return(NULL)
   }
@@ -297,6 +296,18 @@ calculate_rank_correlation = function(smd) {
     sample_classes = sample_info$factors
   )
 
+  dataset_metadata = metadata(smd)
+
+  list(ranked_data = ranked_data, metadata = dataset_metadata)
+}
+
+calculate_missingness_rank_correlation = function(ranked_data_list) {
+  if (is.null(ranked_data_list)) {
+    return(NULL)
+  }
+  ranked_data = ranked_data_list$ranked_data
+  dataset_metadata = ranked_data_list$metadata
+
   rank_cor = purrr::imap(ranked_data, \(in_data, id) {
     # in_data = ranked_data[[1]]
     min_rank = in_data$n_na_rank |>
@@ -314,7 +325,6 @@ calculate_rank_correlation = function(smd) {
     tibble::tibble(median = full_cor, min = min_cor, factors = id)
   }) |>
     purrr::list_rbind()
-  dataset_metadata = metadata(smd)
 
   rank_cor$id = dataset_metadata$CHECK$ID
   rank_cor$type = dataset_metadata$MEASUREMENT_TYPE
