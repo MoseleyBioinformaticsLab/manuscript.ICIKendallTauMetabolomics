@@ -56,7 +56,7 @@ mwtab_targets = tar_map(
   tar_target(limma, filter_outliers_do_limma(cor, smd)),
   tar_target(compare, limma_compare_significant(limma)),
   tar_target(missingness, calculate_missingness(smd)),
-  tar_target(rank_cor, calculate_rank_correlation(smd))
+  tar_target(ranked_data_cor, calculate_rank_correlation(smd))
 )
 
 check_comb = tar_combine(
@@ -80,7 +80,7 @@ missingness_comb = tar_combine(
 rank_cor_comb = tar_combine(
   rank_correlations,
   mwtab_targets[[10]],
-  command = bind_rows(!!!.x)
+  command = bind_rows(!!!.x$rank_cor)
 )
 
 
@@ -313,9 +313,13 @@ vl_cor_diff_combine_map = tar_combine(
 
 
 figures_tables_plan = tar_assign({
+  # ---- missingness figures
   missingness_summary = missingness_data |>
     dplyr::mutate(padjust = p.adjust(p.value, method = "BH")) |>
     tar_target()
+  missingness_percentage_sina_plot = create_missing_percentage_sina_plot() |>
+    tar_target()
+
   variable_dynamic_range_image = create_variable_dynamic_range_image(
     vl_diff_graph
   ) |>
@@ -347,5 +351,6 @@ list(
   small_realistic_examples,
   vl_plan,
   vl_lod_map,
-  vl_cor_diff_combine_map
+  vl_cor_diff_combine_map,
+  figures_tables_plan
 )
