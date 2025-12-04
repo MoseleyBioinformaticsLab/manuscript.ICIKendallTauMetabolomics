@@ -321,7 +321,9 @@ figures_tables_plan = tar_assign({
   missingness_summary = missingness_data |>
     dplyr::mutate(padjust = p.adjust(p.value, method = "BH")) |>
     tar_target()
-  missingness_percentage_sina_plot = create_missing_percentage_sina_plot() |>
+  missingness_percentage_sina_plot = create_missing_percentage_sina_plot(
+    missingness_summary
+  ) |>
     tar_target()
 
   variable_dynamic_range_image = create_variable_dynamic_range_image(
