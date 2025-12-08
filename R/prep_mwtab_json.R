@@ -277,7 +277,7 @@ run_mwtab_checks_json = function(
 
   if (is.null(processed_mwtab$SUBJECT_SAMPLE_FACTORS)) {
     check_res$SSF_CHECK = "NO SSF DATA"
-    processed_mwtab$CHEKC = check_res
+    processed_mwtab$CHECK = check_res
     return(processed_mwtab)
   }
 
@@ -1136,4 +1136,27 @@ filter_good_experiments = function(check_data) {
         (RANK_CHECK %in% c("GOOD", "SIGN DIFFERENCE"))
     )
   good_data
+}
+
+count_filtered_datasets = function(check_data) {
+  n_total = nrow(check_data)
+  has_features = check_data |>
+    dplyr::filter(!(FEATURE_CHECK %in% "NA METABOLITES"))
+  good_features = check_data |>
+    dplyr::filter(FEATURE_CHECK %in% "GOOD")
+  good_ssf = good_features |>
+    dplyr::filter(SSF_CHECK %in% "GOOD SSF")
+  good_range = good_ssf |>
+    dplyr::filter(RANGE_CHECK %in% "GOOD")
+  good_rank = good_range |>
+    dplyr::filter(RANK_CHECK %in% c("SIGN DIFFERENCE", "GOOD"))
+
+  n_filter_tibble = tibble::tribble(
+    ~filter               , ~n                  ,
+    "missing metabolites" , nrow(has_features)  ,
+    "good features"       , nrow(good_features) ,
+    "good ssf"            , nrow(good_ssf)      ,
+    "good range"          , nrow(good_range)    ,
+    "good rank"           , nrow(good_rank)
+  )
 }
