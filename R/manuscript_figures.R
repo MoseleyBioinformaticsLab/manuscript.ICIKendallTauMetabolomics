@@ -374,3 +374,86 @@ create_graphical_test_outputs = function(test_comparisons) {
   dev.off()
   return(invisible(NULL))
 }
+
+
+create_filtering_flowchart = function(check_data) {
+  # out_graph = DiagrammeR::mermaid(
+  #   "
+  # flowchart TB
+  # A[Repaired Datasets\nN = 6105] --> B(Have Metabolites\nN = 4469)
+  # B --> C(N Metabolites >= 100 \n N = 2307)
+  # C --> D(N Samples >= 5\n N SSF >= 2\n N = 1552)
+  # D --> E(Max Intensity >= 20\nN = 1480)
+  # E --> F[Correlation of N-Missing vs Rank != NA\nN = 711]
+  # "
+  # )
+
+  check_fc = flowchart::as_fc(check_data, label = "Repaired Datasets") |>
+    flowchart::fc_filter(
+      !(FEATURE_CHECK %in% "NA FEATURES"),
+      label = "Have Metabolite Data",
+      show_exc = TRUE,
+      perc_total = TRUE
+    ) |>
+    flowchart::fc_filter(
+      FEATURE_CHECK %in% "GOOD",
+      label = "N Metabolites >= 100",
+      show_exc = TRUE,
+      perc_total = TRUE
+    ) |>
+    flowchart::fc_filter(
+      SSF_CHECK %in% "GOOD SSF",
+      label = "N Samples >= 5\nN SSF >= 2",
+      show_exc = TRUE,
+      perc_total = TRUE
+    ) |>
+    flowchart::fc_filter(
+      RANGE_CHECK %in% "GOOD",
+      label = "Max Intensity >= 20",
+      show_exc = TRUE,
+      perc_total = TRUE
+    ) |>
+    flowchart::fc_filter(
+      RANK_CHECK %in% c("SIGN DIFFERENCE", "GOOD"),
+      label = "Correlation of\nN-Missing vs Rank != NA",
+      show_exc = TRUE,
+      perc_total = TRUE
+    )
+  check_fc |>
+    flowchart::fc_draw() |>
+    flowchart::fc_export(
+      filename = here::here("docs/filtering_flowchart.png"),
+      format = "png",
+      width = 4,
+      height = 10,
+      units = "in",
+      res = 300
+    )
+  return_file_hash(here::here("docs/filtering_flowchart.png"))
+}
+
+return_file_hash = function(file_loc) {
+  digest::digest(file_loc, algo = "sha256", file = TRUE)
+}
+count_filtered_datasets = function(check_data) {
+  n_total = nrow(check_data)
+  has_features = check_data |>
+    dplyr::filter(!(FEATURE_CHECK %in% "NA METABOLITES"))
+  good_features = check_data |>
+    dplyr::filter(FEATURE_CHECK %in% "GOOD")
+  good_ssf = good_features |>
+    dplyr::filter(SSF_CHECK %in% "GOOD SSF")
+  good_range = good_ssf |>
+    dplyr::filter(RANGE_CHECK %in% "GOOD")
+  good_rank = good_range |>
+    dplyr::filter(RANK_CHECK %in% c("SIGN DIFFERENCE", "GOOD"))
+
+  n_filter_tibble = tibble::tribble(
+    ~filter               , ~n                  ,
+    "missing metabolites" , nrow(has_features)  ,
+    "good features"       , nrow(good_features) ,
+    "good ssf"            , nrow(good_ssf)      ,
+    "good range"          , nrow(good_range)    ,
+    "good rank"           , nrow(good_rank)
+  )
+}

@@ -340,21 +340,6 @@ figures_tables_plan = tar_assign({
     rank_correlations
   ) |>
     tar_target()
-
-  variable_dynamic_range_image = create_variable_dynamic_range_image(
-    vl_diff_graph
-  ) |>
-    tar_target()
-  censored_value_plot_image = create_censored_value_images(
-    censored_value_plots
-  ) |>
-    tar_target()
-  rank_missingness_image = create_figure1_image(
-    missingness_summary,
-    missingness_tests_AN001074,
-    rank_correlations
-  ) |>
-    tar_target()
 })
 
 docs_plan = tar_assign({
