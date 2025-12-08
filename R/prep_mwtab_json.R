@@ -81,10 +81,10 @@ parse_json = function(mwtab_file, id, ancillary_path) {
   })
 
   parsed_data$ID = id
-  if (is.null(parsed_data$SUBJECT_SAMPLE_FACTORS)) {
-    # browser()
-    return(parsed_data)
-  }
+  # if (is.null(parsed_data$SUBJECT_SAMPLE_FACTORS)) {
+  #   # browser()
+  #   return(parsed_data)
+  # }
 
   if (!is.null(parsed_data$MS_METABOLITE_DATA)) {
     parsed_data$MEASUREMENTS = parsed_data$MS_METABOLITE_DATA$DATA
@@ -273,6 +273,11 @@ run_mwtab_checks_json = function(
     check_res$FEATURE_CHECK = "FEW METABOLITES"
   } else {
     check_res$FEATURE_CHECK = "GOOD"
+  }
+
+  if (is.null(processed_mwtab$SUBJECT_SAMPLE_FACTORS)) {
+    check_res$SSF_CHECK = "NO SSF DATA"
+    processed_mwtab$
   }
 
   ssf_data = processed_mwtab$SUBJECT_SAMPLE_FACTORS

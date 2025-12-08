@@ -326,6 +326,21 @@ figures_tables_plan = tar_assign({
   ) |>
     tar_target()
 
+  missingness_pvalue_plot = create_missingness_pvalue_plot(
+    missingness_summary
+  ) |>
+    tar_target()
+
+  rank_missingness_relationship_plot = create_rank_missingness_relationship_plot(
+    missingness_ranks_AN001074
+  ) |>
+    tar_target()
+
+  rank_missingness_correlation_plot = create_rank_missingness_correlation_plot(
+    rank_correlations
+  ) |>
+    tar_target()
+
   variable_dynamic_range_image = create_variable_dynamic_range_image(
     vl_diff_graph
   ) |>

@@ -7,75 +7,34 @@ create_missing_percentage_sina_plot = function(missingness_summary) {
   return(out_plot)
 }
 
-create_example_missingness = function(in_cor) {
+create_rank_missingness_relationship_plot = function(in_ranks_metadata) {
   # in_cor = tar_read("metabolomics_cor_NSCLC")
-  use_counts = assays(in_cor$data)$normalized
-  use_info = colData(in_cor$data) |> tibble::as_tibble()
-  rank_counts = ICIKendallTau::rank_order_data(
-    use_counts,
-    sample_classes = use_info$factors
-  )
+  # in_ranks_metadata = tar_read("missingness_ranks_AN001074")
+  rank_counts = in_ranks_metadata$ranked_data
 
-  rank_images = purrr::map(rank_counts, \(in_counts) {
-    use_values = in_counts$ordered |>
-      as.data.frame()
-    visdat::vis_miss(use_values, show_perc = FALSE) +
-      scale_x_discrete(labels = NULL, breaks = NULL) +
-      labs(x = NULL) +
-      theme(legend.position = "none")
-  })
-
-  basic_ragg("docs/poster/working/missing_example.png")
-  print(rank_images[[1]])
-  dev.off()
-}
-
-
-rank_missingness = function(in_missingness) {
-  # in_missingness = tar_read("missingness_tests_AN001074")
-  # in_cor = tar_read("metabolomics_cor_NSCLC")
-  use_ranks = in_missingness$rank_info
-  median_image = use_ranks |>
+  rank_counts_df = purrr::map(rank_counts, \(x) {
+    x$n_na_rank
+  }) |>
+    purrr::list_rbind()
+  rank_counts_min = rank_counts_df |>
+    dplyr::summarise(min_rank = min(median_rank), .by = c(split, n_na))
+  rank_na_image = rank_counts_df |>
     ggplot(aes(x = n_na, y = median_rank)) +
     geom_point(size = 2) +
-    facet_wrap(~factors) +
+    geom_point(
+      data = rank_counts_min,
+      aes(x = n_na, y = min_rank),
+      color = "red"
+    ) +
+    facet_wrap(~split) +
     labs(x = "Number of Samples Missing In", y = "Median Rank") +
     theme(strip.text = element_text(size = 10))
 
-  use_ranks_min = use_ranks |>
-    dplyr::summarise(min_rank = min(median_rank), .by = c(factors, n_na))
-
-  min_image = use_ranks_min |>
-    ggplot(aes(x = n_na, y = min_rank)) +
-    geom_point(size = 2) +
-    facet_wrap(~factors) +
-    labs(x = "Number of Samples Missing In", y = "Min(Median Rank)") +
-    theme(strip.text = element_text(size = 10))
-
-  basic_ragg("docs/poster/images/median_ranks.png")
-  print(median_image)
-  dev.off()
-
-  basic_ragg("docs/poster/images/min_ranks.png")
-  print(min_image)
-  dev.off()
-
-  return(c("median_ranks.png", "min_ranks.png"))
+  rank_na_image
 }
 
-create_percent_missingness = function(missingness_summary) {
-  # tar_load(missingness_summary)
-  out_plot = missingness_summary |>
-    ggplot(aes(x = perc_miss, y = type)) +
-    geom_sina(size = 2) +
-    labs(x = "% Missing Value", y = "Method")
 
-  basic_ragg("docs/poster/images/missingness_percentage.png")
-  print(out_plot)
-  dev.off()
-}
-
-create_rank_correlation_image = function(rank_correlations) {
+create_rank_missingness_correlation_plot = function(rank_correlations) {
   # tar_load(rank_correlations)
 
   out_plot = rank_correlations |>
@@ -89,17 +48,41 @@ create_rank_correlation_image = function(rank_correlations) {
         summary_type,
         "median" ~ "Median",
         "min" ~ "Min(median)"
-      )
+      ),
+      rank_type = factor(rank_type, levels = c("Min(median)", "Median")),
+      type = factor(type, levels = c("NMR", "MS"))
     ) |>
     ggplot(aes(x = correlation, y = rank_type)) +
-    geom_sina(size = 2) +
+    geom_sina(size = 2, alpha = 0.5) +
     facet_wrap(~type, ncol = 1) +
     labs(x = "Kendall-tau(Rank vs N-Missing)", y = "Rank Summary")
 
-  basic_ragg("docs/poster/images/rank_correlation_distribution.png")
-  print(out_plot)
-  dev.off()
-  return(invisible(NULL))
+  out_plot
+}
+
+create_missingness_pvalue_plot = function(missingness_summary) {
+  # tar_load(missingness_summary)
+  min_nonzero = missingness_summary |>
+    dplyr::filter(padjust > 0) |>
+    dplyr::pull(padjust) |>
+    min()
+  missingness_summary = missingness_summary |>
+    dplyr::mutate(
+      padjust2 = dplyr::case_when(
+        padjust == 0 ~ min_nonzero,
+        TRUE ~ padjust
+      )
+    )
+  p_cut = -1 * log10(0.05)
+  out_plot = missingness_summary |>
+    dplyr::mutate(log_p = -1 * log10(padjust2)) |>
+    ggplot(aes(x = log_p)) +
+    geom_histogram(bins = 100) +
+    geom_vline(xintercept = p_cut, color = "red") +
+    labs(x = "-1xLog10(P-adjusted)", y = "# Datasets") +
+    scale_y_continuous(expand = c(0, 0)) +
+    scale_x_continuous(expand = c(0, 0))
+  out_plot
 }
 
 basic_ragg = function(
