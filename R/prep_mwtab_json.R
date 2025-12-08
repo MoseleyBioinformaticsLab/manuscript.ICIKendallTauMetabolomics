@@ -277,7 +277,8 @@ run_mwtab_checks_json = function(
 
   if (is.null(processed_mwtab$SUBJECT_SAMPLE_FACTORS)) {
     check_res$SSF_CHECK = "NO SSF DATA"
-    processed_mwtab$
+    processed_mwtab$CHEKC = check_res
+    return(processed_mwtab)
   }
 
   ssf_data = processed_mwtab$SUBJECT_SAMPLE_FACTORS
