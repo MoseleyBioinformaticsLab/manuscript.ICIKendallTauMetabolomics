@@ -48,8 +48,8 @@ knitr::opts_chunk$set(
   echo = FALSE,
   warning = FALSE,
   message = FALSE,
-  fig.width = 8,
-  fig.height = 6,
+  fig.width = 10,
+  fig.height = 8,
   fig.process = figure_count$modify_path,
   dpi = 600,
   dev = "ragg_png"
@@ -63,10 +63,14 @@ knitr::opts_chunk$set(
 ```{r}
 #| label: load-dependencies
 tar_load(c(
+  # references,
+  # supp_materials,
   missingness_percentage_sina_plot,
   missingness_pvalue_plot,
   rank_missingness_correlation_plot,
-  rank_missingness_correlation_plot
+  rank_missingness_relationship_plot,
+  lod_vars,
+  realistic_comparison_plot
 ))
 
 ```
@@ -75,7 +79,8 @@ tar_load(c(
 #| label: figure-and-tables
 figure_count$increment(c(
   "problem",
-  "lod",
+  "datasets",
+  "left-censorship-missingness",
   "missing2cor",
   "leftcensored",
   "trimmed-imputed-correlation",
@@ -90,6 +95,28 @@ table_count$increment(c(
   "partitioning"
 ))
 
+supp_figure_count = dn_counter$new("Figure ", "_", "S")
+supp_table_count = dn_counter$new("Table ", "_", "S")
+
+supp_figure_count$increment(c(
+  "missingness-vs-pvalue",
+  "kt_pearson",
+  "ici_distribution",
+  "kt_distribution",
+  "realistic_reference",
+  "leftcensored",
+  "na-perc-lod",
+  "complexity"
+))
+
+supp_table_count$increment(c(
+  "yeast_outliers",
+  "egfrgenotype_outliers",
+  "adenocarcinoma_outliers",
+  "adenocarcinoma_mad",
+  "nsclc_outliers",
+  "ratstamina_outliers"
+))
 ```
 
 ## Abstract
@@ -116,7 +143,7 @@ We provide explicitly parallel implementations in both R and Python that allow f
 The ICI-Kt methods are available as an R package and Python module on GitHub at https://github.com/moseleyBioinformaticsLab/ICIKendallTau and https://github.com/moseleyBioinformaticsLab/icikt, respectively.
 
 
-## Background
+## Introduction
 
 Correlation as a measure of the relatedness or similarity of two or more sets of data has a long history, with the mathematical technique being used (and abused) in various scientific fields since its introduction [@pearson_notes_1920; @rodgers_13_1988].
 More recently, correlation calculations have become a cornerstone statistical method in the analysis and integration of varied omics' datasets, especially the big five omics: genomics, transcriptomics, proteomics, metabolomics, and epigenomics [@gu_complexheatmap_2016].
@@ -145,6 +172,9 @@ Both dropping or imputing missing values are likely to cause the calculated samp
 
 ```{r}
 #| label: problem
+#| out-width: 400
+#| out-height: 403
+#| units: in
 curr_dir = getwd()
 problem_loc = file.path(curr_dir, "docs", "the_problem.png")
 #message(problem_loc)
@@ -170,14 +200,13 @@ In contrast, Kendall-tau's use of concordant and discordant pair counts seems mo
 
 In this work, we propose new definitions of concordant and discordant rank pairs that include missing values, as well as methods for incorporating missing values into the number of tied values for the equivalent of the modified Kendall-tau coefficient, the information-content-informed Kendall-tau (ICI-Kt) method.
 The implementation of the basic calculation of ICI-Kt involves the replacement of missing values with a value lower than the observed values (technically simple imputation), with subsequent calculation of the Kendall-tau-b statistic, as a majority of missing values are the result of left-censorship, they still provide an interpretation from an information-content perspective, which we demonstrate with the equations below.
-We also developed a statistical test for determining if the cause for missingness is likely left-censorship. With this statistical test, we demonstrate that left-censorship is a real phenomenon in four different experimental data sets.
-We examine the effect of missing values on various simulated and real data-sets, comparing the ICI-Kt methodology with other simpler methods of handling the missing values, namely removing them or imputing them to zero.
+We also developed a statistical test for determining if the cause for missingness is likely left-censorship. With this statistical test, we demonstrate that left-censorship is likely the cause of many missing values across a large number of metabolomics datasets from the Metabolomics Workbench (MW).
+We examine the effect of missing values on various collections of simulated and real data-sets, comparing the ICI-Kt methodology with other simpler methods of handling the missing values, namely removing them or imputing them to zero.
 Given the detrimental effects of including outlier samples in differential analyses, we also evaluate the ability of the ICI-Kt methodology to capture sample-sample pairwise similarities and the determination of outlier samples prior to differential analyses.
-Finally, we examine how feature-feature networks derived from various feature-feature correlations change within annotations depending on the correlation method used.
 
 All of the code used for this manuscript is available on zenodo [@flightManuscriptICIKendallTau2024].
 
-## Implementation
+## Methods
 
 ### Additional Definitions of Concordant and Discordant Pairs to Include Missingness
 
@@ -233,16 +262,16 @@ $$\tau_b = \frac{n_{concordant} - n_{discordant}}{\sqrt{(n_{tot} - n_{xtie})(n_{
 where $n_{tot}$ is the total number of pairs, $n_{xtie}$ are the number of tied values in X, and $n_{ytie}$ are the number of paired values in Y.
 We can also consider commonly missing values in X and Y specially as well.
 In the first instance, we remove those x-y points where **both values** are missing.
-We refer to this case as the "local" ICI-Kt correlation.
+We refer to this case as the *local* ICI-Kt correlation.
 It is most appropriate for the comparison of only two experimental samples, where we are concerned with what values are present in the two experimental samples, with the odd case of missingness.
 
-The other case, where we leave ties resulting from points with missing X and Y, we refer to as the "global" ICI-Kt correlation.
+The other case, where we leave ties resulting from points with missing X and Y, we refer to as the *global* ICI-Kt correlation.
 In this case, every single correlation over multiple comparisons with the same set of features will consider the same number of pair comparisons.
 This is useful when analyzing and interpreting correlations from a large number of experimental samples, not just two samples.
 
 ### Theoretical Maxima
 
-The "global" case also provides an interesting property, whereby we can calculate the theoretical maximum correlation that would be possible to observe given the lowest number of shared missing values.
+The *global* case also provides an interesting property, whereby we can calculate the theoretical maximum correlation that would be possible to observe given the lowest number of shared missing values.
 This value can be useful to scale the rest of the observed correlation values across many sample-sample correlations, providing a value that scales an entire dataset appropriately.
 For any pairwise comparison of two vectors (from experimental samples for example), we can calculate the maximum possible Kendall-tau for that comparison by defining the maximum number of concordant pairs as:
 
@@ -258,7 +287,7 @@ We first measure the number of entries missing in either of the samples being co
 This defines how many features are potentially *complete* between the two samples.
 This number, over the total number of features defines the *completeness* fraction.
 
-$$completness = \frac{n_{feat} - N (miss_i \cup miss_j)}{n_{feat}}$$
+$$ completness = \frac{n_{feat} - N (miss_i \cup miss_j)}{n_{feat}} $$
 
 where for any two samples *i* and *j*, $n_{feat}$ is the total number of features or entries, and $miss_i \cup miss_j$ are the features missing in either sample *i* or *j*, with $N$ being the total number of missing entries in either sample *i* or *j*.
 
@@ -269,7 +298,7 @@ We produced an initial reference implementation in *R* [@rcoreteam_rlanguage_202
 During exploration and validation of an early implementation, we discovered that an equivalent calculation was to replace the missing values with a value smaller than all of the values in the two sets being compared.
 This simplification does not change the interpretation of the effect of left-censored missing values, but it does allow for the direct use of the very fast mergesort based algorithm for calculating $\tau_b$ [@knight_mergesortkendall_1966].
 
-We re-implemented the mergesort implementation from the *SciPy* *kendalltau* code [@virtanen_scipy_2020] in both R (via *Rcpp*) and Python (via cython) to enable fast, easy parallel computations in both languages (using *furrr* and *multiprocessing*, respectively), as well as inclusion of the calculation of $tau_{max}$, which is derived from the same values needed for the calculation of $\tau_b$ (see above).
+We re-implemented the mergesort implementation from the *SciPy* *kendalltau* code [@virtanen_scipy_2020] in both R (via *Rcpp*) and Python (via *cython*) to enable fast, easy parallel computations in both languages (using *furrr* and *multiprocessing*, respectively), as well as inclusion of the calculation of $tau_{max}$, which is derived from the same values needed for the calculation of $\tau_b$ (see above).
 The version of the R package used in this manuscript is available on zenodo [@flightICIKendallTau2023].
 In addition to use as an imported Python module, the Python *icikt* module provides a command line interface (CLI) for the ICI-Kt methodology.
 
@@ -287,37 +316,49 @@ Missing values are created in these statistical samples via two methods: 1) by c
 
 ### Metabolomics Datasets from Metabolomics Workbench
 
-A set of 6105 datasets from Metabolomics Workbench (MW) were downloaded on 2025-11-12, and repaired to fix various issues. 
+A set of 6105 analysis datasets from Metabolomics Workbench (MW) were downloaded on 2025-11-12, and repaired to fix various issues. 
 For a subset that had metabolomics abundance outside the mwtab json file, the files were downloaded on 2025-11-13.
+The various pieces of each dataset were parsed and transformed into R appropriate structures, mainly data frames of various types for metadata, and matrices of abundances.
+Subject sample factors (SSF) were transformed so that each sample has a combination of various factors to describe the unique groupings of samples.
+For example, if a dataset included samples with one or more genotypes (Knockout, FLOX) and taken from different segments of the intestines, the final factor for each sample is the combination of genotype + intestinal segment.
+
+For inclusion in this work, a study had to meet these criteria:
+
+  * $\ge$ 100 metabolites;
+  * one SSF grouping with $\ge$ 5 samples, and $\ge$ 2 SSF groupings after removing samples that **may** be pooled, quality-control or blanks;
+  * a maximum abundance $\ge$ 20 to exclude log-transformed values and low dynamic range datasets;
+  * the ability to calculate a correlation between the median rank of a metabolite and the number of samples the metabolite was missing in within a factor.
+
+There are 711 datasets of the 6105 initially downloaded that are kept.
 
 ### Number of Missing Values and Median Rank
 
-For each dataset, the samples were split by experimental factor or treatment of interest (see previous Methods for each dataset).
-For each feature, the rank of the feature was calculated for each sample where the feature was present, followed by the features median rank, as well as the number of samples the feature was missing from.
+For each dataset, the samples were split by factors (see previous Methods).
+For each feature, the rank of the feature was calculated for each sample where the feature was present, followed by the features median rank across samples, as well as the number of samples the feature was missing from.
 Grouping the features by the number of missing values, we calculate the median of median ranks, as well as the minimum of median ranks, for the visualization and correlation of the relationship of rank with missing values.
 
 ### Binomial Test for Left Censorship
 
-For each dataset, the samples were first split by treatment.
+For each dataset, the samples were first split by factor.
 In each sample, the median abundance of features present in the sample are calculated.
 For any feature that is missing in any sample, the values in the present samples are compared to the median value of their corresponding sample.
-If the value is **less than** the median value in the sample, that is counted as a **success** in a binomial test, otherwise it is counted as a failure.
-The number of successes and failures are aggregated across the treatment splits for calculation in a binomial test, with the null hypothesis as a ratio of 0.5.
+If the value is $\le$ the median value in the sample, that is counted as a **success** in a binomial test, otherwise it is counted as a failure.
+The number of successes and failures are aggregated across the factor splits for calculation in a binomial test, with the null hypothesis being a ratio of 0.5.
 
 ### Correlation Methods
 
-For each dataset, we calculated correlations using a variety of methods. In each dataset, there were either zero values or `NA` values to represent missingness.
-To start, we replaced all missing values with `NA`, and then either left them as `NA` or set them to zero as appropriate.
-ICI-Kendall-tau with zeros replaced with `NA` (IK); and then scaled (multiplied) by the completeness metric (IKC).
-Kendall-tau, with zero replaced with `NA`, and then using pairwise-complete-observations (Kt).
-Pearson, with zeros, using pairwise-complete-observations (PB).
-Pearson, with zeros replaced with `NA`, using pairwise-complete-observations (PN0).
+For each dataset, we calculated correlations using a variety of methods. Aross the various datasets, either zeros or empty strings (generally resulting in `NA` values when read into R) are used to represent missingness.
+To start, we replaced all missing values with `NA`, and then either left them as `NA` or set them to zero for the various methods used.
+ICI-Kendall-tau with `NA` (IK); and then scaled (multiplied) by the completeness metric (IKC).
+Kendall-tau, with `NA`, and then using pairwise-complete-observations (Kt).
+Pearson, with `NA`'s replaced by zeros, using pairwise-complete-observations (PB).
+Pearson, with `NA`, using pairwise-complete-observations (PN0).
 Pearson, with a $log(x + 1)$ transform applied, using pairwise-complete-observations (PL1).
 Pearson, with a $log(x)$ transform, and then setting infinite values to `NA` values, using pairwise-complete-observations (PL).
 
 ### Outlier Detection
 
-For outlier detection, median sample-sample correlations within the sample treatment (genotype, condition, etc) is calculated, and $log(1 - cor_{median})$ calculated to transform it into a score. Then outliers are determined using *grDevices::boxplot.stats*, which by default are at 1.5X the whiskers in a box-and-whisker plot.
+For outlier detection, median sample-sample correlations within the sample factor (genotype, condition, etc) is calculated, and $log(1 - cor_{median})$ calculated to transform it into a score. Then outliers are determined using *grDevices::boxplot.stats*, which by default are at 1.5X the whiskers in a box-and-whisker plot.
 As we are interested in only those correlations at the *low* end of correlation (becoming the high end after the subtraction and log-transform), we restrict to only those entries at the *high* end of the score distribution (using *visualizationQualityControl::determine_outliers* [@flightVisualizationQualityControlDevelopmentVisualization2021]).
 This is equivalent to using the correlation component of the score described by Gierliński et al [-@gierlinski_statisticalmodels_2015] and setting the other component weights to zero.
 
@@ -345,92 +386,64 @@ For the comparisons of time taken using different numbers of samples to evaluate
 
 ### Datasets
 
-In `r figure_count$label_text("datasets")`, we provide a summary of the number of features (measurements), samples, treatments or conditions, and the number of biological replicates per condition for each of the experimental datasets.
+We are aware of only one previous investigation of the causes of missingness in metabolomics datasets [@doCharacterizationMissingValues2018].
+In Do et al. [-@doCharacterizationMissingValues2018], the authors showed that there was a limit of detection (LOD) effect, with a dependence on the day the samples were run.
+Unfortunately, the KORA4 metabolomics dataset from Do et al. is not publicly available, so we could not attempt to redo their analysis of missing values with the same dataset.
 
-```{r}
+Given the number of projects and analyses available in Metabolomics Workbench (MW) [REF], we sought to obtain a large number of individual datasets (MW analyses) from MW to evaluate both the phenomenon of left censorship and the information-content-informed Kendall-tau methodology.
 
+In `r figure_count$label_text("datasets")`, we provide a summary of the number of datasets remaining after filtering for various attributes (see Methods).
+Of the 6501 datasets we started with, we were able to retain 711 for this study.
+
+```{r} 
+#| label: filtering
+#| out-width: 300
+#| out-height: 750
+curr_dir = getwd()
+filtering_loc = file.path(curr_dir, "docs", "filtering_flowchart.png")
+#message(problem_loc)
+#file.exists(problem_loc)
+knitr::include_graphics(filtering_loc, rel_path = FALSE)
 ```
 
 `r figure_count$label_text("datasets")`. Number of datasets remaining after each level of filtering and checking.
 
 
-### Limit of Detection As a Cause for Missingness
+### Left Censoring As a Cause for Missingness
 
-We are aware of only one previous investigation of the causes of missingness in metabolomics datasets [@doCharacterizationMissingValues2018].
-In Do et al. [-@doCharacterizationMissingValues2018], the authors showed that there was a limit of detection (LOD) effect, with a dependence on the day the samples were run.
-However, one thing that seemed to be missing in the analysis was normalizing each sample for sample-to-sample variation. 
-We feel that this is critical, given that even with measurements acquired by Metabolon (the company that performed the measurements in Do et al.), the standards do not fully correct for sample-to-sample variation.
-Unfortunately, the KORA4 metabolomics dataset from Do et al. is not publicly available, so we could not attempt to redo their analysis of missing values with the same dataset.
+One would wonder just how many missing values are present in metabolomics datasets, and if their missingness is primarily due to left censorship or some other phenomenon.
+For the 711 datasets examined in this work, the percentage of missingness ranged from near zero (we required at least one missing value to keep a dataset for further analysis) to 25% for NMR, and the majority of MS datasets had missingness in the 0 - 25% range, with some datasets having missingness in the 90's (`r figure_count$label_text("left-censorship-missingness")`A). 
+Using a binomial test to check if missing values are more likely to have non-missing values ranked at $\le$ 0.5 of the values present, we see that the majority have an adjusted-p-value $\le$ 0.05, with many having a an extreme p-value (`r figure_count$label_text("left-censorship-missingness")`B).
+We also checked if there is any relationship between the percentage of missing values and the binomial test p-values, but found none (`r supp_figure_count$label_text("missingness-vs-pvalue")`).
 
-An alternative to incorporating normalization, however, is to examine the median ranks of features in samples where they are present, and the number of samples they are missing from.
-For each experimental group of samples in each of the datasets (three RNA-seq, one metabolomics, one lipidomics), we calculated the median rank and number of measurement values missing across samples (i.e. N-Missing) for each feature (gene or metabolite, see Implementation).
-As shown in `r figure_count$label_text("lod")`A for the yeast RNA-seq dataset (also see `r supp_figure_count$label_text(c("lod_adenocarcinoma", "lod_egfrgenotype", "lod_egfrgenotypetumorculture", "lod_typeandtumorculture", "lod_nsclc", "lod_ratstamina"))` in Supplemental Materials for the other datasets), there is a monotonicly decreasing relationship between the median rank and the number missing values for that feature.
-Moreover, as N-Missing decreases, there is clearly a minimum median rank below which the values do not cross as illustrated in `r figure_count$label_text("lod")`B (see also `r supp_figure_count$label_text(c("lod_adenocarcinoma", "lod_egfrgenotype", "lod_egfrgenotypetumorculture", "lod_typeandtumorculture", "lod_nsclc", "lod_ratstamina"))` in Supplemental Materials for the other datasets).
-Given this relationship of the minimum median value observed and N-Present, we believe that the **majority** of missing values in many -omics datasets are due to being below the LOD.
+For each set of factors of a dataset, we calculated the median rank and number of measurement values missing across samples (i.e. N-Missing) for each metabolite.
+As shown in `r figure_count$label_text("left-censorship-missingness")`C, there is a monotonically decreasing relationship between the median rank and the number of missing values for that metabolite.
+Moreover, as N-Missing decreases, there is clearly a minimum median rank below which the values do not cross as illustrated by the red points.
+As shown in `r figure_count$label_text("left-censorship-missingness")`D, median rank and N-missing are negatively correlated across the majority of experiments, although there are more positive correlations when using the minimum median rank.
+Given this relationship of the minimum median value observed and N-Present, we believe that the **majority** of missing values in many metabolomics datasets are due to left censorship.
 
-This makes the ICI-Kt appropriate for use in many -omics datasets by incorporating missing values due to being below the LOD as useful information in the correlation calculation.
-
-The LOD figures for alternative groupings of the EGFR genotype samples also demonstrate another interesting property (`r supp_figure_count$label_text(c("lod_egfrgenotype", "lod_egfrgenotypetumorculture", "lod_typeandtumorculture"))`), in that incorrect groupings of RNA-Seq samples at the normalization stage result in negatively correlating relationships of the number of present values and the lowest observed median value as illustrated in `r supp_figure_count$label_text("lod_egfrgenotypetumorculture")`B.
-
+This makes the ICI-Kt methodology appropriate for use in many metabolomics datasets containing missing values through incorporation of the missing values below the LOD as useful information in the correlation calculation.
 
 ```{r}
-#| label: lod
+#| label: left-censorship-missingness
 #| fig-width: 10
 #| fig-height: 8
-wrap_plots(rank_graphs_yeast, ncol = 1) + plot_annotation(tag_levels = "A")
+left_censorship_missingness_plot = (missingness_percentage_sina_plot |
+  missingness_pvalue_plot) /
+  (rank_missingness_relationship_plot +
+    theme(strip.text = element_text(size = 8)) |
+    rank_missingness_correlation_plot +
+      theme(strip.text = element_text(size = 8))) +
+  plot_annotation(tag_levels = "A")
+left_censorship_missingness_plot
 ```
 
-`r figure_count$label_text("lod")`.
-Yeast dataset of median ranks in non-missing samples by number of samples feature was missing from, using either the median (**A**) or minimum of median ranks (**B**).
+`r figure_count$label_text("left-censorship-missingness")`.
+Missingness in datasets. **A**: Sina plot of the percent missing values in NMR and MS datasets.
+**B**: Histogram of log10 adjusted p-values from the binomial test testing if non-missing values are more likely to be below the median rank when the metabolite has missingness in the dataset. Red line indicates an adjusted p-value of 0.05. P-values of 0 were replaced with the lowest observed non-zero p-value.
+**C**: Median (black) and minimum median (red) rank of metabolite abundances across factor groups of samples *vs* the number of samples the metabolite had a missing value for dataset AN001074.
+**D**: Sina plots of the Kendall-tau correlation of the median rank and minimum median rank with number of missing samples across all datasets.
 
-Additional support for the hypothesis that missing values are **primarily** due to being below the limit of detection is provided by the binomial test for left censorship (see Implementation), with the results shown in `r table_count$label_text("n-missing")`.
-This test involves counting whether the non-missing values (for those features that are missing in at least one sample) are below the median of the samples where they are non-missing.
-For many of the datasets, the proportion of non-missing values below the median are in the range of 0.9 or higher, and only the two mass-spectrometry datasets (ratstamina and nsclc) show lower estimates.
-Even in those two specific cases, the proportions are 0.69 and 0.60, respectively.
-
-`r table_count$label_text("n-missing")`. For each dataset, the total number of elements, number of elements with a missing value, % missing values, number of values tested as being below the median in a sample, number of values found to be below the median of a sample, fraction of values found to be below the median of sample, confidence interval, and p-value of the left-censored binomial test. In each case, the reported p-value is below $2.2 \times 10^{-16}$, and represented as 0 in the table.
-```{r}
-rmf_scientific = function(in_table, j, n_sig = 2) {
-  actual_value = in_table$body$dataset[, j]
-  split_value = strsplit(scales::scientific(actual_value, digits = n_sig), "e")
-  new_values = purrr::map(split_value, \(in_value) {
-    in_value[1] = paste0(in_value[1], "×10")
-    in_value[2] = gsub("\\+0", "", in_value[2])
-    in_value
-  })
-  out_table = in_table
-  for (i in seq_len(nrow(in_table$body$dataset))) {
-    out_table = compose(
-      out_table,
-      i = i,
-      j = j,
-      part = "body",
-      value = as_paragraph(new_values[[i]][1], as_sup(new_values[[i]][2]))
-    )
-  }
-  out_table
-}
-lc_summary_all |>
-  dplyr::mutate(
-    Dataset = dplyr::case_when(
-      Dataset %in% "adenocarcinoma" ~ "adeno\ncarcinoma",
-      Dataset %in% "egfrgenotypetumorculture" ~ "egfrgenotype\ntumorculture",
-      Dataset %in% "typeandtumorculture" ~ "typeandtumor\nculture",
-      TRUE ~ Dataset
-    )
-  ) |>
-  flextable() |>
-  font(fontname = "Calibri", part = "all") |>
-  fontsize(size = 11, part = "header") |>
-  fontsize(size = 10, part = "body") |>
-  colformat_double(j = 4, digits = 0, suffix = "%") |>
-  colformat_double(j = 7, digits = 2) |>
-  rmf_scientific(j = 2, n_sig = 3) |>
-  rmf_scientific(j = 3, n_sig = 3) |>
-  rmf_scientific(j = 5, n_sig = 3) |>
-  rmf_scientific(j = 6, n_sig = 3) |>
-  set_table_properties(layout = "autofit")
-```
 
 
 ### Comparison To Other Correlation Measures
@@ -438,7 +451,7 @@ lc_summary_all |>
 We compared the ICI-Kt correlation to both Pearson and regular Kendall-tau-b correlations as calculated by the built-in R functions using simulated data sets with missing values (`r supp_figure_count$label_text(c("kt_pearson", "ici_distribution", "kt_distribution"))`).
 
 We created two samples with 1000 observations each drawn from a log-normal distribution, and sorted in each case to create a pair of X and Y samples with a correlation of 1 and -1 for both Pearson and Kendall-tau correlation measures.
-The *true* correlation for each of the Kendall and Pearson correlations were calculated, and then missingness was introduced in the lower range of values, up to half of the values (see Implementation).
+The *true* correlation for each of the Kendall and Pearson correlations were calculated, and then missingness was introduced in the lower range of values, up to half of the values (see Simulated Data Sets).
 
 In `r figure_count$label_text("missing2cor")` (and `r supp_figure_count$label_text("realistic_reference")`), we can see that as missing values are added, only the ICI-Kt correlation values change in any significant way as illustrated by the wider range of ICI-Kt values on the y-axes versus the much narrower range of Pearson and Kendall tau correlation values on the x-axes.
 As the number of missing values increase, the ICI-Kt values drop or increase by up to 0.2.
@@ -446,7 +459,7 @@ Similarly, Pearson correlation is also affected, but the degree of change in the
 These results demonstrate that the ICI-Kt correlation has quantitative sensitivity to missing values over the normal Kendall tau correlation and linear Pearson correlation where points with missing values are ignored (pairwise complete).
 
 
-```{r missing2cor, fig.width = 8, fig.height = 8, dn_id = figure_count}
+```{r missing2cor, fig.width = 8, fig.height = 8, dn_id = figure_count, eval = FALSE}
 comp_tmp_pos = purrr::map(realistic_comparison_plot$positive, \(x) {
   x + theme(axis.text = element_text(size = 10))
 })
@@ -480,7 +493,7 @@ In this special case where zero is lower than all of the values in the dataset, 
 In a naive treatment of the left-centered missing data, if the values below the cutoff are set to missing followed by log-transforming the values and subsequently setting missing values to 0, then the Kendall tau correlation replacing missing with 0 will show some very odd patterns at low intensity cutoffs due to the introduction of discordant pairs.
 Likewise, Pearson correlation replacing missing with 0 shows a parabolic effect with increasing missing values.
 
-```{r leftcensored, fig.height = 8, fig.width = 9, dn_id = figure_count}
+```{r leftcensored, fig.height = 8, fig.width = 9, dn_id = figure_count, eval = FALSE}
 censored_value_plots = purrr::map(censored_value_plots, \(x) {
   x +
     theme(
@@ -515,7 +528,7 @@ For each level of possible missingness introduced by changes to the dynamic rang
 Points above the lines with slopes of -1 and 1 indicate that the difference of reference - trimmed is smaller in the ICI-Kt correlations, and below the lines indicate the difference is larger in the ICI-Kt correlations.
 This is further emphasized by the majority of the values are to the left of the line at 0 in the difference histograms.
 
-```{r trimmed-imputed-correlation, fig.height = 9, fig.width = 12, dn_id = figure_count}
+```{r trimmed-imputed-correlation, fig.height = 9, fig.width = 12, dn_id = figure_count, eval = FALSE}
 wrap_plots(vl_diff_graph, nrow = 2, ncol = 3)
 ```
 
@@ -537,7 +550,7 @@ In fact, regressing the time to number of samples using a formula with the expec
 As we implemented a relatively easy way to make use of asynchronous compute resources via the  *future* package, we also verified that increases in run time using multiple cores was reasonable as well.
 `r figure_count$label_text("performance")`B shows that as samples are added, the run time quickly increases logarithmically, similar to increasing samples on a single core (see `r figure_count$label_text("performance")`A).
 
-```{r performance, dn_id = figure_count, fig.height = 8}
+```{r performance, dn_id = figure_count, fig.height = 8, eval = FALSE}
 single_core_perf = single_core_perf %>%
   dplyr::mutate(
     method2 = dplyr::case_when(
@@ -598,9 +611,6 @@ We analyzed datasets from RNA-Seq (3), lipidomics (1), and small molecule metabo
 We primarily concentrate on the ICI-Kt, IKC, and Pearson $log(x + 1)$ here for one dataset, but all outliers detected by each method are shown in the Supplemental materials (`r supp_figure_count$label_text(c("yeast_outliers", "egfrgenotype_outliers", "adenocarcinoma_outliers", "nsclc_outliers", "ratstamina_outliers"))`, `r supp_table_count$label_text(c("yeast_outliers", "egfrgenotype_outliers", "adenocarcinoma_outliers", "nsclc_outliers", "ratstamina_outliers"))`).
 For each dataset and correlation-related metric, the median correlation for a sample was calculated amongst the samples for each sub-group of samples corresponding to an experimental condition of interest (disease, mutant, condition, etc).
 
-```{r set_main_comparisons}
-compare_yeast_main = c("icikt", "icikt_complete", "pearson_log1p")
-```
 
 `r figure_count$label_text("yeast_outliers")` visualizes the sample-specific median of each correlation-related metric calculated from the Yeast RNA-Seq data set. 
 `r table_count$label_text("yeast_outliers")` lists the outliers detected based on each sample-specific median metric value.  
@@ -622,7 +632,7 @@ It should be noted that it seems that Gierliński et al. used an eyeball cutoff 
 In addition, given the proportional variance inherent in RNA-Seq count data, Pearson correlation on non-transformed counts should not be used, as the low abundance counts will tend to force the correlation values to be arbitrarily high in the absence of large biological heterogeneity, as observed for these samples compared to the other datasets that involve individuals as biological replicates.
 
 
-```{r yeast_outliers, dn_id = figure_count}
+```{r yeast_outliers, dn_id = figure_count, eval = FALSE}
 yeast_single_plot = yeast_single %>%
   add_method() %>%
   dplyr::filter(which %in% compare_yeast_main) %>%
@@ -641,7 +651,7 @@ For a sample that is considered an outlier in any of the methods, lines are draw
 Yeast dataset median correlation values and outlier determination for each outlier from each of ICI-Kt (IK), ICI-Kt $\times$ completeness (IKC) or Pearson Log(x + 1) (PL1) correlation methods.
 Bolded entries indicate the sample was an outlier for that method.
 
-```{r yeast_outlier_table}
+```{r yeast_outlier_table, eval = FALSE}
 yeast_table = compare_outlier_tables_bold(
   yeast_single,
   compare_yeast_main,
@@ -657,9 +667,6 @@ yeast_ft_out
 ```
 
 In the case of the adenocarcinoma dataset (`r supp_figure_count$label_text("adenocarcinoma_outliers")` and `r supp_table_count$label_text("adenocarcinoma_outliers")`), although there are not many outliers in these relatively large groups, Kendall-tau (Kt) values results in the most outliers, mostly in the *tumor* samples.
-Also of note is that ICI-Kt x Completeness (IKC) is the only measure where the variance measure for both groups is similar (`r supp_table_count$label_text("adenocarcinoma_mad")`) (`r adenocarcinoma_ratios[["IKC"]]`X).
-For both ICI-Kt and the various Pearson correlation, the tumor samples variance measures are `r adenocarcinoma_ratios[["IK"]]`X and `r adenocarcinoma_ratios[["PL1"]]`X greater than normal, respectively.
-
 
 Additionally, we compared how the outliers change if we require that a feature is present in at least a certain fraction of samples of a class with each different correlation measure (see `r supp_figure_count$label_text(c("yeast_by_method", "yeast_by_keep_num", "yeast_differences", "egfrgenotype_by_method", "egfrgenotype_by_keep_num", "egfrgenotype_differences", "adenocarcinoma_by_method", "adenocarcinoma_by_keep_num", "adenocarcinoma_differences", "nsclc_by_method", "nsclc_by_keep_num", "nsclc_differences", "ratstamina_by_method", "ratstamina_by_keep_num", "ratstamina_differences"))`).
 Although, in general the correlations remain the same, or show some downward trend with increasing fractions of samples required to be non-missing, IKC shows a different trend.
@@ -667,30 +674,6 @@ Overall, this is due to there being a higher likelihood of pairwise samples bein
 
 With the exception of the yeast dataset, the base Pearson (PB) and Pearson without zeros (PN0) were the most likely methods to show higher changes in median and median-absolute-differences (MAD) between groups of samples, as shown in Figures `r supp_figure_count$just_count("yeast_differences")`, `r supp_figure_count$just_count("egfrgenotype_differences")`, `r supp_figure_count$just_count("adenocarcinoma_differences")`, `r supp_figure_count$just_count("nsclc_differences")` and `r supp_figure_count$just_count("ratstamina_differences")` (see Implementation).
 
-### Partitioning of Feature-Feature Networks
-
-Feature-feature correlations (for those features present in 25% or more of the samples of a class) for each dataset were calculated using each of the correlation methods (see Implementation).
-From those feature-feature correlations, partial correlations are calculated, and significant edges retained.
-Feature annotations from either Reactome pathways (RNA-Seq), KEGG pathways (metabolomics), or lipid class (lipidomics) were used to determine if the edges within annotations were more present than outside of annotations.
-The biochemical rationale for this analysis is that stronger positive partial correlations should be reflected within known pathways versus between pathways.
-
-`r table_count$label_text("partitioning")` lists the summed partitioning values for each dataset and method.
-For each of the datasets examined, ICI-Kt or ICI-Kt completeness gave the most positive summed partitioning values.
-
-`r table_count$label_text("partitioning")`. Partitioning ratios for feature-feature correlation networks generated using each method for each dataset.
-Bolded entries indicate the highest partitioning ratio for the dataset.
-```{r}
-qratio_display_table = cleanup_qratio_table(feature_qratio_summary)
-qratio_display_table = qratio_display_table |>
-  font(fontname = "Calibri", part = "all") |>
-  fontsize(size = 11, part = "header") |>
-  fontsize(size = 10, part = "body")
-qratio_display_table = set_table_properties(
-  qratio_display_table,
-  layout = "autofit"
-)
-qratio_display_table
-```
 
 ## Discussion and Conclusion
 

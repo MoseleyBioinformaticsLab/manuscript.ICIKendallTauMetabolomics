@@ -340,9 +340,21 @@ figures_tables_plan = tar_assign({
     rank_correlations
   ) |>
     tar_target()
+
+  missingness_percentage_pvalues_plot = create_missingness_percentage_pvalue_plot(
+    missingness_summary
+  ) |>
+    tar_target()
 })
 
+performance_plan = tar_assign({
+  single_cor_perf = create_run_perf() |>
+    tar_target()
+})
+
+
 docs_plan = tar_assign({
+  references = tar_file("docs/icikt_references.json")
   ici_kt_manuscript = tar_render("docs/ici_kt_manuscript.Rmd")
   supp_materials = tar_render("docs/supplemental_materials.Rmd")
 })
@@ -358,5 +370,7 @@ list(
   vl_plan,
   vl_lod_map,
   vl_cor_diff_combine_map,
-  figures_tables_plan
+  figures_tables_plan,
+  performance_plan,
+  docs_plan
 )

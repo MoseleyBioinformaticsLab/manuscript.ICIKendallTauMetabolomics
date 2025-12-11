@@ -432,6 +432,28 @@ create_filtering_flowchart = function(check_data) {
   return_file_hash(here::here("docs/filtering_flowchart.png"))
 }
 
+create_missingness_percentage_pvalue_plot = function(missingness_summary) {
+  # tar_load(missingness_summary)
+  min_nonzero = missingness_summary |>
+    dplyr::filter(padjust > 0) |>
+    dplyr::pull(padjust) |>
+    min()
+  missingness_summary = missingness_summary |>
+    dplyr::mutate(
+      padjust2 = dplyr::case_when(
+        padjust == 0 ~ min_nonzero,
+        TRUE ~ padjust
+      )
+    ) |>
+    dplyr::mutate(log_p = -1 * log10(padjust2))
+
+  out_plot = missingness_summary |>
+    ggplot(aes(x = perc_miss, y = log_p)) +
+    geom_point(size = 2, alpha = 0.5) +
+    labs(x = "Percent Missingness", y = "-1xLog10(P-adjusted)")
+  out_plot
+}
+
 return_file_hash = function(file_loc) {
   digest::digest(file_loc, algo = "sha256", file = TRUE)
 }
