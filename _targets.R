@@ -348,7 +348,7 @@ figures_tables_plan = tar_assign({
 })
 
 performance_plan = tar_assign({
-  single_cor_perf = create_run_perf() |>
+  single_core_perf = create_run_perf() |>
     tar_target()
 })
 
