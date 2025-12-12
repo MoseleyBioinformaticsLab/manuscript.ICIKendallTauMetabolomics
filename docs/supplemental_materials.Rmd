@@ -59,7 +59,7 @@ tar_load(c(
   realistic_reference_plot,
   censored_compare_plots,
   vl_na_perc_graph
-  # complexity_figure
+  performance_plot
 ))
 ```
 
@@ -215,12 +215,12 @@ Number of missing values in each of the 100 samples as a function of changing th
 
 
 ```{r}
-#| label: complexity
+#| label: performance
 #| eval: FALSE
-complexity_figure
+performance_plot
 ```
 
-`r supp_figure_count$label_text("complexity")`. 
+`r supp_figure_count$label_text("performance")`. 
 Time in seconds needed as a function of the number of features, with a fitted line for the assumed complexity for each of the methods tested, including R's Pearson correlation, the ICI-Kt mergesort, and R's Kendall-tau correlation algorithm.
 
 

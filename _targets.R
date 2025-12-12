@@ -345,6 +345,9 @@ figures_tables_plan = tar_assign({
     missingness_summary
   ) |>
     tar_target()
+
+  performance_plot = create_performance_figure(single_core_perf) |>
+    tar_target()
 })
 
 performance_plan = tar_assign({
