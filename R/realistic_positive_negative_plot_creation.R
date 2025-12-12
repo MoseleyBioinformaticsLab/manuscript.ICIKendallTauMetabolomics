@@ -172,6 +172,7 @@ compare_realistic_to_each = function(
   # ref_pearson_neg = cor(realistic_sample_1, realistic_neg_sample)
   # ref_kendall_neg = ici_kt(realistic_sample_1, realistic_neg_sample, "global")[1]
 
+  set.seed(0134)
   n_na = purrr::map_int(realistic_na, length)
 
   rp_pearson_wide = realistic_positive_pearson |>
@@ -202,7 +203,8 @@ compare_realistic_to_each = function(
 
   use_rows = rep(FALSE, nrow(compare_positive))
   n_subset = 10000
-  use_rows[sample(length(use_rows), n_subset)] = TRUE
+  keep_rows = sample(length(use_rows), n_subset)
+  use_rows[keep_rows] = TRUE
 
   compare_positive_subset = compare_positive[use_rows, ]
   compare_positive_subset = compare_positive_subset |>
