@@ -44,9 +44,6 @@ knitr::opts_chunk$set(
   dev = "ragg_png"
 )
 
-g_colors = scale_color_discrete()$palette(2)
-outlier_colors = c("FALSE" = "darkgrey", "TRUE" = g_colors[1])
-
 ```
 
 ```{r}
@@ -61,7 +58,8 @@ tar_load(c(
   negative_pearson,
   realistic_reference_plot,
   censored_compare_plots,
-  complexity_figure
+  vl_na_perc_graph
+  # complexity_figure
 ))
 ```
 
@@ -122,7 +120,8 @@ We can also examine the full set of positive and negative correlations generated
 These distributions are shown in `r supp_figure_count$label_text("kt_distribution")`.
 We can see that the distributions from both ICI-Kt and Kendall-tau are the same, which is expected given we replaced missing values (NA) with zero *within* the ICI-Kt code, and replaced missing values (NA) with zero prior to calculating Kendall-tau correlations.
 
-```{r ici_distribution, dn_id = supp_figure_count}
+```{r}
+#| label: ici_distribution}
 ici_plot = ggplot(all_kt, aes(x = ici_kt)) +
   geom_histogram(bins = 100) +
   facet_wrap(~comp, ncol = 1) +
@@ -133,7 +132,8 @@ ici_plot
 `r supp_figure_count$label_text("ici_distribution")`.
 ICI-Kendall-tau correlation as missing values are varied between two samples.
 
-```{r kt_distribution, dn_id = supp_figure_count}
+```{r}
+#| label: kt_distribution
 kt_plot = ggplot(all_kt, aes(x = kendall)) +
   geom_histogram(bins = 100) +
   facet_wrap(~comp, ncol = 1) +
@@ -174,7 +174,10 @@ Points are colored by how many points are missing on average between the two sam
 
 ### Semi-Realistic Data Set
 
-```{r leftcensored, fig.height = 8, fig.width = 9, dn_id = supp_figure_count}
+```{r}
+#| label: leftcensored
+#| fig-height: 8
+#| fig.width: 9
 left_plot = purrr::map(censored_compare_plots$left, \(x) {
   x + theme(axis.text = element_text(size = 8))
 }) |>
@@ -200,7 +203,8 @@ C) Missing values introduced at random. For the random case, each sample of rand
 ## Changes In Correlation Due to Changes in Dynamic Range and Imputation
 
 
-```{r na-perc-lod, dn_id = supp_figure_count}
+```{r}
+#| label: na-perc-lod
 vl_na_perc_graph
 ```
 
@@ -210,7 +214,9 @@ Number of missing values in each of the 100 samples as a function of changing th
 ## Performance
 
 
-```{r complexity, dn_id = supp_figure_count}
+```{r}
+#| label: complexity
+#| eval: FALSE
 complexity_figure
 ```
 
@@ -218,639 +224,9 @@ complexity_figure
 Time in seconds needed as a function of the number of features, with a fitted line for the assumed complexity for each of the methods tested, including R's Pearson correlation, the ICI-Kt mergesort, and R's Kendall-tau correlation algorithm.
 
 
-## Outlier Samples
-
-### Gierlinski Yeast
-
-
-
-```{r load_yeast_outliers}
-manual_method = c(
-  "icikt" = "IK",
-  "icikt_complete" = "IKC",
-  "kt_base" = "Kt",
-  "pearson_base" = "PB",
-  "pearson_base_nozero" = "PN0",
-  "pearson_log1p" = "PL1",
-  "pearson_log" = "PL",
-  "manuscript" = "M"
-)
-
-other_method = c(
-  "icikt" = "IK",
-  "icikt_complete" = "IKC",
-  "kt_base" = "Kt",
-  "pearson_base" = "PB",
-  "pearson_base_nozero" = "PN0",
-  "pearson_log1p" = "PL1",
-  "pearson_log" = "PL"
-)
-
-
-all_yeast = rbind_outliers(yeast_outliers) %>%
-  perc_to_number()
-
-all_yeast = add_method(all_yeast)
-
-yeast_single = yeast_single %>%
-  perc_to_number()
-tmp_yeast = yeast_single %>%
-  dplyr::filter(which %in% "pearson_base_nozero")
-tmp_yeast$outlier = FALSE
-tmp_yeast[tmp_yeast$sample_id %in% yeast_paper_outliers, "outlier"] = TRUE
-tmp_yeast$which = "manuscript"
-yeast_single2 = rbind(yeast_single, tmp_yeast)
-
-compare_yeast = c(
-  "icikt",
-  "icikt_complete",
-  "kt_base",
-  "pearson_base",
-  "pearson_base_nozero",
-  "pearson_log1p",
-  "pearson_log",
-  "manuscript"
-)
-```
-
-```{r yeast_outliers, dn_id = supp_figure_count}
-yeast_single2_plot = yeast_single2 %>%
-  add_method(map_method = manual_method) %>%
-  dplyr::filter(which %in% compare_yeast) %>%
-  create_outlier_parallel_plot()
-yeast_single2_plot
-```
-
-`r supp_figure_count$label_text("yeast_outliers")`.
-Median correlations for each of the yeast RNA-Seq samples to all other samples in the same group, using different correlation measures on different data. Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; M: Manuscript; PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-Points are colored red if they were an outlier using that correlation method.
-For a sample that is considered an outlier in any of the method, lines are drawn connecting them between methods.
-
-
-`r supp_table_count$label_text("yeast_outliers")`.
-Yeast dataset median correlation values and outlier determination for each outlier from each of the correlation methods.
-Abbreviations for different measures are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; PB: Pearson Base, PN: Pearson No Zero; PL1: Pearson Log(x + 1); PL: Pearson Log(x); Kt: Kendall-tau.
-
-```{r yeast_outlier_table}
-yeast_table = compare_outlier_tables_bold(
-  yeast_single2,
-  compare_yeast,
-  sort_var = "manuscript",
-  map_method = manual_method
-)
-yeast_table |>
-  font(fontname = "Calibri", part = "all") |>
-  fontsize(size = 11, part = "header") |>
-  fontsize(size = 10, part = "body") |>
-  set_table_properties(layout = "autofit")
-```
-
-
-
-### EGFR RNASeq Genotype
-
-
-```{r egfrgenotype_load}
-
-all_egfrgenotype = rbind_outliers(egfrgenotype_outliers) %>%
-  perc_to_number()
-
-compare_egfrgenotype = c(
-  "icikt",
-  "icikt_complete",
-  "kt_base",
-  "pearson_base",
-  "pearson_base_nozero",
-  "pearson_log1p",
-  "pearson_log"
-)
-```
-
-```{r egfrgenotype_outliers, dn_id = supp_figure_count}
-egfrgenotype_single_plot = egfrgenotype_single %>%
-  add_method(other_method) %>%
-  dplyr::filter(which %in% compare_egfrgenotype) %>%
-  create_outlier_parallel_plot()
-egfrgenotype_single_plot
-```
-
-`r supp_figure_count$label_text("egfrgenotype_outliers")`.
-Median correlations for each of the Brainson RNA-Seq samples to all other samples in the same group, using different correlation measures on different data. 
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; PB: Pearson Base, PN: Pearson No Zero; PL1: Pearson Log(x + 1); PL: Pearson Log(x); Kt: Kendall-tau.
-Points are colored red if they were an outlier using that correlation method.
-For a sample that is considered an outlier in any of the method, lines are drawn connecting them between methods.
-
-
-`r supp_table_count$label_text("egfrgenotype_outliers")`.
-EGFR RNA-Seq dataset using genotype as the grouping variable median correlation values and outlier determination for each outlier from each of the correlation methods.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; PB: Pearson Base, PN: Pearson No Zero; PL1: Pearson Log(x + 1); PL: Pearson Log(x); Kt: Kendall-tau.
-
-```{r egfrgenotype_table}
-egfrgenotype_table = compare_outlier_tables_bold(
-  egfrgenotype_single,
-  compare_egfrgenotype,
-  "pearson_log1p",
-  map_method = other_method
-)
-egfrgenotype_table |>
-  font(fontname = "Calibri", part = "all") |>
-  fontsize(size = 11, part = "header") |>
-  fontsize(size = 10, part = "body") |>
-  set_table_properties(layout = "autofit")
-```
-
-### TCGA Adenocarcinoma
-
-```{r adenocarcinoma_load}
-all_adeno = rbind_outliers(adenocarcinoma_outliers) %>%
-  perc_to_number()
-
-new_adeno = unique(all_adeno[, c("sample_id", "sample_class")]) %>%
-  dplyr::mutate(
-    sample_seq = seq(1, n()),
-    sample_new = dplyr::case_when(
-      sample_class %in% "Tumor" ~ paste0("T.", sample_seq),
-      TRUE ~ paste0("N.", sample_seq)
-    )
-  ) %>%
-  dplyr::mutate(
-    old_sample = sample_id,
-    sample_seq = NULL,
-    sample_class = NULL,
-    sample_id = sample_new,
-    sample_new = NULL
-  )
-
-all_adeno2 = dplyr::left_join(
-  new_adeno,
-  all_adeno,
-  by = c("old_sample" = "sample_id")
-)
-adenocarcinoma_single = dplyr::left_join(
-  adenocarcinoma_single,
-  new_adeno,
-  by = c("sample_id" = "old_sample")
-)
-adenocarcinoma_single = adenocarcinoma_single |>
-  dplyr::mutate(sample_id = sample_id.y, sample_id.y = NULL)
-
-compare_adeno = c(
-  "icikt",
-  "icikt_complete",
-  "kt_base",
-  "pearson_base",
-  "pearson_base_nozero",
-  "pearson_log1p",
-  "pearson_log"
-)
-```
-
-```{r adenocarcinoma_outliers, dn_id = supp_figure_count}
-adenocarcinoma_single_plot = adenocarcinoma_single %>%
-  add_method(map_method = other_method) %>%
-  dplyr::filter(which %in% compare_adeno) %>%
-  create_outlier_parallel_plot()
-adenocarcinoma_single_plot
-```
-
-`r supp_figure_count$label_text("adenocarcinoma_outliers")`.
-Median correlations for each of the TGCA adenocarcinoma RNA-Seq samples to all other samples in the same group, using different correlation measures on different data. 
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; PB: Pearson Base, PN: Pearson No Zero; PL1: Pearson Log(x + 1); PL: Pearson Log(x); Kt: Kendall-tau.
-Points are colored red if they were an outlier using that correlation method.
-For a sample that is considered an outlier in any of the method, lines are drawn connecting them between methods.
-
-
-`r supp_table_count$label_text("adenocarcinoma_outliers")`.
-TGCA adenocarcinoma dataset median correlation values and outlier determination for each outlier from each of the correlation methods.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; PB: Pearson Base, PN: Pearson No Zero; PL1: Pearson Log(x + 1); PL: Pearson Log(x); Kt: Kendall-tau.
-
-```{r adenocarcinoma_table}
-adenocarcinoma_table = compare_outlier_tables_bold(
-  adenocarcinoma_single,
-  compare_adeno,
-  "pearson_log1p",
-  map_method = other_method
-)
-adenocarcinoma_table |>
-  font(fontname = "Calibri", part = "all") |>
-  fontsize(size = 11, part = "header") |>
-  fontsize(size = 10, part = "body") |>
-  set_table_properties(layout = "autofit")
-```
-
-```{r summarize_adeno}
-adenocarcinoma_variation = adenocarcinoma_single %>%
-  add_method(map_method = other_method) %>%
-  dplyr::filter(which %in% compare_adeno) %>%
-  calculate_variation() %>%
-  dplyr::select(mad)
-
-adenocarcinoma_ratios = adenocarcinoma_variation %>%
-  tidyr::pivot_wider(names_from = sample_class, values_from = mad) %>%
-  dplyr::summarise(ratio = format(Tumor / Normal, digits = 1, nsmall = 1)) %>%
-  tidyr::pivot_wider(names_from = method, values_from = ratio)
-adenocarcinoma_variation_wide = adenocarcinoma_variation %>%
-  tidyr::pivot_wider(names_from = sample_class, values_from = mad) %>%
-  flextable() %>%
-  colformat_double(digits = 3) %>%
-  font(fontname = "Calibri", part = "all") |>
-  fontsize(size = 11, part = "header") |>
-  fontsize(size = 10, part = "body") |>
-  set_table_properties(layout = "autofit")
-```
-
-`r supp_table_count$label_text("adenocarcinoma_mad")`.
-Adenocarcinoma median-absolute-deviations (MAD) for each group of sample median correlations in each type of tissue.
-
-
-```{r summarize_adeno2}
-# %>%
-#   set_caption(caption = paste0(paste_label("Table S", supp_table_count, "adenocarcinoma_mad"), ". Adenocarcinoma median-absolute-deviations (MAD) for each group of sample median correlations in each type of tissue."), style = "paragraph")
-adenocarcinoma_variation_wide
-```
-
-
-### NSCLC Lipidomics
-
 ```{r}
-#| label: setup_nsclc
-all_nsclc_outliers = rbind_outliers(nsclc_outliers) |>
-  perc_to_number()
-```
-
-```{r}
-#| label: nsclc_outliers
-nsclc_single_plot = nsclc_single %>%
-  add_method(other_method) %>%
-  dplyr::filter(which %in% compare_egfrgenotype) %>%
-  create_outlier_parallel_plot()
-nsclc_single_plot
-```
-
-`r supp_figure_count$label_text("nsclc_outliers")`.
-Median correlations for each of the NSCLC lipidomics samples to all other samples in the same group, using different correlation measures on different data. 
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; PB: Pearson Base, PN: Pearson No Zero; PL1: Pearson Log(x + 1); PL: Pearson Log(x); Kt: Kendall-tau.
-Points are colored red if they were an outlier using that correlation method.
-For a sample that is considered an outlier in any of the method, lines are drawn connecting them between methods.
-
-
-`r supp_table_count$label_text("nsclc_outliers")`.
-NSCLC lipidomics dataset median correlation values and outlier determination for each outlier from each of the correlation methods.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; PB: Pearson Base, PN: Pearson No Zero; PL1: Pearson Log(x + 1); PL: Pearson Log(x); Kt: Kendall-tau.
-
-```{r}
-#| label: nsclc_table
-nsclc_table = compare_outlier_tables_bold(
-  nsclc_single,
-  compare_egfrgenotype,
-  "pearson_log1p",
-  map_method = other_method
-)
-nsclc_table |>
-  font(fontname = "Calibri", part = "all") |>
-  fontsize(size = 11, part = "header") |>
-  fontsize(size = 10, part = "body") |>
-  set_table_properties(layout = "autofit")
-```
-
-
-### Rat Stamina Metabolomics
-
-```{r}
-#| label: setup_ratstamina
-all_ratstamina_outliers = rbind_outliers(ratstamina_outliers) |>
-  perc_to_number()
-```
-
-```{r}
-#| label: ratstamina_outliers
-ratstamina_single_plot = ratstamina_single %>%
-  add_method(other_method) %>%
-  dplyr::filter(which %in% compare_egfrgenotype) %>%
-  create_outlier_parallel_plot()
-ratstamina_single_plot
-```
-
-`r supp_figure_count$label_text("ratstamina_outliers")`.
-Median correlations for each of the rat stamina metabolomics samples to all other samples in the same group, using different correlation measures on different data. 
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; PB: Pearson Base, PN: Pearson No Zero; PL1: Pearson Log(x + 1); PL: Pearson Log(x); Kt: Kendall-tau.
-Points are colored red if they were an outlier using that correlation method.
-For a sample that is considered an outlier in any of the method, lines are drawn connecting them between methods.
-
-
-`r supp_table_count$label_text("ratstamina_outliers")`.
-Rat stamina metabolomics dataset median correlation values and outlier determination for each outlier from each of the correlation methods.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; PB: Pearson Base, PN: Pearson No Zero; PL1: Pearson Log(x + 1); PL: Pearson Log(x); Kt: Kendall-tau.
-
-```{r}
-#| label: ratstamina_table
-ratstamina_table = compare_outlier_tables_bold(
-  ratstamina_single,
-  compare_egfrgenotype,
-  "pearson_log1p",
-  map_method = other_method
-)
-ratstamina_table |>
-  font(fontname = "Calibri", part = "all") |>
-  fontsize(size = 11, part = "header") |>
-  fontsize(size = 10, part = "body") |>
-  flextable::set_table_properties(layout = "autofit")
-```
-
-
-## Effect of Increasing Presence in Samples
-
-
-### Yeast Samples
-
-
-```{r yeast_by_method, dn_id = supp_figure_count}
-all_yeast2 = all_yeast %>%
-  add_method(other_method) %>%
-  clear_outliers()
-ggplot(
-  all_yeast2,
-  aes(x = method, y = med_cor, color = outlier, group = method)
-) +
-  geom_sina() +
-  scale_color_manual(values = outlier_colors) +
-  facet_grid(sample_class ~ keep_num) +
-  labs(x = "Method", y = "Median Correlation")
-```
-
-`r supp_figure_count$label_text("yeast_by_method")`.
-Median correlations by correlation method and applying different fractional cutoffs.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; Kt: Kendall-tau; PB: Pearson Base (raw values); PL: Pearson Log(x); PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-
-```{r yeast_by_keep_num, dn_id = supp_figure_count}
-ggplot(
-  all_yeast2,
-  aes(x = keep_num, y = med_cor, color = outlier, group = keep_num)
-) +
-  geom_sina() +
-  scale_color_manual(values = outlier_colors) +
-  facet_grid(sample_class ~ method) +
-  labs(x = "Keep Fraction", y = "Median Correlation") +
-  theme(axis.text.x = element_text(angle = 90))
-```
-
-`r supp_figure_count$label_text("yeast_by_keep_num")`.
-Median correlations by applying different fractional cutoffs and different correlation methods.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; Kt: Kendall-tau; PB: Pearson Base (raw values); PL: Pearson Log(x); PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-
-```{r yeast_differences, dn_id = supp_figure_count}
-yeast_summary = calculate_variation(all_yeast2)
-yeast_diffs = calculate_differences(yeast_summary)
-
-ggplot(yeast_diffs, aes(x = keep_num, y = diff)) +
-  geom_col() +
-  facet_grid(which_diff ~ method) +
-  labs(x = "Keep Fraction", y = "WT / Snf2 Differences") +
-  theme(axis.text.x = element_text(angle = 90))
-```
-
-`r supp_figure_count$label_text("yeast_differences")`.
-Difference between WT and Snf2 group medians and MAD for the different correlation methods and gene presence fractions.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; Kt: Kendall-tau; PB: Pearson Base (raw values); PL: Pearson Log(x); PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-
-### EGFR Genotype Samples
-
-```{r increment_count_brainson}
-
-```
-
-```{r egfrgenotype_by_method, dn_id = supp_figure_count}
-egfrgenotype_classes = c("wt", "het", "null")
-all_egfrgenotype_method = add_method(
-  all_egfrgenotype,
-  map_method = other_method
-) %>%
-  dplyr::filter(sample_class %in% egfrgenotype_classes)
-ggplot(
-  all_egfrgenotype_method,
-  aes(x = method, y = med_cor, color = outlier, group = method)
-) +
-  geom_sina() +
-  scale_color_manual(values = outlier_colors) +
-  facet_grid(sample_class ~ keep_num) +
-  theme(axis.text.x = element_text(angle = 90)) +
-  labs(x = "Method", y = "Median Correlation")
-```
-
-`r supp_figure_count$label_text("egfrgenotype_by_method")`.
-Median correlations by correlation method and applying different fractional cutoffs for Brainson RNA-seq data.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; Kt: Kendall-tau; PB: Pearson Base (raw values); PL: Pearson Log(x); PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-
-```{r egfrgenotype_by_keep_num, dn_id = supp_figure_count}
-ggplot(
-  all_egfrgenotype_method,
-  aes(x = keep_num, y = med_cor, color = outlier, group = keep_num)
-) +
-  geom_sina() +
-  scale_color_manual(values = outlier_colors) +
-  facet_grid(sample_class ~ method) +
-  labs(x = "Keep Fraction", y = "Median Correlation") +
-  theme(axis.text.x = element_text(angle = 90))
-```
-
-`r supp_figure_count$label_text("egfrgenotype_by_keep_num")`.
-Median correlations by correlation method and applying different fractional cutoffs for Brainson RNA-seq data.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; Kt: Kendall-tau; PB: Pearson Base (raw values); PL: Pearson Log(x); PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-
-```{r egfrgenotype_differences, dn_id = supp_figure_count}
-egfrgenotype_summary = calculate_variation(all_egfrgenotype_method)
-egfrgenotype_diffs = calculate_differences(
-  egfrgenotype_summary,
-  groups = c("wt", "null")
-)
-
-ggplot(egfrgenotype_diffs, aes(x = keep_num, y = diff)) +
-  geom_col() +
-  facet_grid(which_diff ~ method) +
-  labs(x = "Keep Fraction", y = "wt / null Differences") +
-  theme(axis.text.x = element_text(angle = 90))
-```
-
-`r supp_figure_count$label_text("egfrgenotype_differences")`.
-Difference between *wt* and *null* sample group medians and MAD for the different correlation methods and gene presence fractions.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; Kt: Kendall-tau; PB: Pearson Base (raw values); PL: Pearson Log(x); PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-
-### Adenocarcinoma
-
-
-```{r adenocarcinoma_by_method, dn_id = supp_figure_count}
-adenocarcinoma_method = add_method(all_adeno2, other_method) %>%
-  clear_outliers()
-ggplot(
-  adenocarcinoma_method,
-  aes(x = method, y = med_cor, color = outlier, group = method)
-) +
-  geom_sina() +
-  scale_color_manual(values = outlier_colors) +
-  facet_grid(sample_class ~ keep_num) +
-  theme(axis.text.x = element_text(angle = 90)) +
-  labs(x = "Method", y = "Median Correlation")
-```
-
-`r supp_figure_count$label_text("adenocarcinoma_by_method")`. 
-Median correlations by correlation method and applying different fractional cutoffs for TCGA adenocarcinoma RNA-seq data.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; Kt: Kendall-tau; PB: Pearson Base (raw values); PL: Pearson Log(x); PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-
-```{r adenocarcinoma_by_keep_num, dn_id = supp_figure_count}
-ggplot(
-  adenocarcinoma_method,
-  aes(x = keep_num, y = med_cor, color = outlier, group = keep_num)
-) +
-  geom_sina() +
-  scale_color_manual(values = outlier_colors) +
-  facet_grid(sample_class ~ method) +
-  labs(x = "Keep Fraction", y = "Median Correlation") +
-  theme(axis.text.x = element_text(angle = 90))
-```
-
-`r supp_figure_count$label_text("adenocarcinoma_by_keep_num")`. 
-Median correlations by correlation method and applying different fractional cutoffs for TCGA adenocarcinoma RNA-seq data.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; Kt: Kendall-tau; PB: Pearson Base (raw values); PL: Pearson Log(x); PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-
-```{r adenocarcinoma_differences, dn_id = supp_figure_count}
-adenocarcinoma_summary = calculate_variation(adenocarcinoma_method)
-adenocarcinoma_diffs = calculate_differences(adenocarcinoma_summary)
-
-ggplot(adenocarcinoma_diffs, aes(x = keep_num, y = diff)) +
-  geom_col() +
-  facet_grid(which_diff ~ method) +
-  labs(x = "Keep Fraction", y = "Normal / Tumor Differences") +
-  theme(axis.text.x = element_text(angle = 90))
-```
-
-`r supp_figure_count$label_text("adenocarcinoma_differences")`. 
-Difference of normal and tumor medians and MADs  by correlation method and applying different fractional cutoffs for TCGA adenocarcinoma RNA-seq data.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; Kt: Kendall-tau; PB: Pearson Base (raw values); PL: Pearson Log(x); PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-
-
-### NSCLC
-
-
-```{r nsclc_by_method, dn_id = supp_figure_count}
-nsclc_method = add_method(all_nsclc_outliers, other_method) %>%
-  clear_outliers()
-ggplot(
-  nsclc_method,
-  aes(x = method, y = med_cor, color = outlier, group = method)
-) +
-  geom_sina() +
-  scale_color_manual(values = outlier_colors) +
-  facet_grid(sample_class ~ keep_num) +
-  theme(axis.text.x = element_text(angle = 90)) +
-  labs(x = "Method", y = "Median Correlation")
-```
-
-`r supp_figure_count$label_text("nsclc_by_method")`. 
-Median correlations by correlation method and applying different fractional cutoffs for NSCLC lipidomics  data.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; Kt: Kendall-tau; PB: Pearson Base (raw values); PL: Pearson Log(x); PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-
-```{r nsclc_by_keep_num, dn_id = supp_figure_count, fig.height = 10}
-ggplot(
-  nsclc_method,
-  aes(x = keep_num, y = med_cor, color = outlier, group = keep_num)
-) +
-  geom_sina() +
-  scale_color_manual(values = outlier_colors) +
-  facet_grid(sample_class ~ method) +
-  labs(x = "Keep Fraction", y = "Median Correlation") +
-  theme(axis.text.x = element_text(angle = 90))
-```
-
-`r supp_figure_count$label_text("nsclc_by_keep_num")`. 
-Median correlations by correlation method and applying different fractional cutoffs for NSCLC lipidomics data.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; Kt: Kendall-tau; PB: Pearson Base (raw values); PL: Pearson Log(x); PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-
-```{r nsclc_differences, dn_id = supp_figure_count}
-nsclc_summary = calculate_variation(nsclc_method)
-nsclc_diffs = calculate_differences(
-  nsclc_summary,
-  groups = c("FSN10115:cancer", "FSN10115:non-cancer")
-)
-
-ggplot(nsclc_diffs, aes(x = keep_num, y = diff)) +
-  geom_col() +
-  facet_grid(which_diff ~ method) +
-  labs(x = "Keep Fraction", y = "Normal / Tumor Differences in FSN10115") +
-  theme(axis.text.x = element_text(angle = 90))
-```
-
-`r supp_figure_count$label_text("nsclc_differences")`. 
-Difference of normal and tumor medians and MADs  by correlation method and applying different fractional cutoffs for NSCLC lipidomics data.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; Kt: Kendall-tau; PB: Pearson Base (raw values); PL: Pearson Log(x); PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-
-
-### Rat Stamina
-
-
-```{r ratstamina_by_method, dn_id = supp_figure_count}
-ratstamina_method = add_method(all_ratstamina_outliers, other_method) %>%
-  clear_outliers()
-ggplot(
-  ratstamina_method,
-  aes(x = method, y = med_cor, color = outlier, group = method)
-) +
-  geom_sina() +
-  scale_color_manual(values = outlier_colors) +
-  facet_grid(sample_class ~ keep_num) +
-  theme(axis.text.x = element_text(angle = 90)) +
-  labs(x = "Method", y = "Median Correlation")
-```
-
-`r supp_figure_count$label_text("ratstamina_by_method")`. 
-Median correlations by correlation method and applying different fractional cutoffs for rat stamina metabolomics  data.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; Kt: Kendall-tau; PB: Pearson Base (raw values); PL: Pearson Log(x); PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-
-```{r ratstamina_by_keep_num, dn_id = supp_figure_count, fig.height = 10}
-ggplot(
-  ratstamina_method,
-  aes(x = keep_num, y = med_cor, color = outlier, group = keep_num)
-) +
-  geom_sina() +
-  scale_color_manual(values = outlier_colors) +
-  facet_grid(sample_class ~ method) +
-  labs(x = "Keep Fraction", y = "Median Correlation") +
-  theme(axis.text.x = element_text(angle = 90))
-```
-
-`r supp_figure_count$label_text("ratstamina_by_keep_num")`. 
-Median correlations by correlation method and applying different fractional cutoffs for rat stamina metabolomics data.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; Kt: Kendall-tau; PB: Pearson Base (raw values); PL: Pearson Log(x); PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-
-```{r ratstamina_differences, dn_id = supp_figure_count}
-ratstamina_summary = calculate_variation(ratstamina_method)
-ratstamina_diffs = calculate_differences(
-  ratstamina_summary,
-  groups = c("Ad lib:High", "Ad lib:Low")
-)
-
-ggplot(ratstamina_diffs, aes(x = keep_num, y = diff)) +
-  geom_col() +
-  facet_grid(which_diff ~ method) +
-  labs(x = "Keep Fraction", y = "Ad lib High / Low Differences") +
-  theme(axis.text.x = element_text(angle = 90))
-```
-
-`r supp_figure_count$label_text("ratstamina_differences")`. 
-Difference of Ad lib feeding in high and low stamina medians and MADs  by correlation method and applying different fractional cutoffs for rat stamina metabolomics data.
-Abbreviations for different measures and data are: IK: ICI-Kt; IKC: ICI-Kt * Completeness; Kt: Kendall-tau; PB: Pearson Base (raw values); PL: Pearson Log(x); PL1: Pearson Log(x + 1); PN0: Pearson No Zeros.
-
-```{r save_supp_objects}
-saveRDS(supp_figure_count, file = here::here("docs/supp_figure_count.rds"))
-saveRDS(supp_table_count, file = here::here("docs/supp_table_count.rds"))
-save(
-  yeast_table,
-  egfrgenotype_table,
-  adenocarcinoma_table,
-  nsclc_table,
-  ratstamina_table,
-  adenocarcinoma_ratios,
-  file = here::here("docs/supp_stuff.rda")
-)
+#| label: save-supp-figures
+saveRDS(supp_figure_count, file = "docs/supp_figure_count.rds")
 ```
 
 ## References
