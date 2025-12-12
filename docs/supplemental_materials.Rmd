@@ -73,7 +73,7 @@ supp_figure_count$increment(c(
   "realistic_reference",
   "leftcensored",
   "na-perc-lod",
-  "complexity"
+  "performance"
 ))
 
 
@@ -99,7 +99,8 @@ Percent missing values in each dataset compared to the p-values from the left ce
 ### Simple Data Set
 
 
-```{r kt_pearson, dn_id = supp_figure_count}
+```{r}
+#| label: kt_pearson
 all_kt_other = rbind(positive_kt, negative_kt)
 all_pearson = rbind(positive_pearson, negative_pearson)
 all_pearson[is.na(all_pearson$cor), "cor"] = 0
@@ -121,7 +122,7 @@ These distributions are shown in `r supp_figure_count$label_text("kt_distributio
 We can see that the distributions from both ICI-Kt and Kendall-tau are the same, which is expected given we replaced missing values (NA) with zero *within* the ICI-Kt code, and replaced missing values (NA) with zero prior to calculating Kendall-tau correlations.
 
 ```{r}
-#| label: ici_distribution}
+#| label: ici_distribution
 ici_plot = ggplot(all_kt, aes(x = ici_kt)) +
   geom_histogram(bins = 100) +
   facet_wrap(~comp, ncol = 1) +
@@ -216,7 +217,6 @@ Number of missing values in each of the 100 samples as a function of changing th
 
 ```{r}
 #| label: performance
-#| eval: FALSE
 performance_plot
 ```
 

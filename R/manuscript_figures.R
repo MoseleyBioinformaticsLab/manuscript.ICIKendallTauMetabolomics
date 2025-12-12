@@ -479,3 +479,24 @@ count_filtered_datasets = function(check_data) {
     "good rank"           , nrow(good_rank)
   )
 }
+
+
+compare_simple_kt_pearson_plots = function(
+  positive_kt,
+  negative_kt,
+  positive_pearson,
+  negative_pearson
+) {
+  all_kt_other = rbind(positive_kt, negative_kt)
+  all_pearson = rbind(positive_pearson, negative_pearson)
+  all_pearson[is.na(all_pearson$cor), "cor"] = 0
+
+  compare_df = data.frame(ici_kt = all_kt_other$cor, pearson = all_pearson$cor)
+  set.seed(1234)
+  rand_rows = sample(nrow(compare_df), 10000)
+  compare_df2 = compare_df[rand_rows, ]
+  out_plot = ggplot(compare_df2, aes(x = pearson, y = ici_kt)) +
+    geom_point() +
+    labs(x = "Pearson", y = "ICI-Kt")
+  out_plot
+}

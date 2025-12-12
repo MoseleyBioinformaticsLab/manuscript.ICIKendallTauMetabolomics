@@ -348,6 +348,14 @@ figures_tables_plan = tar_assign({
 
   performance_plot = create_performance_figure(single_core_perf) |>
     tar_target()
+
+  simple_kt_pearson_comparison_plot = compare_simple_kt_pearson_plots(
+    positive_kt,
+    negative_kt,
+    positive_pearson,
+    negative_pearson
+  ) |>
+    tar_target()
 })
 
 performance_plan = tar_assign({

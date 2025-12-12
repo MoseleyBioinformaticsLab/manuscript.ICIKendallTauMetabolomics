@@ -155,7 +155,7 @@ Both dropping or imputing missing values are likely to cause the calculated samp
 #| out-width: 400
 #| out-height: 403
 #| units: in
-curr_dir = getwd()
+curr_dir = here::here()
 problem_loc = file.path(curr_dir, "docs", "the_problem.png")
 #message(problem_loc)
 #file.exists(problem_loc)
@@ -379,7 +379,7 @@ Of the 6501 datasets we started with, we were able to retain 711 for this study.
 #| label: filtering
 #| out-width: 300
 #| out-height: 750
-curr_dir = getwd()
+curr_dir = here::here()
 filtering_loc = file.path(curr_dir, "docs", "filtering_flowchart.png")
 #message(problem_loc)
 #file.exists(problem_loc)
@@ -517,68 +517,6 @@ Low, med, and high indicate the level of variability in dynamic range, using 0.5
 Red lines indicate slope of -1 and 1. Color indicates the maximum number of missing values between the two samples being correlated.
 Bottom: Differences in the absolute value of reference - trimmed differences between ICI-Kt and Pearson imputed correlations.
 
-
-### Performance
-
-We compared the performance of our *Rcpp* *mergesort* implementation to the base R *cor* function using both "pearson" and "kendall" methods on a single core with increasing numbers of features.
-
-
-`r figure_count$label_text("performance")`A shows that base R `cor` "kendall" method is the slowest by far.
-Zoomed out (inset), the ICI-Kt appears as fast as using "pearson", but upon zooming in, it's possible to see that ICI-Kt is using increasing amounts of time much faster than "pearson".
-In fact, regressing the time to number of samples using a formula with the expected algorithmic complexity, "pearson" shows O(n), ICI-Kt is O(nlog(n)), and "kendall" is O(n^2) (see `r supp_figure_count$label_text("complexity")`).
-
-As we implemented a relatively easy way to make use of asynchronous compute resources via the  *future* package, we also verified that increases in run time using multiple cores was reasonable as well.
-`r figure_count$label_text("performance")`B shows that as samples are added, the run time quickly increases logarithmically, similar to increasing samples on a single core (see `r figure_count$label_text("performance")`A).
-
-```{r performance, dn_id = figure_count, fig.height = 8, eval = FALSE}
-single_core_perf = single_core_perf %>%
-  dplyr::mutate(
-    method2 = dplyr::case_when(
-      method %in% "ici_kt" ~ "ICIKendallTau::ici_kt()",
-      method %in% "r_pearson" ~ 'stats::cor(method = "pearson")',
-      method %in% "r_kendall" ~ 'stats::cor(method = "kendall")'
-    )
-  ) %>%
-  dplyr::mutate(method = method2)
-s_perf_plot = ggplot(single_core_perf, aes(x = n, y = time, color = method)) +
-  geom_line(linewidth = 2) +
-  coord_cartesian(ylim = c(NA, 0.002)) +
-  theme(legend.position = c(0.6, 0.2)) +
-  labs(x = "Number of Features", y = "Time (s)")
-#s_perf_plot
-
-mod_perf = dplyr::filter(single_core_perf, grepl("ici_kt", method))
-mod_perf$time = mod_perf$time + 0.015
-single_no_ici = dplyr::filter(single_core_perf, !(grepl("ici_kt", method)))
-core_perf2 = bind_rows(
-  mod_perf,
-  single_no_ici
-)
-inset_perf = ggplot(core_perf2, aes(x = n, y = time, color = method)) +
-  geom_line(linewidth = 1.5) +
-  theme(
-    legend.position = "none",
-    axis.ticks.x = element_blank(),
-    axis.text.x = element_blank(),
-    panel.background = element_rect(fill = "white")
-  ) +
-  labs(x = "", y = "")
-
-single_core = s_perf_plot +
-  inset_element(inset_perf, 0.1, 0.72, 1, 1, ignore_tag = TRUE)
-multi_core = time_multi |>
-  ggplot(aes(x = n_sample, y = log2(time))) +
-  geom_line(linewidth = 2) +
-  geom_smooth(method = "lm", formula = y ~ (x), se = FALSE) +
-  labs(x = "Number of Samples", y = "Log2(Time) (s)")
-(s_perf_plot + inset_element(inset_perf, 0.1, 0.72, 1, 1)) /
-  multi_core +
-  plot_annotation(tag_levels = list(c("A", "", "B")))
-```
-
-`r figure_count$label_text("performance")`. (A) Comparison of the *Rcpp* *mergesort* *ici_kt*, and base R's *cor* function using the "pearson" and "kendall" methods as the number of features are increased from 100 to 5000.
-Inset is the expanded view showing the full range of computation time in seconds.
-(B) Log of time taken to calculate all pairwise comparisons using ICI-Kt for different numbers of samples in multicore processing.
 
 
 
