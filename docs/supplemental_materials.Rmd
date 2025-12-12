@@ -58,7 +58,7 @@ tar_load(c(
   negative_pearson,
   realistic_reference_plot,
   censored_compare_plots,
-  vl_na_perc_graph
+  vl_na_perc_graph,
   performance_plot
 ))
 ```
