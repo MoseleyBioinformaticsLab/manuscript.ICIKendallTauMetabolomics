@@ -95,28 +95,8 @@ table_count$increment(c(
   "partitioning"
 ))
 
-supp_figure_count = dn_counter$new("Figure ", "_", "S")
-supp_table_count = dn_counter$new("Table ", "_", "S")
+supp_figure_count = readRDS("docs/supp_figure_count.rds")
 
-supp_figure_count$increment(c(
-  "missingness-vs-pvalue",
-  "kt_pearson",
-  "ici_distribution",
-  "kt_distribution",
-  "realistic_reference",
-  "leftcensored",
-  "na-perc-lod",
-  "complexity"
-))
-
-supp_table_count$increment(c(
-  "yeast_outliers",
-  "egfrgenotype_outliers",
-  "adenocarcinoma_outliers",
-  "adenocarcinoma_mad",
-  "nsclc_outliers",
-  "ratstamina_outliers"
-))
 ```
 
 ## Abstract

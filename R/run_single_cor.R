@@ -67,7 +67,7 @@ run_single_cor <- function() {
 
 
 create_run_perf = function(n_samples) {
-  n_samples = seq(100, 50000, 100)
+  n_samples = seq(100, 5000, 100)
 
   out_perf = purrr::map(n_samples, \(n) {
     x = rnorm(n)
@@ -79,23 +79,26 @@ create_run_perf = function(n_samples) {
 }
 
 run_single_cor_micro = function(x, y) {
-  # x = rnorm(1000)
-  # y = rnorm(1000)
+  # x = rnorm(10000)
+  # y = rnorm(10000)
 
-  list_expr = list(
+  out_res = bench::mark(
     pearson = cor(x, y, method = "pearson"),
     kendall = cor(x, y, method = "kendall"),
-    icikt = ici_kt(x, y)
+    icikt = ici_kt(x, y),
+    min_time = Inf,
+    iterations = 10,
+    check = FALSE,
+    memory = FALSE,
+    time_unit = "ns"
   )
-  out_res = microbenchmark::microbenchmark(list = list_expr, times = 10)
-  class(out_res) = "data.frame"
 
-  summary_res = out_res |>
-    dplyr::group_by(expr) |>
-    dplyr::arrange(time, .by_group = TRUE) |>
-    dplyr::slice_head(n = 9) |>
-    dplyr::summarize(min = min(time), max = max(time), median = median(time))
+  summary_res = tibble::tibble(
+    method = names(out_res$expression),
+    min = out_res$min,
+    median = out_res$median,
+    n = length(x)
+  )
 
-  summary_res$n = length(x)
   summary_res
 }

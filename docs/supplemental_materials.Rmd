@@ -226,7 +226,7 @@ Time in seconds needed as a function of the number of features, with a fitted li
 
 ```{r}
 #| label: save-supp-figures
-saveRDS(supp_figure_count, file = "docs/supp_figure_count.rds")
+saveRDS(supp_figure_count, file = here::here("docs/supp_figure_count.rds"))
 ```
 
 ## References
