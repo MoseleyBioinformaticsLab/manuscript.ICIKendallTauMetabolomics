@@ -143,16 +143,26 @@ small_realistic_examples = tar_assign({
     tar_target()
 
   # bigger, more realistic example ---------
-  realistic_sample_1 = create_sample(n = 1000) |>
+  realistic_sample_1 = create_normal_sample(n = 1000, seed = 37) |>
     tar_target()
-  realistic_sample_2 = create_sample(n = 1000) |>
+  realistic_sample_2 = create_unif_noise_sample(
+    realistic_sample_1,
+    seed = 42
+  ) |>
+    tar_target()
+
+  realistic_sample_3 = create_outlier_sample(
+    realistic_sample_1,
+    perc = 0.005,
+    seed = 632
+  ) |>
     tar_target()
 
   realistic_neg_sample = sort(realistic_sample_2, decreasing = TRUE) |>
     tar_target()
   realistic_neg_sample_2 = (-1 * realistic_sample_2) |>
     tar_target()
-  realistic_na = create_random_na() |>
+  realistic_na = create_random_na(seed = 555) |>
     tar_target()
 
   realistic_positive_kt = compare_positive_kt(
@@ -242,7 +252,9 @@ small_realistic_examples = tar_assign({
   logtransform_censored_cor = lt_left_censor_correlate(left_censored_samples) |>
     tar_target()
 
-  subsample = sample(1000, 50) |>
+  subsample = withr::with_seed(586, code = {
+    sample(1000, 50)
+  }) |>
     tar_target()
   left_sample_cor = left_censor_correlate(left_censored_samples[subsample, ]) |>
     tar_target()

@@ -201,6 +201,7 @@ compare_realistic_to_each = function(
     by = "id"
   )
 
+  # use_rows = rep(TRUE, nrow(compare_positive))
   use_rows = rep(FALSE, nrow(compare_positive))
   n_subset = 10000
   keep_rows = sample(length(use_rows), n_subset)
