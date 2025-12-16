@@ -243,7 +243,7 @@ small_realistic_examples = tar_assign({
   ) |>
     tar_target()
 
-  left_censored_samples = create_lc_samples() |>
+  left_censored_samples = create_lc_samples(8674) |>
     tar_target()
   left_censored_cor = left_censor_correlate(left_censored_samples) |>
     tar_target()

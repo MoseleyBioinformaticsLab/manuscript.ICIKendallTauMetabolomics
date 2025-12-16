@@ -172,7 +172,7 @@ compare_realistic_to_each = function(
   # ref_pearson_neg = cor(realistic_sample_1, realistic_neg_sample)
   # ref_kendall_neg = ici_kt(realistic_sample_1, realistic_neg_sample, "global")[1]
 
-  set.seed(0134)
+  # set.seed(0134)
   n_na = purrr::map_int(realistic_na, length)
 
   rp_pearson_wide = realistic_positive_pearson |>
