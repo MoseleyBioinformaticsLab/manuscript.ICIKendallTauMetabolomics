@@ -303,6 +303,20 @@ small_realistic_examples = tar_assign({
   ) |>
     tar_target()
 
+  realistic_reference_plot_3 = compare_realistic_to_reference(
+    realistic_sample_1,
+    realistic_sample_3,
+    realistic_neg_sample_3_2,
+    realistic_na,
+    realistic_positive_pearson_3,
+    realistic_positive_kendall_3,
+    realistic_positive_kt_3,
+    realistic_negative_pearson_3,
+    realistic_negative_kendall_3,
+    realistic_negative_kt_3
+  ) |>
+    tar_target()
+
   left_censored_samples = create_lc_samples(8674) |>
     tar_target()
   left_censored_cor = left_censor_correlate(left_censored_samples) |>
