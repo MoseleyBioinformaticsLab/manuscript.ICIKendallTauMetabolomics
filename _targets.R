@@ -256,7 +256,7 @@ small_realistic_examples = tar_assign({
     realistic_na
   ) |>
     tar_target()
-  realistic_negative_kt = compare_negative_kt(
+  realistic_negative_kt_3 = compare_negative_kt(
     realistic_sample_1,
     realistic_neg_sample_3,
     realistic_na
