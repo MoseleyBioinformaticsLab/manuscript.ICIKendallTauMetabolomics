@@ -158,6 +158,12 @@ small_realistic_examples = tar_assign({
   ) |>
     tar_target()
 
+  realistic_neg_sample_3 = sort(realistic_sample_3, decreasing = TRUE) |>
+    tar_target()
+
+  realistic_neg_sample_3_2 = (-1 * realistic_sample_3) |>
+    tar_target()
+
   realistic_neg_sample = sort(realistic_sample_2, decreasing = TRUE) |>
     tar_target()
   realistic_neg_sample_2 = (-1 * realistic_sample_2) |>
@@ -229,6 +235,7 @@ small_realistic_examples = tar_assign({
     realistic_negative_kt_2
   ) |>
     tar_target()
+
   realistic_comparison_plot = compare_realistic_to_each(
     realistic_sample_1,
     realistic_sample_2,
@@ -240,6 +247,59 @@ small_realistic_examples = tar_assign({
     realistic_negative_pearson_2,
     realistic_negative_kendall,
     realistic_negative_kt_2
+  ) |>
+    tar_target()
+
+  realistic_positive_kt_3 = compare_positive_kt(
+    realistic_sample_1,
+    realistic_sample_3,
+    realistic_na
+  ) |>
+    tar_target()
+  realistic_negative_kt = compare_negative_kt(
+    realistic_sample_1,
+    realistic_neg_sample_3,
+    realistic_na
+  ) |>
+    tar_target()
+
+  realistic_positive_pearson_3 = compare_positive_pearson(
+    realistic_sample_1,
+    realistic_sample_3,
+    realistic_na
+  ) |>
+    tar_target()
+  realistic_negative_pearson_3 = compare_negative_pearson(
+    realistic_sample_1,
+    realistic_neg_sample_3,
+    realistic_na
+  ) |>
+    tar_target()
+
+  realistic_positive_kendall_3 = compare_positive_kendall(
+    realistic_sample_1,
+    realistic_sample_3,
+    realistic_na
+  ) |>
+    tar_target()
+  realistic_negative_kendall_3 = compare_negative_kendall(
+    realistic_sample_1,
+    realistic_neg_sample_3,
+    realistic_na
+  ) |>
+    tar_target()
+
+  realistic_comparison_plot_3 = compare_realistic_to_each(
+    realistic_sample_1,
+    realistic_sample_3,
+    realistic_neg_sample_3,
+    realistic_na,
+    realistic_positive_pearson_3,
+    realistic_positive_kendall_3,
+    realistic_positive_kt_3,
+    realistic_negative_pearson_3,
+    realistic_negative_kendall_3,
+    realistic_negative_kt_3
   ) |>
     tar_target()
 

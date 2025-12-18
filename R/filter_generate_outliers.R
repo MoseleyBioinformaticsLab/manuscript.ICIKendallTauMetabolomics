@@ -765,6 +765,98 @@ test_limma_significant = function(limma_compare_all, use_analyses = "GOOD") {
 }
 
 
+create_limma_description_table = function(
+  compare_description_all,
+  include_combination = FALSE
+) {
+  # tar_load(compare_description_all)
+  # include_combination = FALSE
+  stats_table = compare_description_all$fraction_total |>
+    dplyr::transmute(
+      Method = method,
+      Mean = mean,
+      SD = sd,
+      Median = median,
+      MAD = mad
+    )
+
+  if (!include_combination) {
+    stats_table = stats_table |>
+      dplyr::filter(!(grepl("icikt_pearson|icikt_complete_pearson", Method)))
+  } else {
+    stats_table = stats_table |>
+      dplyr::mutate(
+        Method = dplyr::case_when(
+          Method %in% "icikt_complete_pearson" ~ "icikt_complete + pearson",
+          Method %in% "icikt_pearson" ~ "icikt + pearson",
+          TRUE ~ Method
+        )
+      )
+  }
+
+  stats_flextable = stats_table |>
+    dplyr::arrange(dplyr::desc(Mean)) |>
+    flextable::flextable() |>
+    flextable::colformat_double(j = c(2, 3, 4, 5), digits = 3) |>
+    flextable::set_table_properties(layout = "autofit")
+  stats_flextable
+}
+
+create_limma_stats_table = function(
+  compare_stats_all,
+  include_combination = FALSE
+) {
+  # tar_load(compare_stats_all)
+  # include_combination = FALSE
+
+  out_table = compare_stats_all |>
+    dplyr::transmute(
+      Comparison = comparison,
+      Difference = estimate,
+      `P-Value` = p.value,
+      `P-Adjusted` = p.adjust
+    ) |>
+    dplyr::filter(`P-Adjusted` <= 0.05) |>
+    dplyr::arrange(`P-Adjusted`, dplyr::desc(Difference))
+
+  if (!include_combination) {
+    out_table = out_table |>
+      dplyr::filter(
+        !(grepl("icikt_pearson|icikt_complete_pearson", Comparison))
+      )
+  } else {
+    out_table$Comparison = gsub(
+      "icikt_pearson",
+      "icikt + pearson",
+      out_table$Comparison
+    )
+    out_table$Comparison = gsub(
+      "icikt_complete_pearson",
+      "icikt_complete + pearson",
+      out_table$Comparison
+    )
+  }
+  out_table$Comparison = gsub("_v_", " v ", out_table$Comparison)
+
+  pretty_table = out_table |>
+    dplyr::arrange(`P-Adjusted`) |>
+    flextable::flextable() |>
+    flextable::set_formatter(
+      Difference = \(x) {
+        formatC(x, digits = 3, format = "g")
+      },
+      `P-Value` = \(x) {
+        formatC(x, digits = 1, format = "e")
+      },
+      `P-Adjusted` = \(x) {
+        formatC(x, digits = 1, format = "e")
+      }
+    ) |>
+    flextable::set_table_properties(layout = "autofit")
+
+  pretty_table
+}
+
 calculate_group_variances = function(metabolomics_keep) {
   # metabolomics_keep = tar_read(metabolomics_keep_AN000024)
 
