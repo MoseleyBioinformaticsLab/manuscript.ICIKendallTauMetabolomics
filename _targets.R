@@ -453,6 +453,11 @@ figures_tables_plan = tar_assign({
     include_combination = TRUE
   ) |>
     tar_target()
+
+  limma_description_table_good = create_limma_description_table(
+    compare_description_good
+  ) |>
+    tar_target()
   limma_stats_table_manuscript = create_limma_stats_table(
     compare_stats_all,
     include_combination = FALSE
