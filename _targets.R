@@ -442,6 +442,27 @@ figures_tables_plan = tar_assign({
     negative_pearson
   ) |>
     tar_target()
+
+  limma_description_table_manuscript = create_limma_description_table(
+    compare_description_all,
+    include_combination = FALSE
+  ) |>
+    tar_target()
+  limma_description_table_supp = create_limma_description_table(
+    compare_description_all,
+    include_combination = TRUE
+  ) |>
+    tar_target()
+  limma_stats_table_manuscript = create_limma_stats_table(
+    compare_stats_all,
+    include_combination = FALSE
+  ) |>
+    tar_target()
+  limma_stats_table_supp = create_limma_stats_table(
+    compare_stats_all,
+    include_combination = TRUE
+  ) |>
+    tar_target()
 })
 
 performance_plan = tar_assign({
