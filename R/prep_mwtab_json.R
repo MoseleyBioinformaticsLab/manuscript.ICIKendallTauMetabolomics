@@ -954,6 +954,21 @@ convert_mwtab_json_smd = function(json_checked) {
 
   normalized_array = median_normalize(measurement_array)
 
+  # making sure next steps use metabolites that are present in some subset
+  # of the samples, in this case 50% of at least one class
+  present_metabolites = visualizationQualityControl::keep_non_missing_percentage(
+    measurement_array,
+    sample_DF$factors,
+    keep_num = 0.5
+  )
+
+  if (sum(present_metabolites) <= 20) {
+    return(NULL)
+  }
+
+  measurement_array = measurement_array[present_metabolites, , drop = FALSE]
+  normalized_array = normalized_array[present_metabolites, , drop = FALSE]
+  feature_DF = feature_DF[present_metabolites, , drop = FALSE]
   out_smd = SummarizedExperiment(
     assays = SimpleList(
       counts = measurement_array,
@@ -963,6 +978,7 @@ convert_mwtab_json_smd = function(json_checked) {
     colData = sample_DF,
     metadata = project_data
   )
+
   out_smd
 }
 
@@ -1136,27 +1152,4 @@ filter_good_experiments = function(check_data) {
         (RANK_CHECK %in% c("GOOD", "SIGN DIFFERENCE"))
     )
   good_data
-}
-
-count_filtered_datasets = function(check_data) {
-  n_total = nrow(check_data)
-  has_features = check_data |>
-    dplyr::filter(!(FEATURE_CHECK %in% "NA METABOLITES"))
-  good_features = check_data |>
-    dplyr::filter(FEATURE_CHECK %in% "GOOD")
-  good_ssf = good_features |>
-    dplyr::filter(SSF_CHECK %in% "GOOD SSF")
-  good_range = good_ssf |>
-    dplyr::filter(RANGE_CHECK %in% "GOOD")
-  good_rank = good_range |>
-    dplyr::filter(RANK_CHECK %in% c("SIGN DIFFERENCE", "GOOD"))
-
-  n_filter_tibble = tibble::tribble(
-    ~filter               , ~n                  ,
-    "missing metabolites" , nrow(has_features)  ,
-    "good features"       , nrow(good_features) ,
-    "good ssf"            , nrow(good_ssf)      ,
-    "good range"          , nrow(good_range)    ,
-    "good rank"           , nrow(good_rank)
-  )
 }
