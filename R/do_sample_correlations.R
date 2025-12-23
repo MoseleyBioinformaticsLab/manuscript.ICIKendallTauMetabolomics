@@ -88,7 +88,7 @@ keep_in_samples = function(sample_smd) {
   return(out_smd)
 }
 
-run_cor_everyway_new = function(keep_smd) {
+run_cor_everyway_new = function(keep_smd, features = FALSE) {
   # keep_smd = tar_read(metabolomics_keep_AN000364)
   # keep_smd = tar_read(metabolomics_cor_AN001156)
   # keep_smd = tar_read(smd_AN000131)
@@ -100,6 +100,10 @@ run_cor_everyway_new = function(keep_smd) {
 
   sample_counts = assays(keep_smd)$normalized
   sample_info = colData(keep_smd) |> as.data.frame()
+
+  if (features) {
+    sample_counts = t(sample_counts)
+  }
 
   other_metadata = metadata(keep_smd)
 

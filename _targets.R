@@ -30,6 +30,12 @@ correlation_methods = c(
 json_files = fs::dir_ls(
   "mwtab/repaired/json_2025-11-12"
 )
+
+predicted_annotation_datasets = tibble::tibble(
+  dir = fs::dir_ls("predicted_annotations"),
+  id = fs::path_file(dir)
+)
+
 mwtab_datasets = extract_mwtab_ids(json_files)
 
 ancillary_path = "mwtab/ancillary/"
@@ -60,6 +66,10 @@ mwtab_targets = tar_map(
   tar_target(
     missingness_ranks_correlation,
     calculate_missingness_rank_correlation(missingness_ranks)
+  ),
+  tar_target(
+    feature_correlation,
+    calculate_feature_correlation(smd, predicted_annotation_datasets)
   )
 )
 
