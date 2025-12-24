@@ -321,7 +321,7 @@ calculate_partial_cor_pvalues = function(feature_data) {
   ))
 }
 
-calculate_feature_correlations = function(
+calculate_feature_correlation = function(
   keep_smd,
   predicted_annotation_datasets,
   n_bioreps = 20
