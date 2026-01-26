@@ -248,77 +248,57 @@ get_significant_partial_cor = function(feature_partial_cor) {
   }
 }
 
-calculate_partial_cor_pvalues = function(feature_data) {
+calculate_feature_partial_cor_pvalues = function(feature_correlation) {
+  # feature_correlation = tar_read(feature_correlation_AN002783)
+  if (is.null(feature_correlation)) {
+    return(NULL)
+  }
+
+  partial_cor_pvalues = purrr::map(
+    feature_correlation$cor_vals,
+    calculate_partial_cor_pvalues
+  )
+  feature_correlation$partial_cor = partial_cor_pvalues
+  feature_correlation
+}
+
+calculate_partial_cor_pvalues = function(feature_cor) {
   # feature_data = tar_read(feature_correlation_ici_yeast)
   # feature_data = tar_read(feature_correlation_pearson_base_nozero_ratstamina)
   # feature_data = tar_read(feature_correlation_ici_completeness_ratstamina)
-  if (inherits(feature_data$cor, "character")) {
-    pcor_p_values = tibble::tibble(partial_cor = NA, id = NA)
-    return(list(
-      pcor = pcor_p_values,
-      data_id = feature_data$data_id,
-      method_id = feature_data$method_id,
-      full_id = feature_data$full_id
-    ))
+  # feature_cor = tar_read(feature_correlation_AN002783)$cor_vals[[1]]
+  if (is.null(feature_cor)) {
+    return(NULL)
   }
 
-  if (inherits(feature_data$cor, "data.frame")) {
-    feature_correlations = feature_data$cor |>
-      dplyr::transmute(s1 = s1, s2 = s2, cor = raw, id = paste0(s1, ".", s2))
-  } else {
-    feature_correlations = feature_data$cor$cor
-    feature_correlations = feature_correlations |>
-      dplyr::mutate(id = paste0(s1, ".", s2)) |>
-      dplyr::arrange(id)
-    if (!is.null(feature_data$completeness)) {
-      completeness = feature_data$completeness |>
-        dplyr::mutate(id = paste0(s1, ".", s2)) |>
-        dplyr::arrange(id)
-      if (all.equal(completeness$id, feature_correlations$id)) {
-        feature_correlations$cor = feature_correlations$cor *
-          completeness$completeness
-      }
-    }
-  }
-
-  message("converting to matrix form ...\n")
-  cor_matrix = long_df_2_cor_matrix(
-    feature_correlations |> dplyr::select(s1, s2, cor)
-  )
-
-  diag(cor_matrix) = 1
-  cor_matrix[is.na(cor_matrix)] = 0
-  message("calculating partial correlation ...\n")
-  pcor_vals = try(cor_to_pcor(cor_matrix))
+  use_cor = feature_cor
+  diag(use_cor) = 1
+  use_cor[is.na(use_cor)] = 0
+  pcor_vals = try(cor_to_pcor(use_cor))
 
   if (inherits(pcor_vals, "try-error")) {
-    pcor_p_values = tibble::tibble(partial_cor = NA, id = NA)
-  } else {
-    pcor_long = cor_matrix_2_long_df(pcor_vals)
-    pcor_long = pcor_long |>
-      dplyr::filter(!is.na(cor)) |>
-      dplyr::mutate(partial_cor = cor, cor = NULL, id = paste0(s1, ".", s2))
-    pcor_long = dplyr::left_join(
-      feature_correlations[, c("cor", "id")],
-      pcor_long,
-      by = "id"
-    )
-    pcor_long = pcor_long |>
-      dplyr::filter(!(s1 == s2))
-    message("adjusting p-values")
-    pcor_long = pcor_long |>
-      dplyr::filter(!is.na(partial_cor))
-    pcor_p_values = pcor_pvalue_extreme(pcor_long)
+    return(NULL)
   }
+  pcor_long = cor_matrix_2_long_df(pcor_vals)
+  pcor_long = pcor_long |>
+    dplyr::filter(!is.na(cor)) |>
+    dplyr::mutate(partial_cor = cor, cor = NULL, id = paste0(s1, ".", s2))
 
+  feature_cor_df = cor_matrix_2_long_df(feature_cor) |>
+    dplyr::mutate(id = paste0(s1, ".", s2))
+  pcor_long = dplyr::left_join(
+    feature_cor_df[, c("cor", "id")],
+    pcor_long,
+    by = "id"
+  )
+  pcor_long = pcor_long |>
+    dplyr::filter(!(s1 == s2))
+  pcor_long = pcor_long |>
+    dplyr::filter(!is.na(partial_cor))
+  pcor_p_values = pcor_pvalue_extreme(pcor_long)
+
+  return(pcor_p_values)
   #pcor_vals[upper.tri(pcor_vals)] = NA
-
-  return(list(
-    pcor = pcor_p_values,
-    data_id = feature_data$data_id,
-    method_id = feature_data$method_id,
-    full_id = feature_data$full_id
-  ))
 }
 
 calculate_feature_correlation = function(
