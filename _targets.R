@@ -40,6 +40,13 @@ mwtab_datasets = extract_mwtab_ids(json_files)
 
 ancillary_path = "mwtab/ancillary/"
 
+annotation_targets = tar_assign({
+  predicted_annotations_all = get_all_annotations(
+    predicted_annotation_datasets
+  ) |>
+    tar_target()
+})
+
 mwtab_targets = tar_map(
   mwtab_datasets,
   names = id,
@@ -497,6 +504,7 @@ docs_plan = tar_assign({
 })
 
 list(
+  annotation_targets,
   mwtab_targets,
   check_comb,
   compare_comb,

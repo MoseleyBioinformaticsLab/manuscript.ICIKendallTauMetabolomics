@@ -1,6 +1,6 @@
 # Copied from correlation package, matrix_inverse.R, which is
 # licensed under the GPL3 license.
-# 
+#
 #' Matrix Inversion
 #'
 #' Performs a Moore-Penrose generalized inverse (also called the Pseudoinverse).
@@ -20,11 +20,11 @@ matrix_inverse <- function(m, tol = .Machine$double.eps^(2 / 3)) {
   if (!isSquare(m)) {
     stop("The matrix should be a square matrix.", call. = FALSE)
   }
-  
+
   stopifnot(is.numeric(m), length(dim(m)) == 2, is.matrix(m))
-  
+
   s <- svd(m)
-  
+
   p <- (s$d > max(tol * s$d[1], 0))
   if (all(p)) {
     mp <- s$v %*% (1 / s$d * t(s$u))
@@ -33,7 +33,7 @@ matrix_inverse <- function(m, tol = .Machine$double.eps^(2 / 3)) {
   } else {
     mp <- matrix(0, nrow = ncol(m), ncol = nrow(m))
   }
-  
+
   colnames(mp) <- colnames(m)
   row.names(mp) <- row.names(m)
   mp
@@ -56,10 +56,9 @@ invert_matrix <- function(m, tol = .Machine$double.eps^(2 / 3)) {
 # copied from correlation package, cor_to_pcor.R
 # licensed under the GPL3 license
 cor_to_pcor <- function(cor, tol = .Machine$double.eps^(2 / 3)) {
-  
   inverted <- invert_matrix(cor, tol = tol)
   out <- -stats::cov2cor(inverted)
-  
+
   diag(out) <- 1
   out
 }
