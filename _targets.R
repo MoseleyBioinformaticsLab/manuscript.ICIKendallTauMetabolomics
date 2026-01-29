@@ -42,7 +42,7 @@ ancillary_path = "mwtab/ancillary/"
 
 annotation_targets = tar_assign({
   predicted_annotations_all = get_all_annotations(
-    predicted_annotation_datasets
+    predicted_annotation_datasets$dir
   ) |>
     tar_target()
 })
