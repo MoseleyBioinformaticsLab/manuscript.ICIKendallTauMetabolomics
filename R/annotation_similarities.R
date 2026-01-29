@@ -75,10 +75,10 @@ work_out_similarities = function() {
   collapsed_similarity[lower.tri(collapsed_similarity, diag = TRUE)] = NA
 }
 
-determine_similar_annotations = function(all_feature_annotations) {
+determine_similar_annotations = function(predicted_annotations_all) {
   split_feature_annotations = split(
-    all_feature_annotations$features,
-    all_feature_annotations$annotation
+    predicted_annotations_all$features,
+    predicted_annotations_all$annotation
   )
   split_feature_annotations = purrr::map(split_feature_annotations, unique)
 
@@ -124,6 +124,17 @@ determine_similar_annotations = function(all_feature_annotations) {
   adj_membership = igraph::membership(adj_communities)
 
   membership_list = split(names(adj_membership), adj_membership)
+  names(membership_list) = paste0("G-", names(membership_list))
+  membership_tbl = purrr::imap(membership_list, \(members, group) {
+    tibble::tibble(annotation = members, group = group)
+  }) |>
+    purrr::list_rbind()
+  predicted_annotations_grouped = dplyr::left_join(
+    membership_tbl,
+    predicted_annotations_all,
+    by = "annotation"
+  )
+  predicted_annotations_grouped
 }
 
 

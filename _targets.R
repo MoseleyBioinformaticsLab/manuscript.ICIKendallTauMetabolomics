@@ -45,6 +45,10 @@ annotation_targets = tar_assign({
     predicted_annotation_datasets$dir
   ) |>
     tar_target()
+  predicted_annotations_grouped = determine_similar_annotations(
+    predicted_annotations_all
+  ) |>
+    tar_target()
 })
 
 mwtab_targets = tar_map(
