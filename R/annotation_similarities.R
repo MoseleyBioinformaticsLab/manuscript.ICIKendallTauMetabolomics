@@ -180,7 +180,7 @@ get_dataset_annotation = function(file_dir) {
 
   annotation_tbl = annotation_tbl |>
     dplyr::mutate(
-      feature_unique = stringr::str_replace_all(features, " M[0-9]+", "")
+      features_unique = stringr::str_replace_all(features, " M[0-9]+", "")
     )
 
   return(annotation_tbl)
