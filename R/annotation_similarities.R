@@ -77,7 +77,7 @@ work_out_similarities = function() {
 
 determine_similar_annotations = function(predicted_annotations_all) {
   split_feature_annotations = split(
-    predicted_annotations_all$features,
+    predicted_annotations_all$features_unique,
     predicted_annotations_all$annotation
   )
   split_feature_annotations = purrr::map(split_feature_annotations, unique)
@@ -152,7 +152,7 @@ get_all_annotations = function(file_locs) {
 }
 
 get_dataset_annotation = function(file_dir) {
-  # file_dir = "predicted_annotations/AN000001"
+  # file_dir = "predicted_annotations/AN002783"
 
   json_loc = fs::path(file_dir, "xref", "reactome", "predictions-union.json")
 
@@ -177,6 +177,11 @@ get_dataset_annotation = function(file_dir) {
     )
   }) |>
     purrr::list_rbind()
+
+  annotation_tbl = annotation_tbl |>
+    dplyr::mutate(
+      feature_unique = stringr::str_replace_all(features, " M[0-9]+", "")
+    )
 
   return(annotation_tbl)
 }

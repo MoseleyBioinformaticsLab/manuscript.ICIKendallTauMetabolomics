@@ -58,6 +58,44 @@ calculate_qratio = function(network, annotations, use_weights = TRUE) {
   list(partitions = partitions, q_value = q_value)
 }
 
+calculate_all_network_qratios = function(
+  feature_partial_correlation,
+  grouped_annotations
+) {
+  # feature_partial_correlation = tar_read(feature_partial_correlation_AN002783)
+  # grouped_annotations = tar_read(predicted_annotations_grouped)
+
+  feature_annotations = grouped_annotations |>
+    dplyr::filter(id %in% feature_partial_correlation$metadata$CHECK$ID)
+  tmp_features = feature_annotations |>
+    dplyr::select(features) |>
+    dplyr::distinct() |>
+    dplyr::mutate(feature2 = janitor::make_clean_names(features))
+
+  feature_annotations = dplyr::left_join(
+    feature_annotations,
+    tmp_features,
+    by = "features"
+  )
+  use_annotations = split(
+    feature_annotations$feature2,
+    feature_annotations$group
+  )
+}
+
+calculate_feature_network_qratio_new = function(
+  partial_correlations,
+  annotations,
+  use_weights = TRUE
+) {
+  if (is.null(partial_correlations)) {
+    return(NULL)
+  }
+  network_correlations = partial_correlations |>
+    dplyr::filter(significant) |>
+    dplyr::transmute(start_node = s1, end_node = s2, weight = partial_cor)
+}
+
 calculate_feature_network_qratio = function(
   partial_correlations,
   annotations,
