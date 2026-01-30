@@ -85,6 +85,13 @@ mwtab_targets = tar_map(
   tar_target(
     feature_partial_correlation,
     calculate_feature_partial_cor_pvalues(feature_correlation)
+  ),
+  tar_target(
+    feature_qratio,
+    calculate_all_network_qratios(
+      feature_partial_correlation,
+      predicted_annotations_grouped
+    )
   )
 )
 

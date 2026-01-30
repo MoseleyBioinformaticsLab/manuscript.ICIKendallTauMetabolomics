@@ -64,6 +64,9 @@ calculate_all_network_qratios = function(
 ) {
   # feature_partial_correlation = tar_read(feature_partial_correlation_AN002783)
   # grouped_annotations = tar_read(predicted_annotations_grouped)
+  if (is.null(feature_partial_correlation)) {
+    return(NULL)
+  }
 
   feature_annotations = grouped_annotations |>
     dplyr::filter(id %in% feature_partial_correlation$metadata$CHECK$ID)
@@ -81,6 +84,21 @@ calculate_all_network_qratios = function(
     feature_annotations$feature2,
     feature_annotations$group
   )
+
+  prep_partial_cor = function(partial_cor_df) {
+    # partial_cor_df = feature_partial_correlation$partial_cor$icikt
+    partial_cor_run = partial_cor_df |>
+      dplyr::filter(significant) |>
+      dplyr::transmute(start_node = s1, end_node = s2, weight = partial_cor)
+    partial_cor_run
+  }
+  qratios_all = purrr::map(feature_partial_correlation$partial_cor, \(x) {
+    # x = feature_partial_correlation$partial_cor[[1]]
+    use_cor = prep_partial_cor(x)
+    calculate_qratio(use_cor, use_annotations)
+  })
+  feature_partial_correlation$qvalues = qratios_all
+  feature_partial_correlation
 }
 
 calculate_feature_network_qratio_new = function(
