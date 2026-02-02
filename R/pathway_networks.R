@@ -59,7 +59,10 @@ calculate_qratio = function(network, annotations, use_weights = TRUE) {
 }
 
 get_just_qratio = function(feature_qratio) {
-  feature_qratio = tar_read(feature_qratio_AN005135)
+  # feature_qratio = tar_read(feature_qratio_AN005135)
+  if (is.null(feature_qratio)) {
+    return(NULL)
+  }
 
   qratio_data = feature_qratio$qvalues
 
