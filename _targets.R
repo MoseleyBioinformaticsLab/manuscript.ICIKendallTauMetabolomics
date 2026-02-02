@@ -92,8 +92,15 @@ mwtab_targets = tar_map(
       feature_partial_correlation,
       predicted_annotations_grouped
     )
+  ),
+  tar_target(
+    feature_just_qratio,
+    get_just_qratio(
+      feature_qratio
+    )
   )
 )
+
 
 check_comb = tar_combine(
   check_data,
@@ -119,6 +126,11 @@ rank_cor_comb = tar_combine(
   command = bind_rows(!!!.x)
 )
 
+qratio_comb = tar_combine(
+  qratio_data,
+  mwtab_targets[[15]],
+  command = bind_rows(!!!.x)
+)
 
 mwtab_result_plan = tar_assign({
   compare_description_good = examine_limma_significant(compare_data, "GOOD") |>
@@ -522,6 +534,7 @@ list(
   mwtab_result_plan,
   missingness_comb,
   rank_cor_comb,
+  qratio_comb,
   small_realistic_examples,
   vl_plan,
   vl_lod_map,

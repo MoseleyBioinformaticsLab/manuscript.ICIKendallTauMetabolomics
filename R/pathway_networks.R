@@ -58,6 +58,19 @@ calculate_qratio = function(network, annotations, use_weights = TRUE) {
   list(partitions = partitions, q_value = q_value)
 }
 
+get_just_qratio = function(feature_qratio) {
+  feature_qratio = tar_read(feature_qratio_AN005135)
+
+  qratio_data = feature_qratio$qvalues
+
+  out_data = purrr::imap(qratio_data, \(data, id) {
+    tibble::tibble(q_value = data$q_value, correlation = id)
+  }) |>
+    purrr::list_rbind()
+  out_data$id = feature_qratio$metadata$CHECK$ID
+  out_data
+}
+
 calculate_all_network_qratios = function(
   feature_partial_correlation,
   grouped_annotations
