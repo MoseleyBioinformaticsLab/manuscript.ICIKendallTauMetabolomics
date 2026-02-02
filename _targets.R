@@ -142,6 +142,9 @@ mwtab_result_plan = tar_assign({
     tar_target()
   compare_stats_all = test_limma_significant(compare_data, "GOOD") |>
     tar_target()
+
+  qratio_stats_all = test_qratios(qratio_data) |>
+    tar_target()
 })
 
 

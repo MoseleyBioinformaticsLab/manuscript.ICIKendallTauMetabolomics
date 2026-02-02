@@ -1,3 +1,55 @@
+test_qratios = function(qratio_data) {
+  # tar_load(qratio_data)
+  n_method = length(unique(qratio_data$correlation))
+
+  qratio_data = qratio_data |>
+    dplyr::mutate(method = correlation)
+
+  method_comparisons = combn(unique(qratio_data$method), 2)
+  comparison_labels = paste0(
+    method_comparisons[1, ],
+    "_v_",
+    method_comparisons[2, ]
+  )
+
+  comparison_stats = purrr::map(seq_len(length(comparison_labels)), \(ilab) {
+    # ilab = 1
+    # ilab = 5
+    use_comp1 = method_comparisons[1, ilab]
+    use_comp2 = method_comparisons[2, ilab]
+    just_comp = qratio_data |>
+      dplyr::filter(method %in% c(use_comp1, use_comp2)) |>
+      dplyr::select(q_value, id, method)
+    comp_wide = just_comp |>
+      tidyr::pivot_wider(names_from = method, values_from = q_value)
+    comp_wide$diff = comp_wide[[use_comp1]] - comp_wide[[use_comp2]]
+
+    comp_wide = comp_wide |>
+      dplyr::filter(!is.nan(diff) & !is.na(diff))
+
+    sd_diff = sd(comp_wide$diff)
+    if (sd_diff <= 1e-20) {
+      tmp_res = na_res |>
+        dplyr::mutate(comparison = comp_labels[ilab])
+      return(tmp_res)
+    }
+
+    t_test_res = broom::tidy(t.test(
+      x = comp_wide[[use_comp1]],
+      y = comp_wide[[use_comp2]],
+      paired = TRUE
+    )) |>
+      dplyr::mutate(comparison = comparison_labels[ilab])
+    t_test_res$grp1 = mean(comp_wide[[use_comp1]])
+    t_test_res$grp2 = mean(comp_wide[[use_comp2]])
+    t_test_res
+  }) |>
+    purrr::list_rbind()
+  comparison_stats = comparison_stats |>
+    dplyr::mutate(p.adjust = p.adjust(p.value, method = "bonferroni"))
+  comparison_stats
+}
+
 calculate_qratio = function(network, annotations, use_weights = TRUE) {
   # network = network_correlations
   # annotations = use_annotation
