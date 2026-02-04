@@ -1,3 +1,28 @@
+plot_qratio_differences = function(qratio_stats_all) {
+  n_diff = seq_len(nrow(qratio_stats_all))
+  all_diff = purrr::map(n_diff, \(idiff) {
+    use_diff = qratio_stats_all$diff[idiff]$comp |>
+      dplyr::select(id, diff) |>
+      dplyr::mutate(comparison = qratio_stats_all$comparison[idiff])
+    use_diff
+  }) |>
+    purrr::list_rbind()
+  qratio_stats_all = qratio_stats_all |>
+    dplyr::arrange(estimate)
+  all_diff$comparison = factor(
+    all_diff$comparison,
+    levels = qratio_stats_all$comparison
+  )
+  out_plot = all_diff |>
+    ggplot(aes(x = diff, y = comparison)) +
+    geom_sina() +
+    geom_boxplot(alpha = 0.5) +
+    geom_vline(xintercept = 0, color = "red") +
+    coord_cartesian(xlim = c(-5, 5)) +
+    labs(x = "Difference", y = "Comparison")
+  out_plot
+}
+
 test_qratios = function(qratio_data) {
   # tar_load(qratio_data)
   n_method = length(unique(qratio_data$correlation))
@@ -42,6 +67,8 @@ test_qratios = function(qratio_data) {
       dplyr::mutate(comparison = comparison_labels[ilab])
     t_test_res$grp1 = mean(comp_wide[[use_comp1]])
     t_test_res$grp2 = mean(comp_wide[[use_comp2]])
+    t_test_res$diff = list(comp = comp_wide)
+    t_test_res$labels = list(comp = c(use_comp1, use_comp2))
     t_test_res
   }) |>
     purrr::list_rbind()
