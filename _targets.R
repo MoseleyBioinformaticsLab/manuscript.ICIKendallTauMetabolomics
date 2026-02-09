@@ -145,9 +145,6 @@ mwtab_result_plan = tar_assign({
 
   qratio_stats_all = test_qratios(qratio_data) |>
     tar_target()
-
-  qratio_plot_all = plot_qratio_differences(qratio_stats_all) |>
-    tar_target()
 })
 
 
@@ -515,12 +512,20 @@ figures_tables_plan = tar_assign({
     tar_target()
   limma_stats_table_supp = create_limma_stats_table(
     compare_stats_all,
-    include_combination = TRUE
+    include_combination = TRUE,
+    include_significant_only = FALSE
   ) |>
     tar_target()
 
   qratio_stats_table_manuscript = create_limma_stats_table(
     qratio_stats_all
+  ) |>
+    tar_target()
+  qratio_plot_all = plot_qratio_differences(qratio_stats_all) |>
+    tar_target()
+  qratio_stats_table_all = create_limma_stats_table(
+    qratio_stats_all,
+    include_significant_only = FALSE
   ) |>
     tar_target()
 })

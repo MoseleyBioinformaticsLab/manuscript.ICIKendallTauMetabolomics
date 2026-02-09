@@ -804,10 +804,13 @@ create_limma_description_table = function(
 
 create_limma_stats_table = function(
   compare_stats_all,
-  include_combination = FALSE
+  include_combination = FALSE,
+  include_significant_only = TRUE
 ) {
   # tar_load(compare_stats_all)
   # include_combination = FALSE
+  # compare_stats_all = tar_read(qratio_stats_all)
+  # include_significant_only = FALSE
 
   out_table = compare_stats_all |>
     dplyr::transmute(
@@ -815,9 +818,12 @@ create_limma_stats_table = function(
       Difference = estimate,
       `P-Value` = p.value,
       `P-Adjusted` = p.adjust
-    ) |>
-    dplyr::filter(`P-Adjusted` <= 0.05) |>
-    dplyr::arrange(`P-Adjusted`, dplyr::desc(Difference))
+    )
+
+  if (include_significant_only) {
+    out_table = out_table |>
+      dplyr::filter(`P-Adjusted` <= 0.05)
+  }
 
   if (!include_combination) {
     out_table = out_table |>
@@ -836,6 +842,8 @@ create_limma_stats_table = function(
       out_table$Comparison
     )
   }
+  out_table = out_table |>
+    dplyr::arrange(`P-Adjusted`, dplyr::desc(Difference))
   out_table$Comparison = gsub("_v_", " v ", out_table$Comparison)
 
   pretty_table = out_table |>

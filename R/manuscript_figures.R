@@ -487,6 +487,7 @@ compare_simple_kt_pearson_plots = function(
   positive_pearson,
   negative_pearson
 ) {
+  # tar_load(c(positive_kt, negative_kt, positive_pearson, negative_pearson))
   all_kt_other = rbind(positive_kt, negative_kt)
   all_pearson = rbind(positive_pearson, negative_pearson)
   all_pearson[is.na(all_pearson$cor), "cor"] = 0
