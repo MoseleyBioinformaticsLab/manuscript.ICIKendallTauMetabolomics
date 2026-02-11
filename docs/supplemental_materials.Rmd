@@ -11,23 +11,27 @@ output:
     toc_float:
       collapsed: false
       smooth_scroll: false
-bibliography: '`r here::here("docs/icikt_references.json")`'
+bibliography: '`r here::here("docs/icikt_manuscript.json")`'
 csl: '`r here::here("docs/plos-computational-biology.csl")`'
 editor_options: 
   chunk_output_type: console
 ---
 
-```{r setup, include=FALSE}
+```{r}
+#| label: setup1
+#| include: false
 targets::tar_source(files = c("./packages.R", "R"))
+supp_figure_count = dn_counter$new("Figure ", "_", "S")
+supp_table_count = dn_counter$new("Table ", "_", "S")
+```
 
+```{r}
+#| label: setup2
+#| include: false
 doc_type = knitr::opts_knit$get("rmarkdown.pandoc.to")
 if (doc_type %in% "docx") {
   unlink(here::here("docs", "supplemental_materials_files"), recursive = TRUE)
 }
-
-supp_figure_count = dn_counter$new("Figure ", "_", "S")
-supp_table_count = dn_counter$new("Table ", "_", "S")
-
 
 knitr::opts_chunk$set(
   echo = FALSE,
@@ -48,18 +52,21 @@ knitr::opts_chunk$set(
 
 ```{r}
 #| label: load
+
 tar_load(c(
   references,
   missingness_percentage_pvalues_plot,
-  positive_kt,
-  positive_pearson,
-  negative_kt,
+  simple_kt_pearson_comparison_plot,
   all_kt,
-  negative_pearson,
   realistic_reference_plot,
+  realistic_reference_plot_3,
+  realistic_comparison_plot_3,
   censored_compare_plots,
   vl_na_perc_graph,
-  performance_plot
+  performance_plot,
+  limma_stats_table_supp,
+  qratio_plot_all,
+  qratio_stats_table_all
 ))
 ```
 
@@ -71,12 +78,18 @@ supp_figure_count$increment(c(
   "ici_distribution",
   "kt_distribution",
   "realistic_reference",
+  "realistic_comparison_outliers",
+  "realistic_reference_outliers",
   "leftcensored",
   "na-perc-lod",
+  "qratio-plot-all",
   "performance"
 ))
 
-
+supp_table_count$increment(c(
+  "limma-stats-table-supp",
+  "qratio-stats-table-all"
+))
 ```
 
 ## Left Censoring as a Cause for Missingness
@@ -101,17 +114,7 @@ Percent missing values in each dataset compared to the p-values from the left ce
 
 ```{r}
 #| label: kt_pearson
-all_kt_other = rbind(positive_kt, negative_kt)
-all_pearson = rbind(positive_pearson, negative_pearson)
-all_pearson[is.na(all_pearson$cor), "cor"] = 0
-
-compare_df = data.frame(ici_kt = all_kt_other$cor, pearson = all_pearson$cor)
-set.seed(1234)
-rand_rows = sample(nrow(compare_df), 10000)
-compare_df2 = compare_df[rand_rows, ]
-ggplot(compare_df2, aes(x = pearson, y = ici_kt)) +
-  geom_point() +
-  labs(x = "Pearson", y = "ICI-Kt")
+simple_kt_pearson_comparison_plot
 ```
 
 `r supp_figure_count$label_text("kt_pearson")`. Comparison of ICI-Kt and Pearson correlations for perfectly positive and negatively correlated samples, systematically replacing values with NA.
@@ -172,6 +175,52 @@ reference_plot
 Difference of estimated correlation with missingness introduced compared to a reference correlation of 1 for the positive or -1 for the negative case, as a function of the average number of missing entries in X and Y sample (# NA).
 Points are colored by how many points are missing on average between the two samples X and Y.
 
+```{r}
+#| label: realistic_comparison_outliers
+#| fig-width: 8
+#| fig-height: 8
+comp_tmp_pos_3 = purrr::map(realistic_comparison_plot_3$positive, \(x) {
+  x + theme(axis.text = element_text(size = 10))
+})
+comp_tmp_neg_3 = purrr::map(realistic_comparison_plot_3$negative, \(x) {
+  x + theme(axis.text = element_text(size = 10))
+})
+comparison_plot_3 = wrap_plots(
+  c(comp_tmp_pos_3, comp_tmp_neg_3),
+  nrow = 2,
+  byrow = FALSE
+)
+comparison_plot_3
+```
+
+`r supp_figure_count$label_text("realistic_comparison_outliers")`. Using an alternative random-number seed to generate the missing locations, this figure is comparing the correlation values obtained by Pearson, Kendall, and ICI-Kt correlation as an increasing number of missing values (0 - 500) in the bottom half of either sample for both positively (correlation = 1) and negatively (correlation = -1) correlated samples.
+Points are colored by how many points were set to missing on average between the two samples.
+A subset of `r format(realistic_comparison_plot_3$n_subset, big.mark = ",", big.interval = 3L)` points was used for visualization.
+
+```{r}
+#| label: realistic_reference_outliers
+#| dn_id: supp_figure_count
+#| fig-width: 12
+#| fig-height: 8
+ref_tmp_pos_3 = realistic_reference_plot_3$positive +
+  theme(
+    axis.text = element_text(size = 10),
+    strip.background = element_rect(fill = "white", color = "white"),
+    panel.border = element_blank()
+  )
+ref_tmp_neg_3 = realistic_reference_plot_3$negative +
+  theme(
+    axis.text = element_text(size = 10),
+    strip.background = element_rect(fill = "white", color = "white"),
+    panel.border = element_blank()
+  )
+reference_plot_3 = ref_tmp_pos_3 + ref_tmp_neg_3
+reference_plot_3
+```
+
+`r supp_figure_count$label_text("realistic_reference_outliers")`.
+Using an alternative random-number seed to generate the missing locations, this figure is showing the difference of estimated correlation with missingness introduced compared to a reference correlation of 1 for the positive or -1 for the negative case, as a function of the average number of missing entries in X and Y sample (# NA).
+Points are colored by how many points are missing on average between the two samples X and Y.
 
 ### Semi-Realistic Data Set
 
@@ -212,6 +261,38 @@ vl_na_perc_graph
 `r supp_figure_count$label_text("na-perc-lod")`.
 Number of missing values in each of the 100 samples as a function of changing the dynamic range of the values in the sample by increasing the lower limit of detection.
 
+## Outlier Detection
+
+`r supp_table_count$label_text("limma-stats-table-supp")`.
+The statistical results of the pairwise comparisons of each method based on the significant fractions after removing outliers.
+P-values were adjusted using the Bonferroni method.
+
+```{r}
+#| label: limma_stats_table_supp
+limma_stats_table_supp
+```
+
+## Feature-Feature Network Partitioning
+
+```{r}
+#| label: qratio-plot-all
+#| fig-height: 12
+qratio_plot_all
+```
+
+`r supp_figure_count$label_text("qratio-plot-all")`.
+Boxplot and sina plots of paired differences of partitioning ratios across datasets.
+Red line indicates zero difference.
+Differences are calculated as $method_{1} - method_{2}$.
+
+`r supp_table_count$label_text("qratio-stats-table-all")`.
+Paired t-test statistics comparing all the methods to each other. P-values were adjusted using the Bonferroni adjustment.
+
+```{r}
+#| label: qratio-stats-table-all
+qratio_stats_table_all
+```
+
 ## Performance
 
 
@@ -225,8 +306,9 @@ Time in seconds needed as a function of the number of features, with a fitted li
 
 
 ```{r}
-#| label: save-supp-figures
+#| label: save-supp-figures-tables
 saveRDS(supp_figure_count, file = here::here("docs/supp_figure_count.rds"))
+saveRDS(supp_table_count, file = here::here("docs/supp_table_count.rds"))
 ```
 
 ## References
