@@ -905,9 +905,11 @@ We thank Travis Thompson for downloading and repairing The Metabolomics Workbenc
 :::
 
 ::: {custom-style="MDPI_2.1_heading1"}
-**Abbreviations**
+## **Abbreviations**
 :::
 
 
 
-## References
+::: {custom-style="MDPI_2.1_heading1"} 
+## **References**
+:::
