@@ -136,7 +136,7 @@ The ICI-Kt methods are available as an R package and Python module on GitHub at 
 :::
 
 ::: {custom-style="MDPI_2.1_heading1"}
-**1. Introduction**
+## **1. Introduction**
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -210,11 +210,11 @@ All of the code used for this manuscript is available on zenodo [@flightManuscri
 :::
 
 ::: {custom-style="MDPI_2.1_heading1"}
-**2. Materials and Methods**
+## **2. Materials and Methods**
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*2.1 Additional Definitions of Concordant and Discordant Pairs to Include Missingness*
+### *2.1 Additional Definitions of Concordant and Discordant Pairs to Include Missingness*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -298,7 +298,7 @@ These additional definitions make it possible to interpret a Kendall-tau correla
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*2.2 Considering Ties*
+### *2.2 Considering Ties*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -421,7 +421,7 @@ Of the 6105 initially downloaded, 711 were kept for further analysis.
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*2.8 Number of Missing Values and Median Rank*
+### *2.8 Number of Missing Values and Median Rank*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -431,7 +431,7 @@ Grouping the features by the number of missing values, we calculate the median o
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*2.9 Binomial Test for Left Censorship*
+### *2.9 Binomial Test for Left Censorship*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -443,7 +443,7 @@ The number of successes and failures are aggregated across the SSF splits for ca
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*2.10 Correlation Methods*
+### *2.10 Correlation Methods*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -458,7 +458,7 @@ Pearson, with a $log(x)$ transform, and then setting infinite values to `NA` val
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*2.11 Outlier Detection*
+### *2.11 Outlier Detection*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -471,7 +471,7 @@ The correlation methods are compared by their fractions of significant metabolit
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*2.12 Feature Annotations*
+### *2.12 Feature Annotations*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -485,7 +485,7 @@ These grouped pathway annotations were then used for the network partitioning ca
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*2.13 Feature-Feature Networks and Partitioning*
+### *2.13 Feature-Feature Networks and Partitioning*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -526,7 +526,7 @@ Partitioning ratios were compared across correlation methods using a paired t-te
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*2.14 Changes In Correlation Due to Changes in Dynamic Range and Imputation*
+### *2.14 Changes In Correlation Due to Changes in Dynamic Range and Imputation*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -543,7 +543,7 @@ Differences between the reference and trimmed correlations were calculated, as w
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*2.15 Data Processing*
+### *2.15 Data Processing*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -555,11 +555,11 @@ Analysis workflows were coordinated using `targets` v 1.11.4 [@landauTargetsPack
 :::
 
 ::: {custom-style="MDPI_2.1_heading1"}
-**3. Results**
+## **3. Results**
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*3.1 Datasets*
+### *3.1 Datasets*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -601,7 +601,7 @@ knitr::include_graphics(filtering_loc, rel_path = FALSE)
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*3.2 Left Censoring As a Cause for Missingness*
+### *3.2 Left Censoring As a Cause for Missingness*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -644,7 +644,7 @@ Missingness in datasets. **A**: Sina plot of the percent missing values in NMR a
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*3.3 Comparison To Other Correlation Measures*
+### *3.3 Comparison To Other Correlation Measures*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -689,7 +689,7 @@ A subset of `r format(realistic_comparison_plot$n_subset, big.mark = ",", big.in
 
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*3.4 Effect of Left Censoring VS Random Missing Data*
+### *3.4 Effect of Left Censoring VS Random Missing Data*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -739,7 +739,7 @@ ICI-Kt, in contrast, incorporates the missingness in a sensical way, and the res
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*3.5 Differences in Dynamic Range and Correlation*
+### *3.5 Differences in Dynamic Range and Correlation*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -774,7 +774,7 @@ Bottom: Differences in the absolute value of reference - trimmed differences bet
 
 
 ::: {custom-style="MDPI_2.2_heading2"}
-*3.6 Utility for Metabolomics Data Sets*
+### *3.6 Utility for Metabolomics Data Sets*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -840,7 +840,7 @@ qratio_stats_table_manuscript
 :::
 
 ::: {custom-style="MDPI_2.1_heading1"}
-**4 Discussion and Conclusion**
+## **4 Discussion and Conclusion**
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
