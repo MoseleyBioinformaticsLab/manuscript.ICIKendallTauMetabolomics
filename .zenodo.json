@@ -1,0 +1,20 @@
+{
+    "creators": [
+        {
+            "orcid": "0000-0001-8141-7788",
+            "affiliation": "University of Kentucky",
+            "name": "Flight, Robert M"
+        },
+        {
+            "affiliation": "University of Kentucky",
+            "name": "Bhatt, Praneeth S"
+        },
+        {
+            "orcid": "0000-0003-3995-5368",
+            "affiliation": "University of Kentucky",
+            "name": "Moseley, Hunter NB"
+        }
+    ],
+    "license": "CC-BY-4.0",
+    "title": "Information-Content-Informed Kendall-tau Correlation Methodology: Interpreting Missing Values in Metabolomics as Potentially Useful Information"
+}
