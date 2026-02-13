@@ -193,7 +193,9 @@ comparison_plot_3 = wrap_plots(
 comparison_plot_3
 ```
 
-`r supp_figure_count$label_text("realistic_comparison_outliers")`. Using an alternative random-number seed to generate the missing locations, this figure is comparing the correlation values obtained by Pearson, Kendall, and ICI-Kt correlation as an increasing number of missing values (0 - 500) in the bottom half of either sample for both positively (correlation = 1) and negatively (correlation = -1) correlated samples.
+`r supp_figure_count$label_text("realistic_comparison_outliers")`. 
+More variance was introduced at one end of the log-normal distribution in one sample to create a small percentage of outlier points compared to the other samples compared.
+This figure is comparing the correlation values obtained by Pearson, Kendall, and ICI-Kt correlation as an increasing number of missing values (0 - 500) in the bottom half of either sample for both positively (correlation = 1) and negatively (correlation = -1) correlated samples.
 Points are colored by how many points were set to missing on average between the two samples.
 A subset of `r format(realistic_comparison_plot_3$n_subset, big.mark = ",", big.interval = 3L)` points was used for visualization.
 
@@ -219,7 +221,8 @@ reference_plot_3
 ```
 
 `r supp_figure_count$label_text("realistic_reference_outliers")`.
-Using an alternative random-number seed to generate the missing locations, this figure is showing the difference of estimated correlation with missingness introduced compared to a reference correlation of 1 for the positive or -1 for the negative case, as a function of the average number of missing entries in X and Y sample (# NA).
+More variance was introduced at one end of the log-normal distribution in one sample to create a small percentage of outlier points compared to the other samples compared.
+This figure is showing the difference of estimated correlation with missingness introduced compared to a reference correlation of 1 for the positive or -1 for the negative case, as a function of the average number of missing entries in X and Y sample (# NA).
 Points are colored by how many points are missing on average between the two samples X and Y.
 
 ### Semi-Realistic Data Set
