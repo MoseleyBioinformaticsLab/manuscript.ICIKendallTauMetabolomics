@@ -59,8 +59,8 @@ knitr::opts_chunk$set(
   echo = FALSE,
   warning = FALSE,
   message = FALSE,
-  fig.width = 10,
-  fig.height = 8,
+  fig.width = 9,
+  fig.height = 7,
   fig.process = figure_count$modify_path,
   dpi = 600,
   dev = "ragg_png"
@@ -586,8 +586,8 @@ Finally, 769 datasets were removed due to either having no missing values, or th
 ::: {custom-style="MDPI_5.2_figure"}
 ```{r} 
 #| label: filtering
-#| out-width: 198
-#| out-height: 750
+#| out-width: 172
+#| out-height: 650
 curr_dir = here::here()
 filtering_loc = file.path(
   here::here(),
