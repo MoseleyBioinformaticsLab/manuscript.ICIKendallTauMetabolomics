@@ -5,3 +5,7 @@ _targets.yaml
 mwtab
 predicted_annotations
 
+*.lock
+old_stuff
+poster
+old_code

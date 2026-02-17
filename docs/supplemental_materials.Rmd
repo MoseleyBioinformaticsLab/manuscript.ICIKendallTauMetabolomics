@@ -272,7 +272,9 @@ P-values were adjusted using the Bonferroni method.
 
 ```{r}
 #| label: limma_stats_table_supp
-limma_stats_table_supp
+limma_stats_table_supp |>
+  flextable::font(fontname = "Palatino Linotype", part = "all") |>
+  flextable::fontsize(size = 10, part = "all")
 ```
 
 ## Feature-Feature Network Partitioning
@@ -293,7 +295,9 @@ Paired t-test statistics comparing all the methods to each other. P-values were 
 
 ```{r}
 #| label: qratio-stats-table-all
-qratio_stats_table_all
+qratio_stats_table_all |>
+  flextable::font(fontname = "Palatino Linotype", part = "all") |>
+  flextable::fontsize(size = 10, part = "all")
 ```
 
 ## Performance

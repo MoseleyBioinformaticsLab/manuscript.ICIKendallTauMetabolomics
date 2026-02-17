@@ -1,4 +1,4 @@
-## library() calls go here
+# packages we use ------
 library(conflicted)
 library(dotenv)
 library(targets)
@@ -7,11 +7,7 @@ library(ICIKendallTau)
 library(documentNumbering)
 suppressPackageStartupMessages(library(ComplexHeatmap))
 suppressPackageStartupMessages(library(SummarizedExperiment))
-options(tflow.report_dir = "docs")
-paint::mask_print()
 
-
-## library() calls go here
 library(visualizationQualityControl)
 library(dplyr)
 library(tidyr)
@@ -24,11 +20,14 @@ library(scales)
 library(latex2exp)
 library(limma)
 library(crew)
-#library(magick)
+library(rmarkdown)
+library(flextable)
+
+# options we set ------
 # options(parallelly.fork.enable = TRUE, future.rng.onMisuse = "ignore")
 # future::plan(multicore, workers = 3)
 theme_set(cowplot::theme_cowplot())
 paint::mask_print()
 tar_option_set(memory = "transient")
 options(tflow.report_dir = "docs")
-library(rmarkdown)
+paint::mask_print()
