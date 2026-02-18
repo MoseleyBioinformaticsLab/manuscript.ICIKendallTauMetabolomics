@@ -12,7 +12,7 @@ This readme is still incomplete.
 
 * [Main Manuscript - HTML](https://moseleybioinformaticslab.github.io/manuscript.ICIKendallTauMetabolomics/ici_kt_manuscript.html)
 * [Main Manuscript - Word](https://moseleybioinformaticslab.github.io/manuscript.ICIKendallTauMetabolomics/ici_kt_manuscript_mdpi.docx)
-* [Supplemental Materials - HTML](https://moseleybioinformaticslab.github.io/manuscript.ICIKendallTauMetabolomics/supplamental_materials.html)
+* [Supplemental Materials - HTML](https://moseleybioinformaticslab.github.io/manuscript.ICIKendallTauMetabolomics/supplemental_materials.html)
 * [Supplemental Materials - Word](https://moseleybioinformaticslab.github.io/manuscript.ICIKendallTauMetabolomics/supplemental_materials.docx)
 
 ## Grant Support
