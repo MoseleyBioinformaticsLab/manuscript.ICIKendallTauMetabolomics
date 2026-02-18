@@ -17,5 +17,18 @@
         }
     ],
     "license": "CC-BY-4.0",
-    "title": "Code and Data for Information-Content-Informed Kendall-tau Correlation Methodology: Interpreting Missing Values in Metabolomics as Potentially Useful Information"
-}
+    "title": "Code and Data for Information-Content-Informed Kendall-tau Correlation Methodology: Interpreting Missing Values in Metabolomics as Potentially Useful Information",
+    "related_identifiers": [
+        {
+            "scheme": "doi",
+            "identifier": "10.5281/zenodo.18675151",
+            "relation": "isSupplementedBy",
+            "resource_type": "software"
+        },
+        {
+            "scheme": "doi",
+            "identifier": "10.5281/zenodo.18674812",
+            "relation": "isSupplementedBy",
+            "resource_type": "software"
+        }
+    }
