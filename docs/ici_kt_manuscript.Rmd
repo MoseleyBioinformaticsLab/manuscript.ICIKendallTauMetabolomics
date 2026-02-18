@@ -8,7 +8,7 @@ author:
   - Hunter NB Moseley:
       email: hunter.moseley@uky.edu
       correspondence: true
-      institute: [markey, biochem, rcsirm, ibi, tox]
+      institute: [markey, biochem, uksrc, ibi, tox]
 institute:
   - markey: Markey Cancer Center, University of Kentucky, Lexington, KY 40536, USA
   - biochem: Department of Molecular & Cellular Biochemistry, University of Kentucky, Lexington, KY 40536, USA
@@ -28,6 +28,9 @@ output:
     pandoc_args:
       - '--lua-filter=scholarly-metadata.lua'
       - '--lua-filter=author-info-blocks.lua'
+    toc: true
+    toc_float: true
+    toc_depth: 4
 date: '`r Sys.time()`'
 bibliography: '`r here::here("docs/icikt_manuscript.json")`'
 csl: plos-computational-biology.csl
@@ -372,7 +375,7 @@ During exploration and validation of an early implementation, we discovered that
 This simplification does not change the interpretation of the effect of left-censored missing values, but it does allow for the direct use of the very fast `mergesort` based algorithm for calculating $\tau_b$ [@knight_mergesortkendall_1966].
 
 We re-implemented the `mergesort` implementation from the `SciPy` `kendalltau` code [@virtanen_scipy_2020] in both `R` (via `Rcpp`) and `Python` (via `cython`) to enable fast, easy parallel computations in both languages (using `furrr` and `multiprocessing`, respectively), as well as inclusion of the calculation of $tau_{max}$, which is derived from the same values needed for the calculation of $\tau_b$ (see above).
-The version of the `ICIKendallTau` `R` package used in this manuscript is available on zenodo [@flightICIKendallTau2023].
+The version of the `ICIKendallTau` `R` package used in this manuscript is available on zenodo [@flightMoseleyBioinformaticsLabICIKendallTauMinor2026].
 In addition to use as an imported Python module, the Python `icikt` module provides a command line interface (CLI) for the ICI-Kt methodology.
 :::
 
@@ -856,7 +859,7 @@ qratio_stats_table_manuscript |>
 :::
 
 ::: {custom-style="MDPI_2.1_heading1"}
-## **4 Discussion and Conclusion**
+## **4. Discussion and Conclusion**
 :::
 
 ::: {custom-style="MDPI_3.1_text"}

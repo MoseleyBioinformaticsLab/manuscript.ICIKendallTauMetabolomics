@@ -1,3 +1,5 @@
+## Code and Data for Information-Content-Informed Kendall-tau Correlation Methodology: Interpreting Missing Values in Metabolomics as Potentially Useful Information
+
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18625643.svg)](https://doi.org/10.5281/zenodo.18625643)
 
 This repository contains the code and partial data for the manuscript:
@@ -5,6 +7,13 @@ This repository contains the code and partial data for the manuscript:
 **Information-Content-Informed Kendall-tau Correlation Methodology: Interpreting Missing Values in Metabolomics as Potentially Useful Information**, R.M. Flight, P.S. Bhatt, and H.N.B. Moseley.
 
 This readme is still incomplete.
+
+## Manuscripts
+
+* [Main Manuscript - HTML](https://moseleybioinformaticslab.github.io/manuscript.ICIKendallTauMetabolomics/ici_kt_manuscript.html)
+* [Main Manuscript - Word](https://moseleybioinformaticslab.github.io/manuscript.ICIKendallTauMetabolomics/ici_kt_manuscript_mdpi.docx)
+* [Supplemental Materials - HTML](https://moseleybioinformaticslab.github.io/manuscript.ICIKendallTauMetabolomics/supplamental_materials.html)
+* [Supplemental Materials - Word](https://moseleybioinformaticslab.github.io/manuscript.ICIKendallTauMetabolomics/supplemental_materials.docx)
 
 ## Grant Support
 

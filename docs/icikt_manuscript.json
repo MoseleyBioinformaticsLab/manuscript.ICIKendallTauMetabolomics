@@ -2225,12 +2225,12 @@
 		}
 	},
 	{
-		"id": "flightICIKendallTau2023",
+		"id": "flightICIKendallTau2026",
 		"type": "document",
 		"abstract": "ICIKendallTau version used in the manuscript Information-Content-Informed Kendall-tau Correlation: Utilizing Missing Values Robert M Flight, Praneeth S Bhatt, Hunter NB Moseley",
-		"citation-key": "flightICIKendallTau2023",
+		"citation-key": "flightICIKendallTau2026",
 		"title": "ICIKendallTau",
-		"URL": "https://doi.org/10.5281/zenodo.6311002",
+		"URL": "https://doi.org/10.5281/zenodo.18675151",
 		"author": [
 			{
 				"family": "Flight",
@@ -2244,8 +2244,8 @@
 		"issued": {
 			"date-parts": [
 				[
-					"2023",
-					12
+					"2026",
+					2
 				]
 			]
 		}
@@ -4501,7 +4501,7 @@
 		"source": "Zenodo",
 		"title": "ICI-Kt Code and Data Repository",
 		"title-short": "ICI-Kt Code and Data Repository",
-		"URL": "https://zenodo.org/records/18625644",
+		"URL": "https://zenodo.org/records/18675151",
 		"author": [
 			{
 				"family": "Flight",
@@ -4531,6 +4531,42 @@
 					"2026",
 					2,
 					12
+				]
+			]
+		}
+	},
+	{
+		"id": "flightMoseleyBioinformaticsLabICIKendallTauMinor2026",
+		"type": "software",
+		"abstract": "Information-Content-Informed Kendall-tau in R",
+		"citation-key": "flightMoseleyBioinformaticsLabICIKendallTauMinor2026",
+		"DOI": "10.5281/zenodo.18675151",
+		"publisher": "Zenodo",
+		"source": "Zenodo",
+		"title": "MoseleyBioinformaticsLab/ICIKendallTau",
+		"title-short": "MoseleyBioinformaticsLab/ICIKendallTau",
+		"URL": "https://zenodo.org/records/18675151",
+		"author": [
+			{
+				"family": "Flight",
+				"given": "Robert M."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2026",
+					2,
+					17
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2026",
+					2,
+					17
 				]
 			]
 		}
