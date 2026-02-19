@@ -43,7 +43,7 @@ git clone https://github.com/MoseleyBioinformaticsLab/manuscript.ICIKendallTauMe
 
 ```
 # download from zenodo
-wget 'https://zenodo.org/records/18625644/files/MoseleyBioinformaticsLab/manuscript.ICIKendallTauMetabolomics-v_0.1alpha.zip?download=1' --output-document=manuscript.ICIKendallTauMetabolomics.zip
+wget 'https://zenodo.org/records/18689423/files/MoseleyBioinformaticsLab/manuscript.ICIKendallTauMetabolomics-v_0.2.zip?download=1' --output-document=manuscript.ICIKendallTauMetabolomics.zip
 unzip manuscript.ICIKendallTauMetabolomics.zip
 ```
 
