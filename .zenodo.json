@@ -31,4 +31,5 @@
             "relation": "isSupplementedBy",
             "resource_type": "software"
         }
-    }
+    ]
+}
