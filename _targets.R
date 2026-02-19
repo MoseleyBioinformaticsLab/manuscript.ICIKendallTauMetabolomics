@@ -6,17 +6,6 @@ targets::tar_source(c("./packages.R", "R"))
 #   controller = crew_controller_local(workers = 5)
 # )
 
-# this is great, but we don't actually want to do this. We need something we can subset to
-# things that are more useful.
-#
-# New plan:
-#  save parsed data to sets of rds files that can be read in later for actual analysis;
-#  figure out a way to have the mapping of samples to unique conditions returned, and
-#    remove samples that aren't in groupings with enough samples;
-#  do the ranking of metabolites vs num-missing and check correlations to find
-#    possibly suspicious groupings (i.e. datasets that shouldn't be used)
-#  save the type of measurement, and minimum per group, so we can do subsequent selections;
-
 correlation_methods = c(
   "ici",
   "ici_completeness",
