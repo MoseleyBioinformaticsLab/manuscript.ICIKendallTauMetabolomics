@@ -533,7 +533,7 @@ performance_plan = tar_assign({
 
 
 docs_plan = tar_assign({
-  references = tar_file("docs/icikt_references.json")
+  references = tar_file("docs/icikt_manuscript.json")
   ici_kt_manuscript = tar_render("docs/ici_kt_manuscript.Rmd")
   supp_materials = tar_render("docs/supplemental_materials.Rmd")
 })
