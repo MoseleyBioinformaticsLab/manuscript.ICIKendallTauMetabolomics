@@ -525,7 +525,10 @@ figures_tables_plan = tar_assign({
   ) |>
     tar_target()
 
-  missingness_test_table_supp = write_missingness_table()
+  missingness_test_table_supp = write_missingness_table(
+    missingness_test_table
+  ) |>
+    tar_target()
 })
 
 performance_plan = tar_assign({
