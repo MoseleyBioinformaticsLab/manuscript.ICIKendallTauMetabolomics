@@ -303,7 +303,8 @@ calculate_missingness_test = function(smd) {
     perc_miss_long,
     test_long
   ) |>
-    dplyr::relocate(ID, type)
+    dplyr::mutate(MEASUREMENT_TYPE = dataset_metadata$MEASUREMENT_TYPE) |>
+    dplyr::relocate(MEASUREMENT_TYPE, ID, type)
   out_table
 }
 

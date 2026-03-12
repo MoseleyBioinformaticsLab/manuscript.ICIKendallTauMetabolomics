@@ -524,6 +524,8 @@ figures_tables_plan = tar_assign({
     include_significant_only = FALSE
   ) |>
     tar_target()
+
+  missingness_test_table_supp = write_missingness_table()
 })
 
 performance_plan = tar_assign({
