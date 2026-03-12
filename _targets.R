@@ -553,6 +553,5 @@ list(
   vl_lod_map,
   vl_cor_diff_combine_map,
   figures_tables_plan,
-  performance_plan,
-  docs_plan
+  performance_plan
 )
