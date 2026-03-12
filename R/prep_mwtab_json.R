@@ -877,6 +877,7 @@ load_and_check_mwtab = function(rds_file, reps, ...) {
 convert_mwtab_json_smd = function(json_checked) {
   # json_checked = tar_read(checked_AN000033)
   # json_checked = tar_read(checked_AN007099)
+  # json_checked = tar_read(checked_AN000711)
 
   check_res = json_checked$CHECK
   if (
@@ -893,7 +894,7 @@ convert_mwtab_json_smd = function(json_checked) {
   if (json_checked$MEASUREMENT_TYPE %in% "MS") {
     json_checked$MEASUREMENT_INFO = json_checked$MS
   } else if (json_checked$MEASUREMENT_TYPE %in% "NMR") {
-    json_checked$MEASUREMENT_INFO = json_checked$NMR
+    json_checked$MEASUREMENT_INFO = json_checked[["NM"]]
   }
   project_data = json_checked[c(
     "METABOLOMICS WORKBENCH",
