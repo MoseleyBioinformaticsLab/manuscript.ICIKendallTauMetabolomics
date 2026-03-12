@@ -43,8 +43,8 @@ annotation_targets = tar_assign({
 mwtab_targets = tar_map(
   mwtab_datasets,
   names = id,
-  tar_target(dataset, file, format = "file"),
-  tar_target(processed, parse_json(dataset, id, ancillary_path)),
+  tar_target(dataset, file, format = "file"), #1
+  tar_target(processed, parse_json(dataset, id, ancillary_path)), #2
   tar_target(
     checked,
     run_mwtab_checks_json(
@@ -55,40 +55,40 @@ mwtab_targets = tar_map(
       min_ssf = 2,
       use_ssf_only = "yes"
     )
-  ),
-  tar_target(check_result, get_check(checked)),
-  tar_target(smd, convert_mwtab_json_smd(checked)),
-  tar_target(cor, run_cor_everyway_new(smd)),
-  tar_target(limma, filter_outliers_do_limma(cor, smd)),
-  tar_target(compare, limma_compare_significant(limma)),
-  tar_target(missingness, calculate_missingness(smd)),
-  tar_target(missingness_test, calculate_missingness_test(smd)),
-  tar_target(missingness_ranks, calculate_missingness_ranks(smd)),
+  ), #3
+  tar_target(check_result, get_check(checked)), #4
+  tar_target(smd, convert_mwtab_json_smd(checked)), #5
+  tar_target(cor, run_cor_everyway_new(smd)), #6
+  tar_target(limma, filter_outliers_do_limma(cor, smd)), #7
+  tar_target(compare, limma_compare_significant(limma)), #8
+  tar_target(missingness, calculate_missingness(smd)), #9
+  tar_target(missingness_ranks, calculate_missingness_ranks(smd)), #10
   tar_target(
     missingness_ranks_correlation,
     calculate_missingness_rank_correlation(missingness_ranks)
-  ),
+  ), #11
   tar_target(
     feature_correlation,
     calculate_feature_correlation(smd, predicted_annotation_datasets)
-  ),
+  ), #12
   tar_target(
     feature_partial_correlation,
     calculate_feature_partial_cor_pvalues(feature_correlation)
-  ),
+  ), #13
   tar_target(
     feature_qratio,
     calculate_all_network_qratios(
       feature_partial_correlation,
       predicted_annotations_grouped
     )
-  ),
+  ), #14
   tar_target(
     feature_just_qratio,
     get_just_qratio(
       feature_qratio
     )
-  )
+  ), #15
+  tar_target(missingness_test, calculate_missingness_test(smd)) #16
 )
 
 
@@ -107,6 +107,12 @@ compare_comb = tar_combine(
 missingness_comb = tar_combine(
   missingness_data,
   mwtab_targets[[9]],
+  command = bind_rows(!!!.x)
+)
+
+missingness_test_comb = tar_combine(
+  missingness_test_table,
+  mwtab_targets[[16]],
   command = bind_rows(!!!.x)
 )
 
@@ -539,6 +545,7 @@ list(
   compare_comb,
   mwtab_result_plan,
   missingness_comb,
+  missingness_test_comb,
   rank_cor_comb,
   qratio_comb,
   small_realistic_examples,
