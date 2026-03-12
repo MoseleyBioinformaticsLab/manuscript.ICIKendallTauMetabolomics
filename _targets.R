@@ -62,6 +62,7 @@ mwtab_targets = tar_map(
   tar_target(limma, filter_outliers_do_limma(cor, smd)),
   tar_target(compare, limma_compare_significant(limma)),
   tar_target(missingness, calculate_missingness(smd)),
+  tar_target(missingness_test, calculate_missingness_test(smd)),
   tar_target(missingness_ranks, calculate_missingness_ranks(smd)),
   tar_target(
     missingness_ranks_correlation,

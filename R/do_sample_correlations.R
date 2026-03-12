@@ -234,9 +234,83 @@ calculate_cor_medians = function(sample_cor, sample_ids, sample_classes) {
   })
 }
 
+calculate_missingness_test = function(smd) {
+  # smd = tar_read(smd_AN000500)
+  # smd = tar_read(smd_AN001903)
+  if (is.null(smd)) {
+    return(NULL)
+  }
+
+  sample_counts = assays(smd)$counts
+  sample_info = colData(smd) |> as.data.frame()
+  dataset_metadata = metadata(smd)
+  keep_counts = keep_non_missing_percentage(
+    sample_counts,
+    sample_classes = sample_info$factors,
+    keep_num = 1,
+    missing_value = c(NA)
+  )
+
+  smd = smd[keep_counts, ]
+  sample_counts = sample_counts[keep_counts, ]
+
+  n_miss = sum(is.na(sample_counts))
+
+  n_value = nrow(sample_counts) * ncol(sample_counts)
+
+  missing_long_table = dataset_metadata$MEASUREMENT_INFO |>
+    dplyr::mutate(ID = dataset_metadata$CHECK$ID, type = "measurement_metadata")
+
+  if (!is.null(dataset_metadata$CHROMATOGRAPHY)) {
+    missing_chrom_data = dataset_metadata$CHROMATOGRAPHY |>
+      dplyr::mutate(
+        ID = dataset_metadata$CHECK$ID,
+        type = "chromatography_metadata"
+      )
+  } else {
+    missing_chrom_data = NULL
+  }
+
+  perc_miss_long = tibble::tibble(
+    field = c("n_missing", "n_value", "perc_missing"),
+    value = as.character(c(n_miss, n_value, n_miss / n_value * 100)),
+    ID = dataset_metadata$CHECK$ID,
+    type = "missingness"
+  )
+  missing_test = ICIKendallTau::test_left_censorship(
+    sample_counts,
+    sample_classes = sample_info$factors
+  )
+
+  test_tidy = broom::tidy(missing_test$binomial_test)
+  test_long = test_tidy |>
+    dplyr::mutate(ID = dataset_metadata$CHECK$ID) |>
+    dplyr::select(-method, -alternative) |>
+    tidyr::pivot_longer(!ID, names_to = "field", values_to = "value")
+  test_long$value = as.character(test_long$value)
+  test_long = dplyr::bind_rows(
+    test_long,
+    tibble::tibble(
+      ID = dataset_metadata$CHECK$ID,
+      field = c("method", "alternative"),
+      value = c(test_tidy$method, test_tidy$alternative)
+    )
+  ) |>
+    dplyr::mutate(type = "binomial_statistics")
+  out_table = dplyr::bind_rows(
+    missing_long_table,
+    missing_chrom_data,
+    perc_miss_long,
+    test_long
+  ) |>
+    dplyr::relocate(ID, type)
+  out_table
+}
+
 
 calculate_missingness = function(smd) {
   # smd = tar_read(smd_AN000500)
+  # smd = tar_read(smd_AN001903)
   if (is.null(smd)) {
     return(NULL)
   }
