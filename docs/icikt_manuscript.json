@@ -1638,7 +1638,7 @@
 		"note": "original-date: 2015-05-28T13:33:50Z",
 		"source": "GitHub",
 		"title": "categoryCompare2",
-		"URL": "https://github.com/moseleybioinformaticslab/categoryCompare2",
+		"URL": "https://github.com/moseleybioinformaticslab/categoryCompare2/commits/91ab3a1482",
 		"version": "0.99.158",
 		"author": [
 			{
@@ -2330,31 +2330,6 @@
 			"date-parts": [
 				[
 					"2020"
-				]
-			]
-		}
-	},
-	{
-		"id": "flightVisualizationQualityControlDevelopmentVisualization2021",
-		"type": "report",
-		"citation-key": "flightVisualizationQualityControlDevelopmentVisualization2021",
-		"genre": "manual",
-		"title": "visualizationQualityControl: Development of visualization methods for quality control",
-		"URL": "https://moseleybioinformaticslab.github.io/visualizationQualityControl https://github.com/moseleybioinformaticslab/visualizationQualityControl",
-		"author": [
-			{
-				"family": "Flight",
-				"given": "Robert M"
-			},
-			{
-				"family": "Moseley",
-				"given": "Hunter NB"
-			}
-		],
-		"issued": {
-			"date-parts": [
-				[
-					"2021"
 				]
 			]
 		}
@@ -4566,6 +4541,233 @@
 				[
 					"2026",
 					2,
+					17
+				]
+			]
+		}
+	},
+	{
+		"id": "valzCumulantGeneratingFunction1995",
+		"type": "article-journal",
+		"abstract": "Robillard's approach to obtaining an expression for the cumulant generating function of the null distribution of Kendall's $S$-statistic, when one ranking is tied, is extended to the general case where both rankings are tied. An expression is obtained for the cumulant generating function and it is used to provide a direct proof of the asymptotic normality of the standardized score, $S/ \\sqrt{\\operatorname{Var}(S)}$, when both rankings are tied. The third cumulant of $S$ is derived and an expression for exact evaluation of the fourth cumulant is given. Significance testing in the general case of tied rankings via a Pearson type I curve and an Edgeworth approximation to the null distribution of $S$ is investigated and compared with results obtained under the standard normal approximation as well as the exact distribution obtained by enumeration.",
+		"citation-key": "valzCumulantGeneratingFunction1995",
+		"container-title": "The Annals of Statistics",
+		"DOI": "10.1214/aos/1176324460",
+		"ISSN": "0090-5364, 2168-8966",
+		"issue": "1",
+		"language": "en",
+		"page": "144-160",
+		"publisher": "Institute of Mathematical Statistics",
+		"source": "Project Euclid",
+		"title": "Cumulant Generating Function and Tail Probability Approximations for Kendall's Score with Tied Rankings",
+		"URL": "https://projecteuclid.org/journals/annals-of-statistics/volume-23/issue-1/Cumulant-Generating-Function-and-Tail-Probability-Approximations-for-Kendalls-Score/10.1214/aos/1176324460.full",
+		"volume": "23",
+		"author": [
+			{
+				"family": "Valz",
+				"given": "Paul D."
+			},
+			{
+				"family": "McLeod",
+				"given": "A. Ian"
+			},
+			{
+				"family": "Thompson",
+				"given": "Mary E."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2026",
+					3,
+					11
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"1995",
+					2
+				]
+			]
+		}
+	},
+	{
+		"id": "folch-fortunyPLSModelBuilding2017",
+		"type": "article-journal",
+		"abstract": "New algorithms to deal with missing values in predictive modelling are presented in this article. Specifically, 2 trimmed scores regression adaptations are proposed, one from principal component analysis model building with missing data (MD) and other from partial least squares regression model exploitation with missing values. Using these methods, practitioners can impute MD both in the explanatory/predictor and the dependent/response variables. Partial least squares is used here to build the multivariate calibration models; however, any regression method can be used after MD imputation. Four case studies, with different latent structures, are analysed here to compare the trimmed scores regression–based methods against state-of-the-art approaches. The MATLAB code for these methods is also provided for its direct implementation at http://mseg.webs.upv.es, under a GNU license.",
+		"citation-key": "folch-fortunyPLSModelBuilding2017",
+		"container-title": "Journal of Chemometrics",
+		"DOI": "10.1002/cem.2897",
+		"ISSN": "1099-128X",
+		"issue": "7",
+		"language": "en",
+		"license": "Copyright © 2017 John Wiley & Sons, Ltd.",
+		"note": "_eprint: https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/pdf/10.1002/cem.2897",
+		"page": "e2897",
+		"source": "Wiley Online Library",
+		"title": "PLS model building with missing data: New algorithms and a comparative study",
+		"title-short": "PLS model building with missing data",
+		"URL": "https://onlinelibrary.wiley.com/doi/abs/10.1002/cem.2897",
+		"volume": "31",
+		"author": [
+			{
+				"family": "Folch-Fortuny",
+				"given": "Abel"
+			},
+			{
+				"family": "Arteaga",
+				"given": "Francisco"
+			},
+			{
+				"family": "Ferrer",
+				"given": "Alberto"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2026",
+					3,
+					11
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2017"
+				]
+			]
+		}
+	},
+	{
+		"id": "abrammetabolomicspreprocessing2022",
+		"type": "article-journal",
+		"abstract": "Machine learning has greatly advanced over the past decade, owing to advances in algorithmic innovations, hardware acceleration, and benchmark datasets to train on domains such as computer vision, natural-language processing, and more recently the life sciences. In particular, the subfield of machine learning known as deep learning has found applications in genomics, proteomics, and metabolomics. However, a thorough assessment of how the data preprocessing methods required for the analysis of life science data affect the performance of deep learning is lacking. This work contributes to filling that gap by assessing the impact of commonly used as well as newly developed methods employed in data preprocessing workflows for metabolomics that span from raw data to processed data. The results from these analyses are summarized into a set of best practices that can be used by researchers as a starting point for downstream classification and reconstruction tasks using deep learning.",
+		"citation-key": "abrammetabolomicspreprocessing2022",
+		"container-title": "Metabolites",
+		"DOI": "10.3390/metabo12030202",
+		"ISSN": "2218-1989",
+		"issue": "3",
+		"journalAbbreviation": "Metabolites",
+		"page": "202",
+		"PMID": "35323644",
+		"PMCID": "PMC8948616",
+		"source": "PubMed Central",
+		"title": "A Comprehensive Evaluation of Metabolomics Data Preprocessing Methods for Deep Learning",
+		"URL": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8948616/",
+		"volume": "12",
+		"author": [
+			{
+				"family": "Abram",
+				"given": "Krzysztof Jan"
+			},
+			{
+				"family": "McCloskey",
+				"given": "Douglas"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2026",
+					3,
+					13
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2022",
+					2,
+					24
+				]
+			]
+		}
+	},
+	{
+		"id": "flightCodeDataInformationContentInformed2026",
+		"type": "software",
+		"abstract": "ICI-Kt methodology using metabolomics data",
+		"citation-key": "flightCodeDataInformationContentInformed2026",
+		"DOI": "10.5281/zenodo.18689423",
+		"publisher": "Zenodo",
+		"source": "Zenodo",
+		"title": "Code and Data for Information-Content-Informed Kendall-tau Correlation Methodology: Interpreting Missing Values in Metabolomics as Potentially Useful Information",
+		"title-short": "Code and Data for Information-Content-Informed Kendall-tau Correlation Methodology",
+		"URL": "https://zenodo.org/records/18689423",
+		"author": [
+			{
+				"family": "Flight",
+				"given": "Robert M"
+			},
+			{
+				"family": "Bhatt",
+				"given": "Praneeth S"
+			},
+			{
+				"family": "Moseley",
+				"given": "Hunter NB"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2026",
+					3,
+					13
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2026",
+					2,
+					19
+				]
+			]
+		}
+	},
+	{
+		"id": "MoseleyBioinformaticsLabVisualizationQualityControl2025",
+		"type": "software",
+		"abstract": "Visualization methods for omics dataset quality control",
+		"citation-key": "MoseleyBioinformaticsLabVisualizationQualityControl2025",
+		"genre": "R",
+		"note": "original-date: 2016-03-08T19:19:58Z",
+		"publisher": "Moseley Bioinformatics and Systems Biology Lab",
+		"source": "GitHub",
+		"title": "MoseleyBioinformaticsLab/visualizationQualityControl",
+		"URL": "https://github.com/MoseleyBioinformaticsLab/visualizationQualityControl/commit/413ea66",
+		"author": [
+			{
+				"family": "Flight",
+				"given": "Robert M"
+			},
+			{
+				"family": "Moseley",
+				"given": "Hunter N. B."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2026",
+					3,
+					13
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2025",
+					7,
 					17
 				]
 			]
