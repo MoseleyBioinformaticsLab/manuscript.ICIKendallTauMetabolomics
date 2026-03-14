@@ -102,3 +102,40 @@ run_single_cor_micro = function(x, y) {
 
   summary_res
 }
+
+
+create_multi_perf = function(
+  max_cores = 12,
+  n_feature = 10000,
+  n_sample = 400
+) {
+  # max_cores = 12
+  # n_feature = 10000
+  # n_sample = 400
+
+  out_res = vector("list", max_cores)
+
+  use_vector = rnorm(n_feature * n_sample)
+  use_matrix = matrix(use_vector, nrow = n_feature, ncol = n_sample)
+  colnames(use_matrix) = paste0("s", seq_len(n_sample))
+  ICIKendallTau::enable_logging("docs/r_log.txt", memory = TRUE)
+  ICIKendallTau::log_memory()
+  for (icore in seq_len(max_cores)) {
+    future::plan(multicore, workers = icore)
+    start_time = Sys.time()
+    tmp_res = ICIKendallTau::ici_kendalltau(use_matrix, return_matrix = FALSE)
+    stop_time = Sys.time()
+
+    out_res[[icore]] = tibble::tibble(
+      n_cores = icore,
+      start_time = start_time,
+      stop_time = stop_time,
+      within_time = tmp_res$run_time
+    )
+    rm(tmp_res)
+    gc()
+  }
+
+  out_df = purrr::list_rbind(out_res)
+  out_df
+}

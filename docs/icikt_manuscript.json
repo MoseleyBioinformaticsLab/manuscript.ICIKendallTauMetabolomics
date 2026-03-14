@@ -1638,12 +1638,24 @@
 		"note": "original-date: 2015-05-28T13:33:50Z",
 		"source": "GitHub",
 		"title": "categoryCompare2",
-		"URL": "https://github.com/moseleybioinformaticslab/categoryCompare2/commits/91ab3a1482",
+		"URL": "https://github.com/moseleybioinformaticslab/categoryCompare2/commit/91ab3a1482",
 		"version": "0.99.158",
 		"author": [
 			{
 				"family": "Flight",
 				"given": "Robert M."
+			},
+			{
+				"family": "Moseley",
+				"given": "Hunter N. B."
+			},
+			{
+				"family": "Huckvale",
+				"given": "Erik D."
+			},
+			{
+				"family": "Hinderer III",
+				"given": "Eugene W."
 			}
 		],
 		"accessed": {

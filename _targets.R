@@ -534,6 +534,8 @@ figures_tables_plan = tar_assign({
 performance_plan = tar_assign({
   single_core_perf = create_run_perf() |>
     tar_target()
+
+  multi_core_perf = create_multi_perf() |> tar_target()
 })
 
 
