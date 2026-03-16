@@ -475,7 +475,14 @@ figures_tables_plan = tar_assign({
   ) |>
     tar_target()
 
-  performance_plot = create_performance_figure(single_core_perf) |>
+  performance_plot_features = create_performance_figure(single_core_perf) |>
+    tar_target()
+
+  res_12 = tar_file("python/r_res_12.csv")
+  perforance_plot_parallel = create_parallel_performance_figure(
+    res_12,
+    "python"
+  ) |>
     tar_target()
 
   simple_kt_pearson_comparison_plot = compare_simple_kt_pearson_plots(
