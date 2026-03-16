@@ -479,7 +479,7 @@ figures_tables_plan = tar_assign({
     tar_target()
 
   res_12 = tar_file("python/r_res_12.csv")
-  perforance_plot_parallel = create_parallel_performance_figure(
+  performance_plot_parallel = create_parallel_performance_figure(
     res_12,
     "python"
   ) |>
