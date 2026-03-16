@@ -63,7 +63,7 @@ create_parallel_performance_figure = function(
     geom_line() +
     geom_point() +
     theme(legend.position = "inside", legend.position.inside = c(0.2, 0.8)) +
-    labs(x = "# Cores", y = "Time(s)")
+    labs(x = "# Cores", y = "Time (s)")
 
   log_data = purrr::map(log_files, \(in_file) {
     # in_file = log_files[1]
