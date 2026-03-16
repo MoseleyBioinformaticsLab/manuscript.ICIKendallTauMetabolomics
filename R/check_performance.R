@@ -85,5 +85,5 @@ create_parallel_performance_figure = function(
     geom_point() +
     labs(x = "# Cores", y = "Memory (MiB)")
 
-  time_plot | memory_plot
+  (time_plot | memory_plot) + patchwork::plot_annotation(tag_levels = "A")
 }
