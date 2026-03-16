@@ -5,7 +5,7 @@ options(future.rng.onMisuse = "ignore")
 library(furrr)
 plan(multicore, workers = as.numeric(args[1]))
 library(ICIKendallTau)
-out_log_file = paste0("r_log_", args[1], ".log")
+out_log_file = paste0("python/r_log_", args[1], ".log")
 enable_logging(out_log_file, memory = TRUE)
 
 n_feature = 10000
@@ -19,7 +19,7 @@ ICIKendallTau:::log_memory()
 
 ici_res = ici_kendalltau(in_data, return_matrix = FALSE)
 
-out_csv_file = paste0("r_res_", args[1], ".csv")
+out_csv_file = paste0("python/r_res_", args[1], ".csv")
 write.table(
   c(args[1], ici_res$run_time, out_log_file),
   file = out_csv_file,
