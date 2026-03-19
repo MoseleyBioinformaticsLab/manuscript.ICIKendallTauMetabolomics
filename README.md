@@ -44,7 +44,7 @@ git clone https://github.com/MoseleyBioinformaticsLab/manuscript.ICIKendallTauMe
 
 ```
 # download from zenodo
-wget 'https://zenodo.org/records/18689423/files/MoseleyBioinformaticsLab/manuscript.ICIKendallTauMetabolomics-v_0.2.zip?download=1' --output-document=manuscript.ICIKendallTauMetabolomics.zip
+wget 'https://zenodo.org/records/19112314/files/MoseleyBioinformaticsLab/manuscript.ICIKendallTauMetabolomics-v_0.3.zip?download=1' --output-document=manuscript.ICIKendallTauMetabolomics.zip
 unzip manuscript.ICIKendallTauMetabolomics.zip
 ```
 
@@ -91,21 +91,21 @@ We also include the instructions to download the original `targets` cache so you
 # required
 mkdir mwtab
 cd mwtab
-wget https://zenodo.org/records/18674813/files/mwbench.tgz?download=1 --output-document=mwbench.tgz
+wget https://zenodo.org/records/19115655/files/mwbench.tgz?download=1 --output-document=mwbench.tgz
 tar -xzf mwbench.tgz
 cd ..
 
 # required
 mkdir predicted_annotations
 cd predicted_annotations
-wget https://zenodo.org/records/18674813/files/predicted_annotations.tgz?download=1 --output-document=predicted_annotations.tgz
+wget https://zenodo.org/records/19115655/files/predicted_annotations.tgz?download=1 --output-document=predicted_annotations.tgz
 tar -xzf predicted_annotations.tgz
 cd ..
 
 # optional, but suggested
 # Note this is 26GB, it will take some time to download!
 cd manuscript.ICIKendallTauMetabolomics
-wget https://zenodo.org/records/18674813/files/icikt_metabolomics_targets.tgz?download=1 --output-document=icikt_metabolomics_targets.tgz
+wget https://zenodo.org/records/19115655/files/icikt_metabolomics_targets.tgz?download=1 --output-document=icikt_metabolomics_targets.tgz
 tar -xzf icikt_metabolomics_targets.tgz
 cd ..
 ```
