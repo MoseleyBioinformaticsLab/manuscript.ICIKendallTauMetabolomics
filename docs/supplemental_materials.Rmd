@@ -63,7 +63,8 @@ tar_load(c(
   realistic_comparison_plot_3,
   censored_compare_plots,
   vl_na_perc_graph,
-  performance_plot,
+  performance_plot_features,
+  performance_plot_parallel,
   limma_stats_table_supp,
   qratio_plot_all,
   qratio_stats_table_all
@@ -83,7 +84,8 @@ supp_figure_count$increment(c(
   "leftcensored",
   "na-perc-lod",
   "qratio-plot-all",
-  "performance"
+  "performance-features",
+  "performance-parallel"
 ))
 
 supp_table_count$increment(c(
@@ -304,12 +306,22 @@ qratio_stats_table_all |>
 
 
 ```{r}
-#| label: performance
-performance_plot
+#| label: performance-features
+performance_plot_features
 ```
 
-`r supp_figure_count$label_text("performance")`. 
+`r supp_figure_count$label_text("performance-features")`. 
 Time in seconds needed as a function of the number of features, with a fitted line for the assumed complexity for each of the methods tested, including R's Pearson correlation, the ICI-Kt mergesort, and R's Kendall-tau correlation algorithm.
+
+```{r}
+#| label: performance-parallel
+performance_plot_parallel
+```
+
+`r supp_figure_count$label_text("performance-parallel")`.
+**(A)**: Time in seconds as the number of compute cores are increased.
+**(B)**: Additional memory used as the number of compute cores are increased.
+
 
 
 ```{r}
@@ -318,4 +330,4 @@ saveRDS(supp_figure_count, file = here::here("docs/supp_figure_count.rds"))
 saveRDS(supp_table_count, file = here::here("docs/supp_table_count.rds"))
 ```
 
-## References
+
