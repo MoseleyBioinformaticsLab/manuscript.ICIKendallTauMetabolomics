@@ -43,6 +43,7 @@ create_parallel_performance_figure = function(
   test_results = res_12,
   log_dir = "python"
 ) {
+  # log_dir = "python"
   log_files = fs::dir_ls(log_dir, regexp = "r_log")
   res_files = fs::dir_ls(log_dir, regexp = "r_res")
 
@@ -86,4 +87,23 @@ create_parallel_performance_figure = function(
     labs(x = "# Cores", y = "Memory (MiB)")
 
   (time_plot | memory_plot) + patchwork::plot_annotation(tag_levels = "A")
+}
+
+check_r_log = function(log_file) {
+  log_file = "docs/r_log.txt"
+  log_data = readLines(log_file)
+
+  begin_locs = which(grepl("Running correlations ...", log_data))
+  end_locs = which(grepl("Recombining results", log_data))
+  base_data = 1
+
+  mem_data = purrr::map(seq_len(length(begin_locs)), \(in_row) {
+    use_indices = seq(begin_locs[in_row] + 1, end_locs[in_row] - 1)
+    used_mem = stringr::str_extract(log_data[use_indices], "Active: [0-9]+") |>
+      stringr::str_replace("Active: ", "") |>
+      as.numeric()
+
+    tibble::tibble(n_core = in_row, memory = max(used_mem, na.rm = TRUE) / 1032)
+  }) |>
+    purrr::list_rbind()
 }
