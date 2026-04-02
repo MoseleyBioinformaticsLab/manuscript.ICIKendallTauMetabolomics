@@ -126,7 +126,7 @@ However, missing values occur in real data sets for a variety of reasons.
 In metabolomics data sets, a major reason for missing values is that a specific measurable phenomenon falls below the detection limits of the analytical instrumentation (left-censored values).
 These missing data are not missing at random, but represent potentially useful information by virtue of their "missingness" at one end of the data distribution.
 **Methods:** 
-To include this information due to left-censorsed missingness, we propose the information-content-informed Kendall-tau (ICI-Kt) methodology.
+To include this information due to left-censored missingness, we propose the information-content-informed Kendall-tau (ICI-Kt) methodology.
 We developed a statistical test and then show that most missing values in metabolomics datasets are the result of left-censorship. Next, we show how left-censored missing values can be included within the definition of the Kendall-tau correlation coefficient, and how that inclusion leads to an interpretation of information being added to the correlation.
 We also implement calculations for additional measures of theoretical maxima and pairwise completeness that add further layers of information interpretation in the methodology.
 **Results:** 
@@ -164,6 +164,7 @@ Also, imputation of missing measurements in omics' samples is an active area of 
 Imputation methods rely on very similar analytical detection limits between analytical samples. 
 When this condition does not hold, imputation methods have reduced performance and lower interpretive value. 
 For analytical techniques requiring complex sample handling and detection, the variability in the analytical detection level can be quite high.
+Some differential analysis methods have been developed to directly handle missing values in the statistical testing methodology [@10.12688/openreseurope.17099.1; @liSDASemiparametricDifferential2019].
 However, when it comes to calculating correlation, there are very few methods that explicitly account for left-censored missing data that we know of.
 In many cases, missing values are either ignored or imputed to zero (or another value) and then included in the correlation calculation.
 The two most common approaches for ignoring (i.e. dropping) values is to only use those measurements that are common across all samples (complete) or that are common between two samples being compared (pairwise complete).
@@ -210,10 +211,11 @@ The implementation of the basic calculation of ICI-Kt involves the replacement o
 We also developed a binomial statistical test for determining if the cause for missingness is likely left-censorship. 
 With this statistical test and experimental datasets from The Metabolomics Workbench (MW) [@MetabolomicsWorkbench], we demonstrate that left-censorship is the cause of many missing values across a large number of metabolomics datasets.
 We examine the effect of missing values on various collections of simulated and real data-sets, comparing the ICI-Kt methodology with other simpler methods of handling the missing values, namely removing them or imputing them to zero.
-Given the detrimental effects of including outlier samples in differential analyses, we also evaluate the ability of the ICI-Kt methodology to capture sample-sample pairwise similarities and the determination of outlier samples prior to differential analyses.
+Given the detrimental effects of including outlier samples, we also evaluate the application of ICI-Kt in quality control and quality assessment steps typically performed prior to differential analyses.
+Specifically, we compare ICI-Kt to other common correlation-based outlier detection methods.
 We were also curious about the utility of the ICI-Kt methodology in creating metabolomics feature-feature networks with large amounts of missing values, so we evaluated the partitioning of networks by Reactome pathways [@joshi-topeReactomeKnowledgebaseBiological2005] after network creation using different correlation measures.
 
-All of the code and data used for this manuscript is available on zenodo [@flightCodeDataInformationContentInformed2026].
+All of the code and data used for this manuscript is available on Zenodo [@flightCodeDataInformationContentInformed2026].
 :::
 
 ::: {custom-style="MDPI_2.1_heading1"}
@@ -221,7 +223,7 @@ All of the code and data used for this manuscript is available on zenodo [@fligh
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.1 Additional Definitions of Concordant and Discordant Pairs to Include Missingness*
+### *2.1. Additional Definitions of Concordant and Discordant Pairs to Include Missingness*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -304,7 +306,7 @@ These additional definitions make it possible to interpret a Kendall-$\tau$ corr
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.2 Considering Ties*
+### *2.2. Considering Ties*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -330,7 +332,7 @@ This is useful when analyzing and interpreting correlations from a large number 
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.3 P-Value*
+### *2.3. P-Value*
 :::
 
 
@@ -339,7 +341,7 @@ With the calculation of the number of entries, and the numbers of ties (which ma
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.4 Theoretical Maxima*
+### *2.4. Theoretical Maxima*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -363,7 +365,7 @@ Therefore, when calculating ICI-Kt values for comparison between datasets, we ad
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.5 Completeness*
+### *2.5. Completeness*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -382,7 +384,7 @@ where for any two samples *i* and *j*, $n_{feat}$ is the total number of feature
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.6 Implementation Details*
+### *2.6.Implementation Details*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -397,7 +399,7 @@ In addition to use as an imported Python module, the Python `icikt` module provi
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.7 Simulated Data Sets*
+### *2.7. Simulated Data Sets*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -445,7 +447,7 @@ simulated_table  |>
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.8 Metabolomics Datasets from Metabolomics Workbench*
+### *2.8. Metabolomics Datasets from Metabolomics Workbench*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -476,7 +478,7 @@ Of the 6105 datasets initially downloaded, 711 were kept for further analysis.
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.9 Number of Missing Values and Median Rank*
+### *2.9. Number of Missing Values and Median Rank*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -486,7 +488,7 @@ Grouping the features by the number of missing values, we calculate the median o
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.10 Binomial Test for Left Censorship*
+### *2.10. Binomial Test for Left Censorship*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -498,7 +500,7 @@ The number of successes and failures are aggregated across the SSF splits for ca
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.11 Correlation Methods*
+### *2.11. Correlation Methods*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -514,7 +516,7 @@ Pearson, with a $log(x)$ transform, and then setting infinite values to `NA` val
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.12 Outlier Detection*
+### *2.12. Outlier Detection*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -529,7 +531,7 @@ The correlation methods are compared by their fractions of significant metabolit
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.13 Feature Annotations*
+### *2.13. Feature Annotations*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -543,7 +545,7 @@ These grouped pathway annotations were then used for the network partitioning ca
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.14 Feature-Feature Networks and Partitioning*
+### *2.14. Feature-Feature Networks and Partitioning*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -585,7 +587,7 @@ P-values were adjusted using the Bonferroni correction.
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.15 Changes In Correlation Due to Changes in Dynamic Range and Imputation*
+### *2.15. Changes In Correlation Due to Changes in Dynamic Range and Imputation*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -602,7 +604,7 @@ Differences between the reference and trimmed correlations were calculated, as w
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.16 Performance*
+### *2.16. Performance and Efficiency Evaluations*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -619,7 +621,7 @@ In both cases, the memory usage prior to starting calculations was recorded so t
 
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *2.17 Data Processing*
+### *2.17. Data Processing*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -637,7 +639,7 @@ Outlier detection used `visualizationQualityControl` v 0.5.6 [@MoseleyBioinforma
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *3.1 Datasets*
+### *3.1. Datasets*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -679,7 +681,7 @@ knitr::include_graphics(filtering_loc, rel_path = FALSE)
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *3.2 Left Censoring As a Cause for Missingness*
+### *3.2. Left Censoring As a Cause for Missingness*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -723,7 +725,7 @@ Missingness in datasets. **A**: Sina plot of the percent missing values in NMR a
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *3.3 Comparison To Other Correlation Measures*
+### *3.3. Comparison To Other Correlation Measures*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -773,7 +775,7 @@ A subset of `r format(realistic_comparison_plot$n_subset, big.mark = ",", big.in
 
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *3.4 Effect of Left Censoring VS Random Missing Data*
+### *3.4. Effect of Left Censoring VS Random Missing Data*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -823,7 +825,7 @@ ICI-Kt, in contrast, incorporates the missingness in a sensical way, and the res
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *3.5 Differences in Dynamic Range and Correlation*
+### *3.5. Differences in Dynamic Range and Correlation*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -858,13 +860,13 @@ Bottom: Differences in the absolute value of reference - trimmed differences bet
 
 
 ::: {custom-style="MDPI_2.2_heading2"}
-### *3.6 Utility for Metabolomics Data Sets*
+### *3.6. Utility for Metabolomics Data Sets*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
 Having established that many metabolomics data sets with missing values are present due to left-censorship (see `r figure_count$label_text("left-censorship-missingness")`), we analyzed how the ICI-Kt methodology compares to other methods for outlier removal and for the generation of feature-feature networks.
 
-In outlier removal, the evaluation used differential analysis of metabolites across conditions.
+For outlier removal evaluation, we directly used differential analysis of metabolites across conditions.
 For each correlation method, outlier samples within each SSF were determined and removed, and an F-test conducted using the `limma` package across SSF.
 The fraction of metabolites that were differential after outlier removal was determined, and a t-test used to evaluate pairwise comparisons of methods to see if any differences were significant.
 
@@ -931,8 +933,8 @@ qratio_stats_table_manuscript |>
 :::
 
 
-::: {custom-style="MDPI_2.1_heading1"}
-### *3.7 Performance*
+::: {custom-style="MDPI_2.1_heading2"}
+### *3.7. Computational Performance and Efficiency*
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -963,7 +965,11 @@ Although the actual implementation of the base ICI-Kt correlation metric involve
 Furthermore, the addition of "local", "global" and $\tau_{max}$ normalizations of the ICI-Kt correlation in combination with completeness provide additional interpretations of information content.
 The package functions `ici_kt` and `ici_kendalltau`, the default for the calculation of correlations between two samples and multiple samples, respectively, default to the "local" and "global" methods of handling ties, as laid out in Sections 2.3.
 Finally, the availability of the binomial left-censorship test ensures the application of the ICI-Kt methodology when it is appropriate.
-Future directions for this methodology are to expand and demonstrate its application to right-censored data as well as when missingness is due to a mixture of left-censorship, random, and right-censorship.
+Future directions for this methodology are to explore handling several additional statistical conditions.
+Specifically, the methodology and the codebases will be expanded to handle right censorship, which we expect to be straight-forward.
+In addition, approaches will be explored to handle data with combinations of right-censorship, left-censorship, and missing at random.
+We expect the expansion of the methodology to handle a combination of both right and left censorship, also known as double censorship, to be tractable.
+However, combinations of left, right, or double censorship with missing at random may not have good solutions by this methodological approach.
 
 Global imputation methods rely on the assumption that samples have similar dynamic range of detection and thus an imputed value should be comparable between samples.
 However, the dynamic range of detection is often variable across samples.
@@ -978,6 +984,14 @@ As far as we know, information-content-informed Kendall-tau (ICI-Kt) is the firs
 ICI-Kt **explicitly** treats left-censored missing values as correlative information while preserving the full deleterious effects of missing at random values on the correlation metric.
 Moreover, ICI-Kt can be combined with measurement completeness to create a composite metric that is quite sensitive to overall data quality on a sample-specific level.
 Also, this ICI-Kt $\times$ completeness metric may have applications in cluster detection of single-cell omics data sets.
+
+ICI-Kt has been directly used in the analysis of metabolomics and other omics datasets, providing useful biological and biomedical insight. 
+In Mitchell et al. 2021, a sterol feature-limited sample-sample ICI-Kt correlation matrix (Figure 5A in the paper) illustrates at least two distinct groups of resected human human non-small lung cancer (NSCLC) samples not specific to histological subtypes [@mitchellUntargetedLipidomicsNonSmall2021]. 
+Also, a feature-feature ICI-Kt correlation matrix (Figure 4 in the paper) illustrates distinct patterns of high correlation between specific groups of phosphosphingolipids and glycerophospholipids [@mitchellUntargetedLipidomicsNonSmall2021]. 
+In Braun et al. 2025, a sample-sample ICI-Kt correlation matrix (Figure 2A in the paper) clearly separates cerebrospinal fluid aneurysmal subarachnoid hemorrhage, plasma aneurysmal subarachnoid hemorrhage, and control plasma cytokine samples, which is not illustrated in the principal component analysis [@braunEarlyChangesInflammationrelated2025]. 
+Statistically significant cytokine correlations between cerebrospinal fluid and plasma samples (illustrated in Figure 3 of the paper) identified CXCL12, IL-15, and SAA1 as potential biomarkers for neurysmal subarachnoid hemorrhage and potential therapeutic targets [@braunEarlyChangesInflammationrelated2025]. 
+In Anspach et al. 2026, feature-feature ICI-Kt correlation matrix analyses enable multi-omics integration of transcriptomics, metabolomics, and lipidomics datasets derived from resected tumor and nearby non-tumor paired samples from human patients with steatohepatitic hepatocellular carcinoma [@anspachIntegratedMultiomicAnalysis2026].
+Over 300 novel gene-metabolite and gene-lipid correlative relationship were identified in these ICI-Kt driven analyses [@anspachIntegratedMultiomicAnalysis2026].
 
 The implementations of the ICI-Kt method in the available R and Python packages provide a rich set of options for customizing the correlation calculation for a variety of use-cases and interpretations.
 These packages handle missing values in log-transformed data in a safe manner and have O(nlogn) performance, making them computationally practical for real-world omics data sets.

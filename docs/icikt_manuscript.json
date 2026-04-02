@@ -4784,5 +4784,232 @@
 				]
 			]
 		}
+	},
+	{
+		"id": "liSDASemiparametricDifferential2019",
+		"type": "article-journal",
+		"abstract": "Identifying differentially abundant features between different experimental groups is a common goal for many metabolomics and proteomics studies. However, analyzing data from mass spectrometry (MS) is difficult because the data may not be normally distributed and there is often a large fraction of zero values. Although several statistical methods have been proposed, they either require the data normality assumption or are inefficient.",
+		"citation-key": "liSDASemiparametricDifferential2019",
+		"container-title": "BMC Bioinformatics",
+		"DOI": "10.1186/s12859-019-3067-z",
+		"ISSN": "1471-2105",
+		"issue": "1",
+		"journalAbbreviation": "BMC Bioinformatics",
+		"language": "en",
+		"page": "501",
+		"source": "Springer Link",
+		"title": "SDA: a semi-parametric differential abundance analysis method for metabolomics and proteomics data",
+		"title-short": "SDA",
+		"URL": "https://doi.org/10.1186/s12859-019-3067-z",
+		"volume": "20",
+		"author": [
+			{
+				"family": "Li",
+				"given": "Yuntong"
+			},
+			{
+				"family": "Fan",
+				"given": "Teresa W.M."
+			},
+			{
+				"family": "Lane",
+				"given": "Andrew N."
+			},
+			{
+				"family": "Kang",
+				"given": "Woo-Young"
+			},
+			{
+				"family": "Arnold",
+				"given": "Susanne M."
+			},
+			{
+				"family": "Stromberg",
+				"given": "Arnold J."
+			},
+			{
+				"family": "Wang",
+				"given": "Chi"
+			},
+			{
+				"family": "Chen",
+				"given": "Li"
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2026",
+					3,
+					26
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2019",
+					10,
+					17
+				]
+			]
+		}
+	},
+	{
+		"id": "braunEarlyChangesInflammationrelated2025",
+		"type": "article-journal",
+		"abstract": "Background: Aneurysmal subarachnoid hemorrhage (aSAH) is a relatively uncommon but high mortality form of stroke that can result in long-lasting disability. A better understanding of key neuroinflammatory changes during the early phase (<72 h) may provide potential avenues of treatment.\nMethods: In an attempt to understand these early changes, we recruited 7 aSAH patients for profiling of longitudinal plasma and cerebrospinal fluid (CSF) proteins at up to 72 h post injury. We additionally compared this to control plasma obtained previously from healthy elderly volunteers. Using the Alamar Biosciences NULISAseq platform, we obtained a comprehensive picture of early peripheral and central inflammatory changes after injury.\nResults: This study demonstrated very early plasma changes across 107 inflammatory proteins, 22 of which showed significant correlations between plasma and CSF. Of these, CXCL12, IL-15, and SAA1 are detectably elevated <24 h in plasma, significantly correlated with CSF levels, and altered as a function of aSAH progression over time during this early phase.\nConclusion: This study demonstrates the feasibility of measuring a large number of inflammatory proteins in CSF and plasma from aSAH patients soon after injury. Despite the small sample size and limitations of the control group, we identified several previously reported “hits” that may offer prognostic utility and/or therapeutic potential for aSAH patients: CXCL12, IL-15, and SAA1.",
+		"citation-key": "braunEarlyChangesInflammationrelated2025",
+		"container-title": "Journal of Stroke and Cerebrovascular Diseases",
+		"DOI": "10.1016/j.jstrokecerebrovasdis.2025.108304",
+		"ISSN": "10523057",
+		"issue": "6",
+		"journalAbbreviation": "Journal of Stroke and Cerebrovascular Diseases",
+		"language": "en",
+		"page": "108304",
+		"source": "DOI.org (Crossref)",
+		"title": "Early changes in inflammation-related proteins in the cerebrospinal fluid and plasma of patients with aneurysmal subarachnoid hemorrhage",
+		"URL": "https://linkinghub.elsevier.com/retrieve/pii/S1052305725000837",
+		"volume": "34",
+		"author": [
+			{
+				"family": "Braun",
+				"given": "David J."
+			},
+			{
+				"family": "Hatton",
+				"given": "Kevin W."
+			},
+			{
+				"family": "Fraser",
+				"given": "Justin F."
+			},
+			{
+				"family": "Flight",
+				"given": "Robert M."
+			},
+			{
+				"family": "Moseley",
+				"given": "Hunter N.B."
+			},
+			{
+				"family": "Bailey",
+				"given": "Caleb S."
+			},
+			{
+				"family": "Morganti",
+				"given": "Josh M."
+			},
+			{
+				"family": "Zhang",
+				"given": "Bingqing"
+			},
+			{
+				"family": "Ariyapala",
+				"given": "Ishara S."
+			},
+			{
+				"family": "Kim",
+				"given": "Tae K."
+			},
+			{
+				"family": "Van Eldik",
+				"given": "Linda J."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2026",
+					3,
+					26
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2025",
+					6
+				]
+			]
+		}
+	},
+	{
+		"id": "anspachIntegratedMultiomicAnalysis2026",
+		"type": "article",
+		"abstract": "Background Metabolic dysfunction-associated steatotic liver disease (MASLD) is the fastest-growing etiology of hepatocellular carcinoma (HCC). A mechanistic understanding of the metabolic heterogeneity of MASLD-driven tumors is crucial to inform strategies for future treatment options.\nMethods Paired tumor (n=8) and adjacent non-tumor tissue (n=8) were collected from patients with steatohepatitic HCC at the University of Kentucky Markey Cancer Center. Hematoxylin and eosin (H&E) staining was used for pathological determination of tumor and adjacent nontumor tissue by a board-certified pathologist. Lipidomic, metabolomic, and transcriptomic analyses were performed, and data were integrated across platforms to identify novel relationships across tumor and adjacent nontumor tissue.\nResults Histological analysis by H&E showed significant lipid vacuole accumulation and inflammatory foci in HCC tumors relative to nontumor tissue. Across omics platforms, we identified 1,679 genes, 1,696 metabolites, and 292 lipids that were significantly (padj<0.01) increased or decreased in tumors relative to nontumor tissue. We identified significant reductions in total ceramides and increases in fatty acyl chain saturation in tumor tissue. Furthermore, metabolites involved in amino acid and fatty acid metabolism were largely decreased in tumors relative to nontumor tissue. We also identified a total of 303 highly significant and novel transcript-metabolite associations (117 gene-metabolite; 186 gene-lipid) across tumor and nontumor tissue.\nConclusions Taken together, this integrative analysis reveals novel relationships between steady-state gene transcripts and specific metabolites in steatohepatitic tumors, thereby identifying new pharmacological targets that may be exploited for therapeutic benefit.",
+		"citation-key": "anspachIntegratedMultiomicAnalysis2026",
+		"DOI": "10.64898/2026.01.28.26344977",
+		"language": "en",
+		"license": "© 2026, Posted by openRxiv. The copyright holder for this pre-print is the author. All rights reserved. The material may not be redistributed, re-used or adapted without the author's permission.",
+		"note": "ISSN: 3067-2007\npage: 2026.01.28.26344977",
+		"publisher": "medRxiv",
+		"source": "medRxiv",
+		"title": "An Integrated Multi-omic Analysis Reveals Novel Gene-Metabolite Relationships in Human Steatohepatitic Hepatocellular Carcinoma",
+		"URL": "https://www.medrxiv.org/content/10.64898/2026.01.28.26344977v1",
+		"author": [
+			{
+				"family": "Anspach",
+				"given": "Garrett B."
+			},
+			{
+				"family": "Flight",
+				"given": "Robert M."
+			},
+			{
+				"family": "Park",
+				"given": "Sehyung"
+			},
+			{
+				"family": "Moseley",
+				"given": "Hunter N. B."
+			},
+			{
+				"family": "Helsley",
+				"given": "Robert N."
+			}
+		],
+		"accessed": {
+			"date-parts": [
+				[
+					"2026",
+					3,
+					26
+				]
+			]
+		},
+		"issued": {
+			"date-parts": [
+				[
+					"2026",
+					1,
+					30
+				]
+			]
+		}
+	},
+	{
+		"id": "10.12688/openreseurope.17099.1",
+		"type": "article-journal",
+		"citation-key": "10.12688/openreseurope.17099.1",
+		"container-title": "Open Research Europe",
+		"DOI": "10.12688/openreseurope.17099.1",
+		"issue": "52",
+		"title": "Differential expression analysis of binary appearance patterns [version 1; peer review: awaiting peer review]",
+		"volume": "4",
+		"author": [
+			{
+				"family": "Vitkin",
+				"given": "E"
+			}
+		],
+		"issued": {
+			"date-parts": [
+				[
+					"2024"
+				]
+			]
+		}
 	}
 ]
