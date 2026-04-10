@@ -121,13 +121,13 @@ supp_figure_count = readRDS("docs/supp_figure_count.rds")
 **Background:** 
 Almost all correlation measures currently available are unable to directly handle missing values.
 Typically, missing values are either ignored completely by removing them or are imputed and used in the calculation of the correlation coefficient.
-In either case, the correlation value will be impacted based on a perspective that the missing data represents no useful information.
+In either case, the correlation value will be impacted based on the perspective that the missing data represents no useful information.
 However, missing values occur in real data sets for a variety of reasons. 
 In metabolomics data sets, a major reason for missing values is that a specific measurable phenomenon falls below the detection limits of the analytical instrumentation (left-censored values).
 These missing data are not missing at random, but represent potentially useful information by virtue of their "missingness" at one end of the data distribution.
 **Methods:** 
-To include this information due to left-censored missingness, we propose the information-content-informed Kendall-tau (ICI-Kt) methodology.
-We developed a statistical test and then show that most missing values in metabolomics datasets are the result of left-censorship. Next, we show how left-censored missing values can be included within the definition of the Kendall-tau correlation coefficient, and how that inclusion leads to an interpretation of information being added to the correlation.
+To include this information due to left-censored missingness, we propose the information-content-informed Kendall-$\tau$ (ICI-Kt) methodology.
+We developed a statistical test and then show that most missing values in metabolomics datasets are the result of left-censorship. Next, we show how left-censored missing values can be included within the definition of the Kendall-$\tau$ correlation coefficient, and how that inclusion leads to an interpretation of information being added to the correlation.
 We also implement calculations for additional measures of theoretical maxima and pairwise completeness that add further layers of information interpretation in the methodology.
 **Results:** 
 Using both simulated and over 700 experimental data sets from The Metabolomics Workbench, we demonstrate that the ICI-Kt methodology allows for the inclusion of left-censored missing data values as interpretable information, enabling both improved determination of outlier samples and improved feature-feature network construction.
@@ -347,7 +347,7 @@ With the calculation of the number of entries, and the numbers of ties (which ma
 ::: {custom-style="MDPI_3.1_text"}
 The *global* case also provides an interesting property, whereby we can calculate the theoretical maximum correlation that would be possible to observe given the lowest number of shared missing values.
 This value can be useful to scale the rest of the observed correlation values across many sample-sample correlations, providing a value that scales an entire dataset appropriately.
-For any pairwise comparison of two vectors (from experimental samples for example), we can calculate the maximum possible Kendall-tau for that comparison by defining the maximum number of concordant pairs as:
+For any pairwise comparison of two vectors (from experimental samples for example), we can calculate the maximum possible Kendall-$\tau$ for that comparison by defining the maximum number of concordant pairs as:
 :::
 
 ::: {custom-style="MDPI_3.9_equation"}
@@ -356,7 +356,7 @@ $$\tau_{max} = \frac{n_{tot} - n_{xtie} - n_{ytie} + n_{tie}}{\sqrt{(n_{tot} - n
 
 ::: {custom-style="MDPI_3.1_text"}
 where $n_{tie}$ is the number of commonly tied values in both X and Y.
-Calculating a set of $\tau_{max}$ values between all experimental samples, we can take the maximum of the values, and use it to scale **all** of the obtained Kendall-tau values equally ($\frac{\tau}{\max(\tau_{max})}$).
+Calculating a set of $\tau_{max}$ values between all experimental samples, we can take the maximum of the values, and use it to scale **all** of the obtained Kendall-$\tau$ values equally ($\frac{\tau}{\max(\tau_{max})}$).
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
@@ -508,7 +508,7 @@ For each dataset, we calculated correlations using a variety of methods.
 Across the various datasets, either zeros or empty strings (generally resulting in `NA` values when read into R) are used to represent missingness.
 To start, we replaced all missing values with `NA`, and then either left them as `NA` or set them to zero for the various methods used.
 ICI-Kt with `NA` (icikt); and then scaled (multiplied) by the completeness metric (icikt_complete).
-Kendall-tau, with `NA`, and then using pairwise-complete-observations (kt_base).
+Kendall-$\tau$, with `NA`, and then using pairwise-complete-observations (kt_base).
 Pearson, with `NA`'s replaced by zeros, using pairwise-complete-observations (pearson_base).
 Pearson, with `NA`, using pairwise-complete-observations (pearson_base_nozero).
 Pearson, with a $log(x + 1)$ transform applied, using pairwise-complete-observations (pearson_log1p).
@@ -647,7 +647,7 @@ We are aware of only one previous investigation of the causes of missingness in 
 In Do et al. [-@doCharacterizationMissingValues2018], the authors showed that there was a limit of detection (LOD) effect, with a dependence on the day the samples were run.
 Unfortunately, the KORA4 metabolomics dataset from Do et al. is not publicly available, so we could not attempt to redo their analysis of missing values with the same dataset.
 
-Given the number of projects and analyses available in Metabolomics Workbench (MW), we sought to obtain a large number of individual datasets (MW analyses) from MW to evaluate both the phenomenon of left censorship and the information-content-informed Kendall-tau methodology.
+Given the number of projects and analyses available in Metabolomics Workbench (MW), we sought to obtain a large number of individual datasets (MW analyses) from MW to evaluate both the phenomenon of left censorship and the information-content-informed Kendall-$\tau$ methodology.
 
 In `r figure_count$label_text("datasets")`, we provide a summary of the number of datasets remaining after filtering for various attributes (see Methods).
 From the starting 6501, we were able to retain 711 for this study.
@@ -721,7 +721,7 @@ left_censorship_missingness_plot
 Missingness in datasets. **A**: Sina plot of the percent missing values in NMR and MS datasets.
 **B**: Histogram of log10 adjusted p-values from the binomial test testing if non-missing values are more likely to be below the median rank when the metabolite has missingness in the dataset. Red line indicates an adjusted p-value of 0.05. Adjusted p-values of 0 were replaced with the lowest observed non-zero adjusted p-value.
 **C**: Median (black) and minimum median (red) rank of metabolite abundances across factor groups of samples *vs* the number of samples the metabolite had a missing value for dataset AN001074.
-**D**: Sina plots of the Kendall-tau correlation of the median rank and minimum median rank with number of missing samples across all datasets.
+**D**: Sina plots of the Kendall-$\tau$ correlation of the median rank and minimum median rank with number of missing samples across all datasets.
 :::
 
 ::: {custom-style="MDPI_2.2_heading2"}
@@ -729,12 +729,12 @@ Missingness in datasets. **A**: Sina plot of the percent missing values in NMR a
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
-We compared the ICI-Kt correlation to both Pearson and regular Kendall-tau-b correlations as calculated by the built-in `R` functions using simulated data sets with missing values (`r supp_figure_count$label_text(c("kt_pearson", "ici_distribution", "kt_distribution"))`).
+We compared the ICI-Kt correlation to both Pearson and regular Kendall-$\tau_b$ correlations as calculated by the built-in `R` functions using simulated data sets with missing values (`r supp_figure_count$label_text(c("kt_pearson", "ici_distribution", "kt_distribution"))`).
 
-We created two samples with 1000 observations each drawn from a log-normal distribution, added further variance using a uniform distribution, and sorted in each case to create a pair of X and Y samples with a correlation of 1 and -1 for both Pearson and Kendall-tau correlation measures.
+We created two samples with 1000 observations each drawn from a log-normal distribution, added further variance using a uniform distribution, and sorted in each case to create a pair of X and Y samples with a correlation of 1 and -1 for both Pearson and Kendall-$\tau$ correlation measures.
 The *true* correlation for each of the Kendall and Pearson correlations were calculated, and then missingness was introduced in the lower range of values, up to half of the values (see Simulated Data Sets).
 
-In `r figure_count$label_text("missing2cor")` (and `r supp_figure_count$label_text("realistic_reference")`), we can see that as missing values are added, only the ICI-Kt correlation values change in any significant way as illustrated by the wider range of ICI-Kt values on the y-axes versus the much narrower range of Pearson and Kendall tau correlation values on the x-axes.
+In `r figure_count$label_text("missing2cor")` (and `r supp_figure_count$label_text("realistic_reference")`), we can see that as missing values are added, only the ICI-Kt correlation values change in any significant way as illustrated by the wider range of ICI-Kt values on the y-axes versus the much narrower range of Pearson and Kendall-$\tau$ correlation values on the x-axes.
 As the number of missing values increase, the ICI-Kt values drop or increase by up to 0.2.
 Similarly, Pearson correlation is also affected, but the degree of change in the correlation values are much less (notice the orders of magnitude differences in the x-axis scales compared to the y-axis), on the order of only 0.005 for both cases.
 
@@ -742,7 +742,7 @@ Adding outlier points at the high end of the distribution to one of the samples 
 Again, the scale of the differences is much smaller in the Pearson correlations versus ICI-Kt. The negative Kendall correlations are unaffected by the outliers, in large part due to being a rank-based correlation.
 Likewise, the negative ICI-Kt correlations appear unaffected; however, the scale of changes seen in the negative Pearson correlations, if present in the negative ICI-Kt correlations, might simply be obscured by the changes due to missingness that are orders of magnitude larger.
 
-These results demonstrate that the ICI-Kt correlation has quantitative sensitivity to missing values over the normal Kendall-tau correlation and linear Pearson correlation where points with missing values are ignored (pairwise complete).
+These results demonstrate that the ICI-Kt correlation is quantitatively sensitive to missing values over the normal Kendall-$\tau$ correlation and linear Pearson correlation where points with missing values are ignored (pairwise complete).
 :::
 
 ::: {custom-style="MDPI_5.2_figure"}
@@ -779,16 +779,16 @@ A subset of `r format(realistic_comparison_plot$n_subset, big.mark = ",", big.in
 :::
 
 ::: {custom-style="MDPI_3.1_text"}
-`r figure_count$label_text("leftcensored")` demonstrates the effect of introducing left-censored versus random missingness in five different measures of correlation, including the ICI-Kt, the normal Kendall-tau with *pairwise-complete-observations*, the normal Kendall-tau replacing missing with 0, Pearson with *pairwise-complete-observations*, and Pearson replacing missing with 0.
+`r figure_count$label_text("leftcensored")` demonstrates the effect of introducing left-censored versus random missingness in five different measures of correlation, including the ICI-Kt, the normal Kendall-$\tau$ with *pairwise-complete-observations*, the normal Kendall-$\tau$ replacing missing with 0, Pearson with *pairwise-complete-observations*, and Pearson replacing missing with 0.
 The ICI-Kt correlation demonstrates a slight increase from the starting 0.90 correlation value with growing left-centered missingness caused by a slight reinforcement of the correlation, while with **growing random missingness**, the ICI-Kt correlation drops precipitously due to the large increase in discordant pairs caused by the random missing values.
-The normal Kendall tau correlation with pairwise complete has a small decrease in the correlation value with growing left-centered missingness caused by a loss of supporting pairs, while this correlation has a near constant average value with growing random missingness.
-The normal Kendall tau correlation replacing missing with 0 has identical behavior to the ICI-Kt correlation.
+The normal Kendall-$\tau$ correlation with pairwise complete has a small decrease in the correlation value with growing left-centered missingness caused by a loss of supporting pairs, while this correlation has a near constant average value with growing random missingness.
+The normal Kendall-$\tau$ correlation replacing missing with 0 has identical behavior to the ICI-Kt correlation.
 In contrast to ICI-Kt, the Pearson correlation calculated using only pairwise complete entries is **practically constant** (i.e., range of 0.004 or less) over growing left-centered and random missingness.
 When replacing missing values with zero, Pearson correlation demonstrates a small decrease in the correlation value with growing left-centered missingness due to the zero values causing some deviation from linearity. 
-Pearson correlation drops precipitously with growing random missingness with a magnitude similar to the ICI-Kt and normal Kendall tau replacing missing with 0.
-Overall, the ICI-Kt and the normal Kendall-tau replacing missing with zero have the desirable characteristics of maintaining the correlation with growing left-centered missing **while sharply dropping the correlation** with growing random missingness.
-In this special case where zero is lower than all of the values in the dataset, ICI-Kt and Kendall-tau replaced with zero result in identical correlation values, as shown in the bottom panels of `r supp_figure_count$label_text("leftcensored")`A and `r supp_figure_count$label_text("leftcensored")`C.
-In a naive treatment of the left-centered missing data, if the values below the cutoff are set to missing followed by log-transforming the values and subsequently setting missing values to 0, then the Kendall tau correlation replacing missing with 0 will show some very odd patterns at low intensity cutoffs due to the introduction of discordant pairs.
+Pearson correlation drops precipitously with growing random missingness with a magnitude similar to the ICI-Kt and normal Kendall-$\tau$ replacing missing with 0.
+Overall, the ICI-Kt and the normal Kendall-$\tau$ replacing missing with zero have the desirable characteristics of maintaining the correlation with growing left-centered missing **while sharply dropping the correlation** with growing random missingness.
+In this special case where zero is lower than all of the values in the dataset, ICI-Kt and Kendall-$\tau$ replaced with zero result in identical correlation values, as shown in the bottom panels of `r supp_figure_count$label_text("leftcensored")`A and `r supp_figure_count$label_text("leftcensored")`C.
+In a naive treatment of the left-centered missing data, if the values below the cutoff are set to missing followed by log-transforming the values and subsequently setting missing values to 0, then the Kendall-$\tau$ correlation replacing missing with 0 will show some very odd patterns at low intensity cutoffs due to the introduction of discordant pairs.
 Likewise, Pearson correlation replacing missing with 0 shows a parabolic effect with increasing missing values.
 :::
 
@@ -837,7 +837,7 @@ Based on the number of values being censored, limits of 0.5, 1, and 1.5 were sel
 For each level of possible missingness introduced by changes to the dynamic range, correlation across all samples were calculated using all values (reference), as well as after missingness was added (trimmed), and using Pearson correlation with global imputation (Pearson Imputed), or ICI-Kt.
 `r figure_count$label_text("trimmed-imputed-correlation")` demonstrates that it is only as the number of missing values in one of the samples approaches 50% or more (500 of 1000 features) does the Pearson correlation with global imputation give correlation values closer to the known correlation with no missing values in any appreciable amount (points below the red lines in the top panels, and to the right of the red line in the histograms in the bottom panels).
 Points above the lines with slopes of -1 and 1 indicate that the difference of reference - trimmed is smaller in the ICI-Kt correlations, and below the lines indicate the difference is larger in the ICI-Kt correlations.
-This is further emphasized by the majority of the values are to the left of the line at 0 in the difference histograms.
+This is further emphasized by the majority of the values being to the left of the line at 0 in the difference histograms.
 :::
 
 ::: {custom-style="MDPI_5.2_figure"}
@@ -868,7 +868,7 @@ Having established that many metabolomics data sets with missing values are pres
 
 For outlier removal evaluation, we directly used differential analysis of metabolites across conditions.
 For each correlation method, outlier samples within each SSF were determined and removed, and an F-test conducted using the `limma` package across SSF.
-The fraction of metabolites that were differential after outlier removal was determined, and a t-test used to evaluate pairwise comparisons of methods to see if any differences were significant.
+The fraction of metabolites that were differential after outlier removal was determined, and a t-test was used to evaluate pairwise comparisons of methods to see if any differences in fractions of differential metabolites were significant.
 
 `r table_count$label_caption("outlier_fractions")` shows the fractions of significant metabolites after removing outlier samples using each method.
 `r table_count$label_caption("outlier_differences")` shows the statistical results of the pairwise comparisons of each method based on the significant fractions.
@@ -911,7 +911,7 @@ limma_stats_table_manuscript  |>
 ::: {custom-style="MDPI_3.1_text"}
 In feature-feature network generation, we evaluated the differences in partitioning ratios of metabolite features across aggregated Reactome pathways, after creating weighted feature-feature networks using the various correlation methods.
 Paired t-tests compared the methods, and are reported in `r table_count$label_text("network-network-stats")` (and `r supp_table_count$label_text("qratio-stats-table-all")`), and graphed in `r supp_figure_count$label_text("qratio-plot-all")`.
-Both the ICI-Kt complete and base variant show much larger positive differences in partitioning ratio compared to all other methods, including the base Kendall-tau.
+Both the ICI-Kt complete and base variant show much larger positive differences in partitioning ratio compared to all other methods, including the base Kendall-$\tau$.
 This implies that the gains in partitioning ratio are not only due to using a rank-based correlation.
 :::
 
@@ -943,7 +943,7 @@ Therefore, while not as fast as Pearson correlation, ICI-Kt does match the expec
 
 When multiple compute cores are available, `furrr` (and the underlying `future` package) makes it rather trivial to split up the computation across cores and recombine them at the end.
 `r supp_figure_count$label_text("performance-parallel")` shows decreasing time taken for a dataset with 10,000 features and 400 samples (300 to 42 seconds), while increasing the overall memory used from 110 MiB to 11,790 MiB, as `furrr` does not have an easy way to have shared memory.
-There is less of a gain past 5 cores, likely due to the machine on which the calculations were run having 6 physically separate cores with 2 hyperthreaded cores each, one of which was always running the controlling process.
+There is less of a gain past 5 cores, likely due to the machine on which the calculations was run having 6 physically separate cores with 2 hyperthreaded cores each, one of which was always running the controlling process.
 
 The Python version uses only 850 MiB of additional memory when using 12 cores, due to using the shared memory module for multiprocessing, however the overall runtime is only slightly faster than the `R` version, at 42 seconds vs 44 seconds, respectively. 
 :::
@@ -963,15 +963,15 @@ Additionally, there does not appear to be a software implementation of Alvo and 
 
 Although the actual implementation of the base ICI-Kt correlation metric involves a global imputation of missing values, our equations demonstrate a left-censorship interpretation of missing values as useful information within the calculated correlation.
 Furthermore, the addition of "local", "global" and $\tau_{max}$ normalizations of the ICI-Kt correlation in combination with completeness provide additional interpretations of information content.
-The package functions `ici_kt` and `ici_kendalltau`, the default for the calculation of correlations between two samples and multiple samples, respectively, default to the "local" and "global" methods of handling ties, as laid out in Sections 2.3.
+The package functions `ici_kt` and `ici_kendalltau`, the default functions for the calculation of correlations between two samples and multiple samples, respectively, default to the "local" and "global" methods of handling ties, as laid out in Sections 2.3.
 Finally, the availability of the binomial left-censorship test ensures the application of the ICI-Kt methodology when it is appropriate.
-Future directions for this methodology are to explore handling several additional statistical conditions.
-Specifically, the methodology and the codebases will be expanded to handle right censorship, which we expect to be straight-forward.
+A future direction for this methodology is to explore handling several additional statistical conditions.
+Specifically, the methodology and codebases will be expanded to handle right censorship, which we expect to be straight-forward.
 In addition, approaches will be explored to handle data with combinations of right-censorship, left-censorship, and missing at random.
 We expect the expansion of the methodology to handle a combination of both right and left censorship, also known as double censorship, to be tractable.
-However, combinations of left, right, or double censorship with missing at random may not have good solutions by this methodological approach.
+However, combinations of left, right, or double censorship with missing at random may not have good solutions using this methodological approach.
 
-Global imputation methods rely on the assumption that samples have similar dynamic range of detection and thus an imputed value should be comparable between samples.
+Global imputation methods rely on the assumption that samples have a similar dynamic range of detection and thus an imputed value should be comparable between samples.
 However, the dynamic range of detection is often variable across samples.
 For complex analytical techniques often used in omics experiments, the variability in the dynamic range of detection can be quite high.
 Under these circumstances, the ICI-Kt method provides more robust results as compared to Pearson correlation with global imputation.
@@ -980,16 +980,16 @@ While technically the information content is not changed, the quality of the int
 
 In the case of using sample-sample correlation to detect outliers, imputation does not solve any of the issues related to discovering outliers, as it should be applied **after** outlier samples are removed, otherwise the imputed values may not be useful.
 When used to create feature-feature networks based on partial correlations derived from the feature-feature correlations, ICI-Kt based methods showed the best partitioning of features based on predicted pathway annotations.
-As far as we know, information-content-informed Kendall-tau (ICI-Kt) is the first correlation method that explicitly attempts to utilize non-random missing values that occur due to being below the detection limit.
+As far as we know, information-content-informed Kendall-$\tau$ (ICI-Kt) is the first correlation method that explicitly attempts to utilize non-random missing values that occur due to being below the detection limit.
 ICI-Kt **explicitly** treats left-censored missing values as correlative information while preserving the full deleterious effects of missing at random values on the correlation metric.
 Moreover, ICI-Kt can be combined with measurement completeness to create a composite metric that is quite sensitive to overall data quality on a sample-specific level.
 Also, this ICI-Kt $\times$ completeness metric may have applications in cluster detection of single-cell omics data sets.
 
 ICI-Kt has been directly used in the analysis of metabolomics and other omics datasets, providing useful biological and biomedical insight. 
-In Mitchell et al. 2021, a sterol feature-limited sample-sample ICI-Kt correlation matrix (Figure 5A in the paper) illustrates at least two distinct groups of resected human human non-small lung cancer (NSCLC) samples not specific to histological subtypes [@mitchellUntargetedLipidomicsNonSmall2021]. 
-Also, a feature-feature ICI-Kt correlation matrix (Figure 4 in the paper) illustrates distinct patterns of high correlation between specific groups of phosphosphingolipids and glycerophospholipids [@mitchellUntargetedLipidomicsNonSmall2021]. 
-In Braun et al. 2025, a sample-sample ICI-Kt correlation matrix (Figure 2A in the paper) clearly separates cerebrospinal fluid aneurysmal subarachnoid hemorrhage, plasma aneurysmal subarachnoid hemorrhage, and control plasma cytokine samples, which is not illustrated in the principal component analysis [@braunEarlyChangesInflammationrelated2025]. 
-Statistically significant cytokine correlations between cerebrospinal fluid and plasma samples (illustrated in Figure 3 of the paper) identified CXCL12, IL-15, and SAA1 as potential biomarkers for neurysmal subarachnoid hemorrhage and potential therapeutic targets [@braunEarlyChangesInflammationrelated2025]. 
+In Mitchell et al. 2021, a sterol feature-limited sample-sample ICI-Kt correlation matrix (Figure 5A in Mitchell et al. 2021) illustrates at least two distinct groups of resected human human non-small lung cancer (NSCLC) samples not specific to histological subtypes [@mitchellUntargetedLipidomicsNonSmall2021]. 
+Also, a feature-feature ICI-Kt correlation matrix (Figure 4 in Mitchell et al. 2021) illustrates distinct patterns of high correlation between specific groups of phosphosphingolipids and glycerophospholipids [@mitchellUntargetedLipidomicsNonSmall2021]. 
+In Braun et al. 2025, the sample-sample ICI-Kt correlation matrix (Figure 2A in Braun et al. 2025) clearly separates cerebrospinal fluid aneurysmal subarachnoid hemorrhage, plasma aneurysmal subarachnoid hemorrhage, and control plasma cytokine samples, which is not illustrated in the principal component analysis [@braunEarlyChangesInflammationrelated2025]. 
+Statistically significant cytokine correlations between cerebrospinal fluid and plasma samples (illustrated in Figure 3 of Braun et al. 2025) identified CXCL12, IL-15, and SAA1 as potential biomarkers for neurysmal subarachnoid hemorrhage and potential therapeutic targets [@braunEarlyChangesInflammationrelated2025]. 
 In Anspach et al. 2026, feature-feature ICI-Kt correlation matrix analyses enable multi-omics integration of transcriptomics, metabolomics, and lipidomics datasets derived from resected tumor and nearby non-tumor paired samples from human patients with steatohepatitic hepatocellular carcinoma [@anspachIntegratedMultiomicAnalysis2026].
 Over 300 novel gene-metabolite and gene-lipid correlative relationship were identified in these ICI-Kt driven analyses [@anspachIntegratedMultiomicAnalysis2026].
 
@@ -1010,7 +1010,7 @@ Therefore, ICI-Kt and associated composite metrics should be considered as usefu
 
 ::: {custom-style="MDPI_3.1_text"}
 Missing values due to left-censorship are common in metabolomics datasets as demonstrated across 711 publicly-deposited datasets in Metabolomics Workbench. 
-To better address the effects of left-censored missing values, the ICI-Kt methodology directly interprets missing values within a Kendall tau rank-based correlation metric.
+To better address the effects of left-censored missing values, the ICI-Kt methodology directly interprets missing values within a Kendall-$\tau$ rank-based correlation metric.
 These new ICI-Kt metrics demonstrate superior performance to Pearson correlation-based metrics with respect to capturing biological pathway meaningful relationships between metabolite features. 
 ICI-Kt methods are implemented in easy to install open-source R and Python packages that demonstrate optimal computational performance while utilizing available cores on modern central processing units, making them practical for the analysis of high-feature and high-sample omics datasets. 
 Thus, ICI-Kt methods are available for general use in omics data analysis, especially metabolomics data analysis. 
@@ -1030,7 +1030,7 @@ All authors contributed to the writing of the manuscript.
 This work was supported in part by grants NSF 2020026 (PI Moseley), NIH 1R03LM014928-01 (PI Moseley), NSF ACI1626364 (Griffioen, Moseley), P30 CA177558 (PI Evers) via the Markey Cancer Center Biostatistics and Bioinformatics Shared Resource Facility (MCC BB-SRF), P20 GM121327 (PD St. Clair), and P42 ES007380 (PI Pennell) via the Data Management and Analysis Core (DMAC).
 
 **Availability Of Data And Materials:**
-Code and data used in the results for this manuscript are available on Zenodo at the following DOI: https://doi.org/10.5281/zenodo.18625643.
+The code and data used in the results for this manuscript are available on Zenodo at the following DOI: https://doi.org/10.5281/zenodo.18625643.
 GitHub repository for the R `ICIKendallTau` package: https://github.com/moseleyBioinformaticsLab/ICIKendallTau. 
 GitHub repository for the Python `icikt` package: https://github.com/moseleyBioinformaticsLab/icikt.
 Python Package Index: https://pypi.org/project/icikt/.

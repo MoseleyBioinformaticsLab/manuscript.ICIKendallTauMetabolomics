@@ -4,7 +4,7 @@
 
 This repository contains the code and partial data for the manuscript:
 
-**Information-Content-Informed Kendall-tau Correlation Methodology: Interpreting Missing Values in Metabolomics as Potentially Useful Information**, R.M. Flight, P.S. Bhatt, and H.N.B. Moseley.
+**Information-Content-Informed Kendall-tau Correlation Methodology: Interpreting Missing Values in Metabolomics as Potentially Useful Information**, R.M. Flight, P.S. Bhatt, and H.N.B. Moseley. Metabolites 2026, 16, 245. https://doi.org/10.3390/metabo16040245
 
 
 ## Manuscripts
